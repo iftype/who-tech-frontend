@@ -40,6 +40,24 @@ npm run dev       # http://localhost:5173
 - pre-commit: lint-staged (변경 파일만 검사)
 - commit-msg: commitlint (Conventional Commits)
 
+## 커밋 단위 가이드
+
+작업 단위를 잘게 나눠서 커밋한다.
+
+```
+chore: 프로젝트 초기 설정 (tsconfig, package.json)
+chore: eslint + prettier 설정
+chore: husky + commitlint 설정
+chore: vscode 설정 추가
+feat: 로그인 페이지 추가
+fix: 검색 결과 렌더링 오류 수정
+docs: readme 업데이트
+```
+
+- 커밋 메시지는 소문자로 시작
+- 한 커밋에 여러 관심사를 섞지 않는다
+- subject는 72자 이내
+
 ## 브랜치 전략
 
 ```
