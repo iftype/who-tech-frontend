@@ -30,7 +30,7 @@
     "node": ">=20.18.0"
   },
   "lint-staged": {
-    "*.{ts}": [
+    "*.ts": [
       "eslint --fix",
       "prettier --write"
     ],
