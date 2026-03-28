@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { api } from '@/lib/api';
 import { Avatar } from '@/components/ui/Avatar';
-import { TrackBadge } from '@/components/ui/Badge';
+import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { formatRelativeDate, getBlogSource } from '@/lib/utils';
 import Link from 'next/link';
 import type { FeedItem } from '@/types';
@@ -36,13 +36,21 @@ function FeedRow({ item }: { item: FeedItem }) {
       <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} className="mt-0.5 flex-shrink-0" />
       <div className="min-w-0 flex-1">
         <p className="mb-1.5 line-clamp-2 text-[14px] font-medium leading-5 text-text">{item.title}</p>
-        <div className="flex flex-wrap items-center gap-2 text-[12px] text-text-secondary">
-          <span>{item.member.nickname}</span>
-          <span className="text-text-dim">·</span>
-          <span>{formatRelativeDate(item.publishedAt)}</span>
-          {(item.member.tracks ?? []).map((t) => (
-            <TrackBadge key={t} track={t} />
-          ))}
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px] text-text-secondary">
+          <span className="font-semibold text-text">{item.member.nickname}</span>
+          <div className="flex flex-wrap items-center gap-1">
+            {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
+            {(item.member.tracks ?? []).map((t) => (
+              <TrackBadge key={t} track={t} />
+            ))}
+            {(item.member.roles ?? [])
+              .filter((r) => r !== 'crew')
+              .map((r) => (
+                <RoleBadge key={r} role={r} />
+              ))}
+          </div>
+          <span className="text-text-dim ml-0.5">·</span>
+          <span className="ml-0.5">{formatRelativeDate(item.publishedAt)}</span>
         </div>
       </div>
       {source && (
@@ -73,7 +81,18 @@ function FeedList({ items }: { items: FeedItem[] }) {
 
 export default async function FeedPage({ searchParams }: { searchParams?: Promise<SearchParams> }) {
   const current = (await searchParams) ?? {};
-  const feed = await api.members.feed().catch(() => []);
+  const [feed, allMembers] = await Promise.all([
+    api.members.feed().catch(() => []),
+    api.members.search({ cohort: 8 }).catch(() => []),
+  ]);
+  const recommendedStaff = allMembers
+    .filter((m) => (m.roles.includes('coach') || m.roles.includes('reviewer')) && m.blog)
+    .sort((a, b) => {
+      const ta = a.lastPostedAt ? new Date(a.lastPostedAt).getTime() : 0;
+      const tb = b.lastPostedAt ? new Date(b.lastPostedAt).getTime() : 0;
+      return tb - ta;
+    })
+    .slice(0, 5);
   const range = current.range === '30d' ? '30d' : '7d';
   const cohortFilter = current.cohort; // undefined = 전체
   const trackFilter = current.track;
@@ -107,16 +126,6 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
 
   // 사이드바용 통계 (현재 필터 기준)
   const statBase = cohortFilter ? selectedItems : filtered;
-  const topCrew = Object.values(
-    statBase.reduce<Record<string, { nickname: string; count: number }>>((acc, item) => {
-      const key = item.member.githubId;
-      if (acc[key]) acc[key].count++;
-      else acc[key] = { nickname: item.member.nickname, count: 1 };
-      return acc;
-    }, {}),
-  )
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 3);
 
   const platformStats = Object.entries(
     statBase.reduce<Record<string, number>>((acc, item) => {
@@ -250,21 +259,31 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-7 border-l border-border pl-5">
             <section>
-              <h2 className="mb-4 text-[12px] font-semibold text-text-secondary">활발한 크루</h2>
+              <h2 className="mb-4 text-[12px] font-semibold text-text-secondary">8기 운영진 블로그</h2>
               <div className="space-y-3">
-                {topCrew.length === 0 ? (
+                {recommendedStaff.length === 0 ? (
                   <p className="text-[12px] text-text-muted">데이터 없음</p>
                 ) : (
-                  topCrew.map((crew, index) => (
-                    <div key={crew.nickname} className="flex items-center justify-between gap-3">
+                  recommendedStaff.map((crew) => (
+                    <a
+                      key={crew.githubId}
+                      href={crew.blog!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between gap-3"
+                    >
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-[11px] text-text-dim">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                        <span className="text-[13px] text-text">{crew.nickname}</span>
+                        <Avatar src={crew.avatarUrl} alt={crew.nickname} size={28} />
+                        <span className="text-[13px] text-text group-hover:underline">{crew.nickname}</span>
                       </div>
-                      <span className="text-[12px] text-text-muted">{crew.count}글</span>
-                    </div>
+                      <div className="flex gap-1">
+                        {crew.roles
+                          .filter((r) => r !== 'crew')
+                          .map((r) => (
+                            <RoleBadge key={r} role={r} />
+                          ))}
+                      </div>
+                    </a>
                   ))
                 )}
               </div>

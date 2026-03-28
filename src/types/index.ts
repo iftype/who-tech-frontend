@@ -10,6 +10,8 @@ export interface Member {
   cohort: number | null;
   roles: Role[];
   tracks: Track[];
+  blog?: string | null;
+  lastPostedAt?: string | null;
 }
 
 export interface ArchiveStep {

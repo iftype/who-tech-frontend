@@ -56,19 +56,19 @@ export function CohortFilters({ members, cohort }: Props) {
 
         <div className="ml-auto flex items-center gap-3">
           {showStaffToggle && (
-            <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+            <div className="flex items-center gap-0.5">
               <button
                 onClick={() => setRoleGroup('crew')}
-                className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                  roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                  roleGroup === 'crew' ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
                 }`}
               >
                 크루
               </button>
               <button
                 onClick={() => setRoleGroup('staff')}
-                className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                  roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                  roleGroup === 'staff' ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
                 }`}
               >
                 운영진
