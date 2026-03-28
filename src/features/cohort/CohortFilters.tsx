@@ -40,13 +40,12 @@ export function CohortFilters({ members }: Props) {
       {/* Filter Bar */}
       <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-medium text-text-muted">역할</span>
           <div className="flex items-center gap-0.5">
             {ROLE_OPTIONS.map(({ label, value }) => (
               <button
                 key={value}
                 onClick={() => setRole(value)}
-                className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
                   role === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
                 }`}
               >
@@ -59,13 +58,12 @@ export function CohortFilters({ members }: Props) {
         <div className="hidden h-3.5 w-px bg-border sm:block" />
 
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] font-medium text-text-muted">트랙</span>
           <div className="flex items-center gap-0.5">
             {TRACK_OPTIONS.map(({ label, value }) => (
               <button
                 key={value}
                 onClick={() => setTrack(value)}
-                className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
                   track === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
                 }`}
               >
@@ -105,9 +103,11 @@ export function CohortFilters({ members }: Props) {
                     {member.tracks.map((t) => (
                       <TrackBadge key={t} track={t} />
                     ))}
-                    {member.roles.map((r) => (
-                      <RoleBadge key={r} role={r} />
-                    ))}
+                    {member.roles
+                      .filter((r) => r !== 'crew')
+                      .map((r) => (
+                        <RoleBadge key={r} role={r} />
+                      ))}
                   </div>
                 </div>
               </Link>
