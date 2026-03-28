@@ -8,6 +8,9 @@ import { RoleBadge, TrackBadge } from '@/components/ui/Badge';
 
 type RoleGroup = 'crew' | 'staff';
 
+// 기수 번호 = 현재 연도 - 2018 (1기: 2019, 8기: 2026)
+const CURRENT_COHORT = new Date().getFullYear() - 2018;
+
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
   { label: '전체', value: 'all' },
   { label: '프론트엔드', value: 'frontend' },
@@ -20,13 +23,15 @@ interface Props {
   cohort: number;
 }
 
-export function CohortFilters({ members }: Props) {
+export function CohortFilters({ members, cohort }: Props) {
+  const showStaffToggle = cohort === CURRENT_COHORT;
   const [roleGroup, setRoleGroup] = useState<RoleGroup>('crew');
   const [track, setTrack] = useState<Track | 'all'>('all');
 
   const filtered = members.filter((m) => {
-    if (roleGroup === 'crew' && !m.roles.includes('crew')) return false;
-    if (roleGroup === 'staff' && !m.roles.some((r) => r === 'coach' || r === 'reviewer')) return false;
+    if (showStaffToggle && roleGroup === 'crew' && !m.roles.includes('crew')) return false;
+    if (showStaffToggle && roleGroup === 'staff' && !m.roles.some((r) => r === 'coach' || r === 'reviewer'))
+      return false;
     if (track !== 'all' && !m.tracks.includes(track)) return false;
     return true;
   });
@@ -50,24 +55,26 @@ export function CohortFilters({ members }: Props) {
         </div>
 
         <div className="ml-auto flex items-center gap-3">
-          <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-            <button
-              onClick={() => setRoleGroup('crew')}
-              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-              }`}
-            >
-              크루
-            </button>
-            <button
-              onClick={() => setRoleGroup('staff')}
-              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-              }`}
-            >
-              운영진
-            </button>
-          </div>
+          {showStaffToggle && (
+            <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+              <button
+                onClick={() => setRoleGroup('crew')}
+                className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                  roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+                }`}
+              >
+                크루
+              </button>
+              <button
+                onClick={() => setRoleGroup('staff')}
+                className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                  roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+                }`}
+              >
+                운영진
+              </button>
+            </div>
+          )}
           <p className="text-[12px] text-text-muted whitespace-nowrap">
             <span className="font-mono text-text">{filtered.length}</span>
             {filtered.length !== members.length && <span className="text-text-dim">/{members.length}</span>}명
