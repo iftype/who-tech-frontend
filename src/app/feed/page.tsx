@@ -35,22 +35,25 @@ function FeedRow({ item }: { item: FeedItem }) {
     >
       <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} className="mt-0.5 flex-shrink-0" />
       <div className="min-w-0 flex-1">
-        <p className="mb-1.5 line-clamp-2 text-[14px] font-medium leading-5 text-text">{item.title}</p>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px] text-text-secondary">
+        <div className="mb-1.5 flex items-start justify-between gap-4">
+          <p className="line-clamp-2 text-[14px] font-medium leading-5 text-text">{item.title}</p>
+          <span className="mt-0.5 shrink-0 whitespace-nowrap text-[12px] text-text-muted">
+            {formatRelativeDate(item.publishedAt)}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 text-[12px] text-text-secondary">
           <span className="font-semibold text-text">{item.member.nickname}</span>
           <div className="flex flex-wrap items-center gap-1">
-            {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
             {(item.member.tracks ?? []).map((t) => (
               <TrackBadge key={t} track={t} />
             ))}
+            {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
             {(item.member.roles ?? [])
               .filter((r) => r !== 'crew')
               .map((r) => (
                 <RoleBadge key={r} role={r} />
               ))}
           </div>
-          <span className="text-text-dim ml-0.5">·</span>
-          <span className="ml-0.5">{formatRelativeDate(item.publishedAt)}</span>
         </div>
       </div>
       {source && (
