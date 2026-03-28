@@ -15,10 +15,10 @@ export function Avatar({ src, alt, size = 40, className }: AvatarProps) {
       style={{ width: size, height: size }}
     >
       {src ? (
-        <Image src={src} alt={alt} width={size} height={size} className="object-cover" />
+        <Image src={src} alt={alt || 'Avatar'} width={size} height={size} className="object-cover" />
       ) : (
         <div className="w-full h-full flex items-center justify-center text-text-muted text-sm">
-          {alt.charAt(0).toUpperCase()}
+          {(alt || 'A').charAt(0).toUpperCase()}
         </div>
       )}
     </div>
