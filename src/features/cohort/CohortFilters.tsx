@@ -2,16 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { Member, Role, Track } from '@/types';
+import type { Member, Track } from '@/types';
 import { Avatar } from '@/components/ui/Avatar';
 import { RoleBadge, TrackBadge } from '@/components/ui/Badge';
 
-const ROLE_OPTIONS: { label: string; value: Role | 'all' }[] = [
-  { label: '전체', value: 'all' },
-  { label: '크루', value: 'crew' },
-  { label: '코치', value: 'coach' },
-  { label: '리뷰어', value: 'reviewer' },
-];
+type RoleGroup = 'crew' | 'staff';
 
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
   { label: '전체', value: 'all' },
@@ -26,11 +21,12 @@ interface Props {
 }
 
 export function CohortFilters({ members }: Props) {
-  const [role, setRole] = useState<Role | 'all'>('all');
+  const [roleGroup, setRoleGroup] = useState<RoleGroup>('crew');
   const [track, setTrack] = useState<Track | 'all'>('all');
 
   const filtered = members.filter((m) => {
-    if (role !== 'all' && !m.roles.includes(role)) return false;
+    if (roleGroup === 'crew' && !m.roles.includes('crew')) return false;
+    if (roleGroup === 'staff' && !m.roles.some((r) => r === 'coach' || r === 'reviewer')) return false;
     if (track !== 'all' && !m.tracks.includes(track)) return false;
     return true;
   });
@@ -39,44 +35,44 @@ export function CohortFilters({ members }: Props) {
     <>
       {/* Filter Bar */}
       <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-0.5">
-            {ROLE_OPTIONS.map(({ label, value }) => (
-              <button
-                key={value}
-                onClick={() => setRole(value)}
-                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  role === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+        <div className="flex items-center gap-0.5">
+          {TRACK_OPTIONS.map(({ label, value }) => (
+            <button
+              key={value}
+              onClick={() => setTrack(value)}
+              className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                track === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        <div className="hidden h-3.5 w-px bg-border sm:block" />
-
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-0.5">
-            {TRACK_OPTIONS.map(({ label, value }) => (
-              <button
-                key={value}
-                onClick={() => setTrack(value)}
-                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  track === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+        <div className="ml-auto flex items-center gap-3">
+          <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+            <button
+              onClick={() => setRoleGroup('crew')}
+              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+              }`}
+            >
+              크루
+            </button>
+            <button
+              onClick={() => setRoleGroup('staff')}
+              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+              }`}
+            >
+              운영진
+            </button>
           </div>
+          <p className="text-[12px] text-text-muted whitespace-nowrap">
+            <span className="font-mono text-text">{filtered.length}</span>
+            {filtered.length !== members.length && <span className="text-text-dim">/{members.length}</span>}명
+          </p>
         </div>
-
-        <p className="ml-auto text-[12px] text-text-muted whitespace-nowrap">
-          <span className="font-mono text-text">{filtered.length}</span>
-          {filtered.length !== members.length && <span className="text-text-dim">/{members.length}</span>}명
-        </p>
       </div>
 
       {/* Mobile: 세로 리스트 */}
