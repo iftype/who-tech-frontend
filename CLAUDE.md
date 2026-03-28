@@ -33,18 +33,18 @@ npm run format
 app/
   page.tsx                    → /           홈 (검색 드롭다운 + Pick of the week + 최근 활동)
   [githubId]/page.tsx         → /:githubId  크루 상세
-  cohort/[number]/page.tsx    → /cohort/:number  기수별 크루 목록
-  missions/page.tsx           → /missions   미션 아카이브
-  feed/page.tsx               → /feed       블로그 피드
+  cohort/page.tsx             → /cohort     전체 크루 목록 (역할/트랙 필터)
+  cohort/[number]/page.tsx    → /cohort/:number  기수별 크루 목록 (역할/트랙 필터)
+  feed/page.tsx               → /feed       블로그 피드 (기수 탭 + 트랙 필터 + 7일/30일)
   stats/page.tsx              → /stats      통계
   guide/page.tsx              → /guide      서비스 가이드
 ```
 
 ### 렌더링 전략
 
-- 크루 상세(`/:githubId`), 기수 목록 → **Server Component** (SEO, og 메타태그)
-- 검색 드롭다운, 필터 탭, 인터랙션 → `'use client'`
-- 블로그 피드, 통계 → Server Component + TanStack Query (클라이언트 필터)
+- 크루 상세, 기수 목록, 피드 → **Server Component** (SEO, searchParams 기반 필터)
+- 검색 드롭다운, 기수 목록 역할/트랙 필터(`CohortFilters`) → `'use client'`
+- 피드 기수 탭, 트랙 필터 → Server Component (Link 기반 URL 파라미터)
 
 ### 백엔드 공개 API
 
