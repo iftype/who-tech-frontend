@@ -48,7 +48,7 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
       return false;
     }
 
-    if (trackFilter && !item.member.tracks.includes(trackFilter as 'frontend' | 'backend' | 'android')) {
+    if (trackFilter && !(item.member.tracks ?? []).includes(trackFilter as 'frontend' | 'backend' | 'android')) {
       return false;
     }
 
