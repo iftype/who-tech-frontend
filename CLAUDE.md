@@ -50,12 +50,18 @@ app/
 
 ```
 GET /members                  — 멤버 검색 (?q=&cohort=&track=&role=)
-GET /members/feed             — 최근 블로그 피드 (?cohort=&track=)
+GET /members/feed             — 최근 블로그 피드 (?cohort=&track=) → [{url, title, publishedAt, member: {githubId, nickname, avatarUrl, cohort, roles, tracks}}]
 GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 ```
 
-`submissions` 응답: `[{ prUrl, prNumber, title, submittedAt, missionRepo: { name, track, level, tabCategory } }]`
+`archive` 응답: `ArchiveLevel[] → { level, repos: ArchiveRepo[] }` → `{ name, track, tabCategory, submissions: ArchiveStep[] | null }`
 `blogPosts` 응답: BlogPostLatest 최근 10개
+
+### API 클라이언트 (`src/lib/api.ts`)
+
+- 서버 환경: `NEXT_PUBLIC_API_URL` 직접 호출
+- 브라우저 환경: `/api` 프록시 경로 사용 (CORS 우회, `next.config.ts`의 rewrite로 백엔드로 전달)
+- `normalizeDetail()`: 구버전(`submission` 단수) / 신버전(`submissions` 배열) 응답 모두 처리
 
 ### 검색 드롭다운 스펙
 
@@ -65,10 +71,11 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 
 ### 미션 아카이브 스펙
 
-- tabCategory `base | common` 기준으로 탭 분리
+- `tabCategory` 기준 탭 분리: `base` / `common` / `precourse` (precourse는 데이터 있을 때만 표시)
+- `base` 탭: `memberTracks` 기반 트랙 필터링 (`track === null`인 공통 미션은 항상 포함)
 - 레벨(1~4)별 그룹핑, CohortRepo.order 순서
-- submission 없으면 빈 상태 표시
-- "Copy as Markdown" 버튼으로 전체 목록 클립보드 복사
+- `submissions === null` → "미제출" 표시
+- "Markdown 복사" 버튼으로 현재 탭 전체 목록 클립보드 복사
 
 ## 디자인 시스템
 
