@@ -44,12 +44,6 @@ export default async function CohortPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Heading */}
-      <div className="mb-5">
-        <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">{cohort}기 크루</h1>
-        <p className="mt-1 text-[12px] text-text-muted">우아한테크코스 {cohort}기 멤버 목록</p>
-      </div>
-
       <CohortFilters members={members} cohort={cohort} />
     </div>
   );

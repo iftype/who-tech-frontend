@@ -35,13 +35,11 @@ function FeedRow({ item }: { item: FeedItem }) {
     >
       <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} className="mt-0.5 flex-shrink-0" />
       <div className="min-w-0 flex-1">
-        <div className="mb-1.5 flex items-start justify-between gap-4">
-          <p className="line-clamp-2 text-[14px] font-medium leading-5 text-text">{item.title}</p>
-          <span className="mt-0.5 shrink-0 whitespace-nowrap text-[12px] text-text-muted">
-            {formatRelativeDate(item.publishedAt)}
-          </span>
+        <div className="mb-1.5 flex flex-wrap items-center gap-1">
+          <p className="text-[14px] font-medium text-text hover:underline break-all">{item.title}</p>
+          <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
+        <div className="flex flex-wrap items-center gap-1.5 mt-1 text-[12px]">
           <span className="text-[13px] font-semibold text-text">{item.member.nickname}</span>
           <div className="flex flex-wrap items-center gap-1">
             {(item.member.tracks ?? []).map((t) => (
@@ -87,7 +85,8 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
   const [feed] = await Promise.all([api.members.feed().catch(() => [])]);
   const staffPosts = feed
     .filter((item) => {
-      const isStaff = item.member.roles.includes('coach') || item.member.roles.includes('reviewer');
+      const roles = item.member.roles ?? [];
+      const isStaff = roles.includes('coach') || roles.includes('reviewer');
       const isCohort8 = item.member.cohort === 8;
       return isStaff && isCohort8;
     })

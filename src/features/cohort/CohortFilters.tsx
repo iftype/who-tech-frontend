@@ -38,6 +38,38 @@ export function CohortFilters({ members, cohort }: Props) {
 
   return (
     <>
+      {/* Heading with Toggle */}
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">
+            {cohort === 0 ? '전체 크루' : `${cohort}기 크루`}
+          </h1>
+          <p className="mt-1 text-[12px] text-text-muted">
+            우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
+          </p>
+        </div>
+        {showStaffToggle && (
+          <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+            <button
+              onClick={() => setRoleGroup('crew')}
+              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+              }`}
+            >
+              크루
+            </button>
+            <button
+              onClick={() => setRoleGroup('staff')}
+              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+              }`}
+            >
+              운영진
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Filter Bar */}
       <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
@@ -55,26 +87,6 @@ export function CohortFilters({ members, cohort }: Props) {
         </div>
 
         <div className="ml-auto flex items-center gap-3">
-          {showStaffToggle && (
-            <div className="flex items-center gap-0.5">
-              <button
-                onClick={() => setRoleGroup('crew')}
-                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  roleGroup === 'crew' ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                크루
-              </button>
-              <button
-                onClick={() => setRoleGroup('staff')}
-                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  roleGroup === 'staff' ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                운영진
-              </button>
-            </div>
-          )}
           <p className="text-[12px] text-text-muted whitespace-nowrap">
             <span className="font-mono text-text">{filtered.length}</span>
             {filtered.length !== members.length && <span className="text-text-dim">/{members.length}</span>}명

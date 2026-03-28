@@ -33,12 +33,6 @@ export default async function CohortAllPage() {
         </div>
       </div>
 
-      {/* Heading */}
-      <div className="mb-5">
-        <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">전체 크루</h1>
-        <p className="mt-1 text-[12px] text-text-muted">우아한테크코스 전체 멤버 목록</p>
-      </div>
-
       <CohortFilters members={members} cohort={0} />
     </div>
   );
