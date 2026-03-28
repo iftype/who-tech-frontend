@@ -24,6 +24,12 @@ export default async function CohortPage({ params }: Props) {
       {/* Cohort Tab Bar */}
       <div className="mb-5 overflow-x-auto border-b border-border [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max items-center gap-1 sm:gap-0">
+          <Link
+            href="/cohort"
+            className="-mb-px rounded-t-md border-b-2 border-transparent px-4 py-2.5 text-[13px] font-medium whitespace-nowrap text-text-muted transition-colors hover:text-text sm:rounded-none sm:px-4 sm:py-2"
+          >
+            전체
+          </Link>
           {COHORTS.map((c) => (
             <Link
               key={c}

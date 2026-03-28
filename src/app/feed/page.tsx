@@ -215,44 +215,30 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
 
           {/* 콘텐츠 */}
           {cohortFilter ? (
-            // 특정 기수 선택 → 플랫 리스트
-            <FeedList items={selectedItems} />
-          ) : // 전체 → 기수별 섹션
-          filtered.length === 0 ? (
-            <div className="rounded-xl border border-border bg-surface py-16 text-center text-[14px] text-text-muted">
-              조건에 맞는 블로그 글이 없습니다
+            // 특정 기수 선택 → 기수별 섹션
+            <div className="flex flex-col gap-6">
+              {cohorts
+                .filter((c) => String(c) === cohortFilter)
+                .map((cohort) => {
+                  const items = grouped.get(cohort) ?? [];
+                  if (items.length === 0) return null;
+                  return (
+                    <div key={cohort}>
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
+                          {cohort}기
+                        </span>
+                        <div className="h-px flex-1 bg-border-dim" />
+                        <span className="text-[11px] text-text-dim">{items.length}개</span>
+                      </div>
+                      <FeedList items={items} />
+                    </div>
+                  );
+                })}
             </div>
           ) : (
-            <div className="flex flex-col gap-6">
-              {cohorts.map((cohort) => {
-                const items = grouped.get(cohort) ?? [];
-                if (items.length === 0) return null;
-                return (
-                  <div key={cohort}>
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
-                        {cohort}기
-                      </span>
-                      <div className="h-px flex-1 bg-border-dim" />
-                      <span className="text-[11px] text-text-dim">{items.length}개</span>
-                    </div>
-                    <FeedList items={items} />
-                  </div>
-                );
-              })}
-              {/* 기수 없는 항목 */}
-              {(grouped.get(null) ?? []).length > 0 && (
-                <div>
-                  <div className="mb-2 flex items-center gap-2">
-                    <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-text-muted">
-                      기타
-                    </span>
-                    <div className="h-px flex-1 bg-border-dim" />
-                  </div>
-                  <FeedList items={grouped.get(null) ?? []} />
-                </div>
-              )}
-            </div>
+            // 전체 → 날짜순 플랫 리스트
+            <FeedList items={filtered} />
           )}
         </section>
 
