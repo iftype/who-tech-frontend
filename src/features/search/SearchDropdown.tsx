@@ -72,7 +72,7 @@ export function SearchDropdown() {
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[560px]">
-      <div className="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 focus-within:border-accent/50 transition-colors">
+      <div className="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 focus-within:border-accent/50">
         <svg
           className="w-4 h-4 text-text-muted flex-shrink-0"
           viewBox="0 0 24 24"

@@ -1,0 +1,18 @@
+'use client';
+
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from './ThemeProvider';
+
+export function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+
+  return (
+    <button
+      onClick={toggle}
+      className="flex h-8 w-8 items-center justify-center rounded border border-border text-text-muted hover:text-text hover:border-border-dim transition-colors"
+      aria-label="테마 전환"
+    >
+      {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+    </button>
+  );
+}

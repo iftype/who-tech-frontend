@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 프로젝트 개요
 
-우아한테크코스 크루(멤버) 검색 서비스의 프론트엔드. Next.js 15 App Router 기반 다크모드 SPA.
+우아한테크코스 크루(멤버) 검색 서비스의 프론트엔드. Next.js 15 App Router 기반 라이트/다크모드 지원 SPA.
 
-- **조직**: https://github.com/who-tech-course
+- **조직**: https://github.com/iftype
 - **백엔드 API**: https://iftype.store (또는 로컬 http://localhost:3001)
-- **프로덕션**: PM2 앱 이름 `frontend`, Nginx reverse proxy
+- **프로덕션**: Vercel (`who-tech.vercel.app`), GitHub `main` push 시 자동 배포
 
 ## 주요 명령어
 
@@ -72,11 +72,17 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 
 ## 디자인 시스템
 
-- **다크모드 기본값**
-- **폰트**: 한글 지원 (Pretendard 또는 Noto Sans KR)
-- **Tailwind CSS v4** 사용
+- **테마**: 다크모드 기본값, `localStorage` 기반 유지, `html.dark` 클래스 토글
+  - `ThemeProvider` + `ThemeToggle` (Navbar 우측 Sun/Moon)
+  - CSS 변수 `:root` (라이트) / `html.dark` (다크) — `globals.css` 참고
+- **컬러 토큰**: `bg`, `surface`, `surface-alt`, `border`, `text`, `text-secondary`, `text-muted`, `accent`, `accent-dm`
+- **다크모드 팔레트** (Paper 디자인 시스템 기준):
+  - bg `#000`, surface `#0d0d0d`, border `#1c1c1c`, text `#ededed`, accent `#2AC1BC`, accent-dm `#0CEFD3`
+- **폰트**: Geist Sans / Geist Mono
+- **Tailwind CSS v4** — CSS 변수를 `@theme`으로 연결
 - 뱃지: 기수(cohort), 역할(crew/coach/reviewer), 트랙(frontend/backend/android)
-- 카드 hover 애니메이션, 드롭다운 fade 애니메이션
+- 로고: `public/logo.png` (행성 캐릭터), `src/app/icon.png` (파비콘)
+- **주의**: 테마 전환 시 잔상 방지를 위해 전역 색상 변경 요소에 `transition-colors` 사용 금지
 
 ## PR/브랜치 규칙
 

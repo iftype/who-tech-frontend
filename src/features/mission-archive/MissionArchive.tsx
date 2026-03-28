@@ -83,7 +83,7 @@ export function MissionArchive({ submissions }: Props) {
   return (
     <div className="flex flex-col gap-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:justify-between">
         <h2 className="text-[13px] font-semibold text-text">미션 PR 아카이브</h2>
         <div className="flex items-center gap-2">
           {/* Tab */}
@@ -96,7 +96,7 @@ export function MissionArchive({ submissions }: Props) {
                   tab === t ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
                 }`}
               >
-                {t === 'base' ? '기준 미션' : '공통 미션'}
+                {t === 'base' ? '기준' : '공통'}
               </button>
             ))}
           </div>
@@ -109,7 +109,8 @@ export function MissionArchive({ submissions }: Props) {
               <rect x="9" y="9" width="13" height="13" rx="2" />
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
-            {copied ? '복사됨' : 'Markdown 복사'}
+            <span className="hidden sm:inline">{copied ? '복사됨' : 'Markdown 복사'}</span>
+            <span className="sm:hidden">{copied ? '복사됨' : 'MD 복사'}</span>
           </button>
         </div>
       </div>

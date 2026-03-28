@@ -3,8 +3,7 @@ import { notFound } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
-import { MissionArchive } from '@/features/mission-archive/MissionArchive';
-import { formatRelativeDate, formatDate } from '@/lib/utils';
+import { ProfileTabs } from '@/features/profile/ProfileTabs';
 
 interface Props {
   params: Promise<{ githubId: string }>;
@@ -30,7 +29,7 @@ export default async function DetailPage({ params }: Props) {
   if (!member) notFound();
 
   return (
-    <div className="mx-auto max-w-[1200px] px-6 py-10">
+    <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-8 sm:py-10">
       {/* Profile Header */}
       <div className="flex items-center gap-5 pb-8 border-b border-border-dim">
         <Avatar src={member.avatarUrl} alt={member.nickname} size={80} />
@@ -66,47 +65,8 @@ export default async function DetailPage({ params }: Props) {
       </div>
 
       {/* Content Area */}
-      <div className="flex gap-8 pt-8">
-        {/* Mission Archive */}
-        <div className="flex-1 min-w-0">
-          <MissionArchive submissions={member.submissions} />
-        </div>
-
-        {/* Blog Posts Sidebar */}
-        <aside className="w-[360px] flex-shrink-0">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[13px] font-semibold text-text">블로그 글</h2>
-            {member.blogPosts.length === 0 ? (
-              <p className="text-[13px] text-text-muted">등록된 블로그 글이 없습니다</p>
-            ) : (
-              <>
-                <div className="flex flex-col divide-y divide-border-dim border border-border rounded-lg overflow-hidden bg-surface">
-                  {member.blogPosts.map((post) => (
-                    <a
-                      key={post.url}
-                      href={post.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex flex-col gap-1 px-4 py-3 hover:bg-surface-alt transition-colors"
-                    >
-                      <p className="text-[13px] font-medium text-text line-clamp-2">{post.title}</p>
-                      <p className="text-[11px] text-text-dim">{formatDate(post.publishedAt)}</p>
-                    </a>
-                  ))}
-                </div>
-                {member.lastPostedAt && (
-                  <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-border-dim bg-surface text-[11px] text-text-muted">
-                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    마지막 게시: {formatRelativeDate(member.lastPostedAt)}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </aside>
+      <div className="pt-6 sm:pt-8">
+        <ProfileTabs submissions={member.submissions} blogPosts={member.blogPosts} lastPostedAt={member.lastPostedAt} />
       </div>
     </div>
   );

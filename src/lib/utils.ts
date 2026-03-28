@@ -34,3 +34,13 @@ export function groupBy<T>(arr: T[], key: (item: T) => string): Record<string, T
 export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ');
 }
+
+export function getBlogSource(url: string): string | null {
+  if (url.includes('velog.io')) return 'Velog';
+  if (url.includes('tistory.com')) return 'Tistory';
+  if (url.includes('medium.com')) return 'Medium';
+  if (url.includes('github.io')) return 'GitHub';
+  if (url.includes('brunch.co.kr')) return 'Brunch';
+  if (url.includes('notion.site') || url.includes('notion.so')) return 'Notion';
+  return null;
+}

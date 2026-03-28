@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { QueryProvider } from '@/components/layout/QueryProvider';
+import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -19,12 +20,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="ko" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable} dark`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme');document.documentElement.classList.toggle('dark', t!=='light');})();`,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-bg font-sans">
-        <QueryProvider>
-          <Navbar />
-          <main>{children}</main>
-        </QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            <Navbar />
+            <main>{children}</main>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

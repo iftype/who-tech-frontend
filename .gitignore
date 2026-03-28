@@ -2,3 +2,5 @@
 node_modules/
 .env*.local
 *.tsbuildinfo
+.mcp.json
+.vercel
