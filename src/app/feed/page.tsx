@@ -133,10 +133,41 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
     <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 sm:py-10">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
         <section className="min-w-0">
+          {/* 기수 탭 (h1 위) */}
+          <div className="mb-5 overflow-x-auto border-b border-border [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex min-w-max items-center gap-1 sm:gap-0">
+              <Link
+                href={buildFeedHref(current, { cohort: undefined })}
+                className={`-mb-px rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
+                  !cohortFilter
+                    ? 'border-accent-dm text-accent-dm'
+                    : 'border-transparent text-text-muted hover:text-text'
+                }`}
+              >
+                전체
+              </Link>
+              {cohorts.map((c) => (
+                <Link
+                  key={c}
+                  href={buildFeedHref(current, { cohort: String(c) })}
+                  className={`-mb-px rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
+                    cohortFilter === String(c)
+                      ? 'border-accent-dm text-accent-dm'
+                      : 'border-transparent text-text-muted hover:text-text'
+                  }`}
+                >
+                  {c}기
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* 헤더 */}
           <div className="mb-5 flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">피드</h1>
+              <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">
+                {cohortFilter ? `${cohortFilter}기 피드` : '피드'}
+              </h1>
               <p className="mt-1 text-[12px] text-text-secondary">모든 크루의 최신 블로그 글</p>
             </div>
             <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
@@ -159,34 +190,8 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
             </div>
           </div>
 
-          {/* 기수 탭 + 트랙 필터 */}
+          {/* 트랙 필터 */}
           <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
-            {/* 기수 탭 */}
-            <div className="flex items-center gap-0.5">
-              <Link
-                href={buildFeedHref(current, { cohort: undefined })}
-                className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  !cohortFilter ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                전체
-              </Link>
-              {cohorts.map((c) => (
-                <Link
-                  key={c}
-                  href={buildFeedHref(current, { cohort: String(c) })}
-                  className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                    cohortFilter === String(c) ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                  }`}
-                >
-                  {c}기
-                </Link>
-              ))}
-            </div>
-
-            <div className="hidden h-3.5 w-px bg-border sm:block" />
-
-            {/* 트랙 필터 */}
             <div className="flex items-center gap-0.5">
               {[
                 [undefined, '전체'],
@@ -207,7 +212,6 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
                 </Link>
               ))}
             </div>
-
             <p className="ml-auto text-[12px] text-text-muted whitespace-nowrap">
               <span className="font-mono text-text">{cohortFilter ? selectedItems.length : filtered.length}</span>개
             </p>
