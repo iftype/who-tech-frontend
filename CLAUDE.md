@@ -44,6 +44,8 @@ app/
 
 - 크루 상세, 기수 목록, 피드 → **Server Component** (SEO, searchParams 기반 필터)
 - 검색 드롭다운, 기수 목록 역할/트랙 필터(`CohortFilters`) → `'use client'`
+  - 역할 필터: 크루/운영진 2단 토글 (현재 기수에서만 표시, `CURRENT_COHORT = 연도 - 2018`)
+  - 운영진 = coach || reviewer
 - 피드 기수 탭, 트랙 필터 → Server Component (Link 기반 URL 파라미터)
 
 ### 백엔드 공개 API
