@@ -1,6 +1,8 @@
-import type { Member, MemberDetail, FeedItem } from '@/types';
+import type { Member, MemberDetail, FeedItem, ArchiveLevel, ArchiveStep, TabCategory } from '@/types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
+const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
+// 브라우저에서는 CORS 우회를 위해 Next.js rewrite 프록시 사용
+const BASE_URL = typeof window === 'undefined' ? SERVER_URL : '/api';
 
 async function fetchApi<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -9,6 +11,31 @@ async function fetchApi<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) throw new Error(`API error: ${res.status} ${path}`);
   return res.json() as Promise<T>;
+}
+
+// 구버전(submission 단수) / 신버전(submissions 배열) 모두 대응
+type RawRepo = {
+  name: string;
+  track: string | null;
+  tabCategory?: TabCategory;
+  submission?: ArchiveStep | null;
+  submissions?: ArchiveStep[] | null;
+};
+type RawDetail = Omit<MemberDetail, 'archive'> & {
+  archive?: Array<{ level: number | null; repos: RawRepo[] }>;
+};
+
+function normalizeDetail(raw: RawDetail): MemberDetail {
+  const archive: ArchiveLevel[] = (raw.archive ?? []).map((lvl) => ({
+    level: lvl.level,
+    repos: lvl.repos.map((r) => ({
+      name: r.name,
+      track: r.track,
+      tabCategory: (r.tabCategory ?? 'base') as TabCategory,
+      submissions: r.submissions !== undefined ? r.submissions : r.submission != null ? [r.submission] : null,
+    })),
+  }));
+  return { ...raw, archive } as MemberDetail;
 }
 
 export const api = {
@@ -23,7 +50,10 @@ export const api = {
       ).toString();
       return fetchApi<Member[]>(`/members${qs ? `?${qs}` : ''}`);
     },
-    detail: (githubId: string) => fetchApi<MemberDetail>(`/members/${githubId}`, { next: { revalidate: 3600 } }),
+    detail: async (githubId: string) => {
+      const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 3600 } });
+      return normalizeDetail(raw);
+    },
     feed: (params: { cohort?: number; track?: string } = {}) => {
       const qs = new URLSearchParams(
         Object.fromEntries(

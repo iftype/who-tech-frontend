@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { api } from '@/lib/api';
 import { Avatar } from '@/components/ui/Avatar';
-import { CohortBadge } from '@/components/ui/Badge';
+import { CohortBadge, TrackBadge } from '@/components/ui/Badge';
 import { formatRelativeDate, getBlogSource } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -34,16 +34,15 @@ function isActive(current: string | undefined, value: string | undefined) {
 export default async function FeedPage({ searchParams }: { searchParams?: Promise<SearchParams> }) {
   const current = (await searchParams) ?? {};
   const feed = await api.members.feed().catch(() => []);
-  const range = current.range === 'all' ? 'all' : '30d';
+  const range = current.range === '30d' ? '30d' : '7d';
   const cohortFilter = current.cohort;
   const trackFilter = current.track;
 
   const now = Date.now();
   const filtered = feed.filter((item) => {
-    if (range === '30d') {
-      const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
-      if (diffDays > 30) return false;
-    }
+    const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
+    if (range === '7d' && diffDays > 7) return false;
+    if (range === '30d' && diffDays > 30) return false;
 
     if (cohortFilter && String(item.member.cohort ?? '') !== cohortFilter) {
       return false;
@@ -95,20 +94,20 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
 
             <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
               <Link
+                href={buildFeedHref(current, { range: '7d' })}
+                className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+                  range === '7d' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+                }`}
+              >
+                최근 7일
+              </Link>
+              <Link
                 href={buildFeedHref(current, { range: '30d' })}
                 className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
                   range === '30d' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
                 }`}
               >
                 최근 30일
-              </Link>
-              <Link
-                href={buildFeedHref(current, { range: 'all' })}
-                className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                  range === 'all' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                전체
               </Link>
             </div>
           </div>
@@ -194,6 +193,9 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
                         <span className="text-text-dim">·</span>
                         <span>{formatRelativeDate(item.publishedAt)}</span>
                         {item.member.cohort && <CohortBadge cohort={item.member.cohort} />}
+                        {item.member.tracks.map((t) => (
+                          <TrackBadge key={t} track={t} />
+                        ))}
                       </div>
                     </div>
                     {source && (

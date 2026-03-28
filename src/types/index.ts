@@ -12,19 +12,23 @@ export interface Member {
   tracks: Track[];
 }
 
-export interface MissionRepo {
-  name: string;
-  track: Track | null;
-  level: number | null;
-  tabCategory: TabCategory;
-}
-
-export interface Submission {
+export interface ArchiveStep {
   prUrl: string;
   prNumber: number;
   title: string;
   submittedAt: string;
-  missionRepo: MissionRepo;
+}
+
+export interface ArchiveRepo {
+  name: string;
+  track: string | null;
+  tabCategory: TabCategory;
+  submissions: ArchiveStep[] | null;
+}
+
+export interface ArchiveLevel {
+  level: number | null;
+  repos: ArchiveRepo[];
 }
 
 export interface BlogPost {
@@ -36,7 +40,7 @@ export interface BlogPost {
 export interface MemberDetail extends Member {
   blog: string | null;
   lastPostedAt: string | null;
-  submissions: Submission[];
+  archive: ArchiveLevel[];
   blogPosts: BlogPost[];
 }
 

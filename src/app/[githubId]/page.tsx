@@ -66,7 +66,12 @@ export default async function DetailPage({ params }: Props) {
 
       {/* Content Area */}
       <div className="pt-6 sm:pt-8">
-        <ProfileTabs submissions={member.submissions} blogPosts={member.blogPosts} lastPostedAt={member.lastPostedAt} />
+        <ProfileTabs
+          archive={member.archive}
+          memberTracks={member.tracks}
+          blogPosts={member.blogPosts}
+          lastPostedAt={member.lastPostedAt}
+        />
       </div>
     </div>
   );

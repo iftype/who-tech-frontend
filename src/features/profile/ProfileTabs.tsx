@@ -3,15 +3,16 @@
 import { useState } from 'react';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate } from '@/lib/utils';
-import type { BlogPost, Submission } from '@/types';
+import type { ArchiveLevel, BlogPost } from '@/types';
 
 interface Props {
-  submissions: Submission[];
+  archive: ArchiveLevel[];
+  memberTracks: string[];
   blogPosts: BlogPost[];
   lastPostedAt: string | null;
 }
 
-export function ProfileTabs({ submissions, blogPosts, lastPostedAt }: Props) {
+export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: Props) {
   const [tab, setTab] = useState<'mission' | 'blog'>('mission');
 
   return (
@@ -38,7 +39,7 @@ export function ProfileTabs({ submissions, blogPosts, lastPostedAt }: Props) {
       {/* Mobile content */}
       <div className="sm:hidden">
         {tab === 'mission' ? (
-          <MissionArchive submissions={submissions} />
+          <MissionArchive archive={archive} memberTracks={memberTracks} />
         ) : (
           <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
         )}
@@ -47,7 +48,7 @@ export function ProfileTabs({ submissions, blogPosts, lastPostedAt }: Props) {
       {/* Desktop: side-by-side */}
       <div className="hidden sm:flex flex-row gap-8">
         <div className="flex-1 min-w-0">
-          <MissionArchive submissions={submissions} />
+          <MissionArchive archive={archive} memberTracks={memberTracks} />
         </div>
         <aside className="w-[360px] flex-shrink-0">
           <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
