@@ -41,8 +41,8 @@ function FeedRow({ item }: { item: FeedItem }) {
             {formatRelativeDate(item.publishedAt)}
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 text-[12px] text-text-secondary">
-          <span className="font-semibold text-text">{item.member.nickname}</span>
+        <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
+          <span className="text-[13px] font-semibold text-text">{item.member.nickname}</span>
           <div className="flex flex-wrap items-center gap-1">
             {(item.member.tracks ?? []).map((t) => (
               <TrackBadge key={t} track={t} />
@@ -84,16 +84,12 @@ function FeedList({ items }: { items: FeedItem[] }) {
 
 export default async function FeedPage({ searchParams }: { searchParams?: Promise<SearchParams> }) {
   const current = (await searchParams) ?? {};
-  const [feed, allMembers] = await Promise.all([
-    api.members.feed().catch(() => []),
-    api.members.search({ cohort: 8 }).catch(() => []),
-  ]);
-  const recommendedStaff = allMembers
-    .filter((m) => (m.roles.includes('coach') || m.roles.includes('reviewer')) && m.blog)
-    .sort((a, b) => {
-      const ta = a.lastPostedAt ? new Date(a.lastPostedAt).getTime() : 0;
-      const tb = b.lastPostedAt ? new Date(b.lastPostedAt).getTime() : 0;
-      return tb - ta;
+  const [feed] = await Promise.all([api.members.feed().catch(() => [])]);
+  const staffPosts = feed
+    .filter((item) => {
+      const isStaff = item.member.roles.includes('coach') || item.member.roles.includes('reviewer');
+      const isCohort8 = item.member.cohort === 8;
+      return isStaff && isCohort8;
     })
     .slice(0, 5);
   const range = current.range === '30d' ? '30d' : '7d';
@@ -262,29 +258,22 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-7 border-l border-border pl-5">
             <section>
-              <h2 className="mb-4 text-[12px] font-semibold text-text-secondary">8기 운영진 블로그</h2>
-              <div className="space-y-3">
-                {recommendedStaff.length === 0 ? (
+              <h2 className="mb-4 text-[12px] font-semibold text-text-secondary">8기 운영진 최신 글</h2>
+              <div className="space-y-4">
+                {staffPosts.length === 0 ? (
                   <p className="text-[12px] text-text-muted">데이터 없음</p>
                 ) : (
-                  recommendedStaff.map((crew) => (
-                    <a
-                      key={crew.githubId}
-                      href={crew.blog!}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Avatar src={crew.avatarUrl} alt={crew.nickname} size={28} />
-                        <span className="text-[13px] text-text group-hover:underline">{crew.nickname}</span>
-                      </div>
-                      <div className="flex gap-1">
-                        {crew.roles
-                          .filter((r) => r !== 'crew')
-                          .map((r) => (
-                            <RoleBadge key={r} role={r} />
-                          ))}
+                  staffPosts.map((post) => (
+                    <a key={post.url} href={post.url} target="_blank" rel="noopener noreferrer" className="group block">
+                      <p className="line-clamp-2 text-[13px] font-medium text-text group-hover:underline leading-relaxed">
+                        {post.title}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <Avatar src={post.member.avatarUrl} alt={post.member.nickname} size={16} />
+                          <span className="text-[11px] text-text-secondary">{post.member.nickname}</span>
+                        </div>
+                        <span className="text-[10px] text-text-muted">{formatRelativeDate(post.publishedAt)}</span>
                       </div>
                     </a>
                   ))
