@@ -107,7 +107,7 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
                   range === '30d' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
                 }`}
               >
-                최근 30일
+                30일
               </Link>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
                         <span className="text-text-dim">·</span>
                         <span>{formatRelativeDate(item.publishedAt)}</span>
                         {item.member.cohort && <CohortBadge cohort={item.member.cohort} />}
-                        {item.member.tracks.map((t) => (
+                        {(item.member.tracks ?? []).map((t) => (
                           <TrackBadge key={t} track={t} />
                         ))}
                       </div>
