@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate } from '@/lib/utils';
-import type { ArchiveLevel, BlogPost } from '@/types';
+import type { CohortArchive, BlogPost } from '@/types';
 
 interface Props {
-  archive: ArchiveLevel[];
+  archive: CohortArchive[];
   memberTracks: string[];
   blogPosts: BlogPost[];
   lastPostedAt: string | null;

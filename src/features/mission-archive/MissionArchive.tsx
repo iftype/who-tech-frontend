@@ -1,36 +1,46 @@
 'use client';
 
 import { useState } from 'react';
-import type { ArchiveLevel } from '@/types';
+import type { CohortArchive } from '@/types';
 
 type Tab = 'base' | 'common' | 'precourse';
 
 const TAB_LABELS: Record<Tab, string> = { base: '기준', common: '공통', precourse: '프리코스' };
 
-function buildMarkdown(archive: ArchiveLevel[], tab: Tab): string {
+function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
   const lines: string[] = ['# 미션 PR 아카이브\n'];
-  for (const { level, repos } of archive) {
-    const filtered = repos.filter((r) => r.tabCategory === tab && r.submissions);
-    if (filtered.length === 0) continue;
-    lines.push(`## Level ${level ?? '–'}\n`);
-    filtered.forEach((repo, i) => {
-      lines.push(`### ${i + 1}. ${repo.name}`);
-      repo.submissions!.forEach((s, si) => {
-        lines.push(`- step${si + 1}: [PR #${s.prNumber}](${s.prUrl})`);
+
+  for (const archive of archives) {
+    const cohortLines: string[] = [];
+    for (const { level, repos } of archive.levels) {
+      const filtered = repos.filter((r) => r.tabCategory === tab && r.submissions);
+      if (filtered.length === 0) continue;
+      cohortLines.push(`## Level ${level ?? '–'}\n`);
+      filtered.forEach((repo, i) => {
+        cohortLines.push(`### ${i + 1}. ${repo.name}`);
+        repo.submissions!.forEach((s, si) => {
+          cohortLines.push(`- step${si + 1}: [PR #${s.prNumber}](${s.prUrl})`);
+        });
+        cohortLines.push('');
       });
-      lines.push('');
-    });
+    }
+
+    if (cohortLines.length > 0) {
+      if (archive.cohort > 0) lines.push(`## ${archive.cohort}기\n`);
+      lines.push(...cohortLines);
+    }
   }
   return lines.join('\n');
 }
 
 interface Props {
-  archive: ArchiveLevel[];
+  archive: CohortArchive[];
   memberTracks: string[];
 }
 
 export function MissionArchive({ archive = [], memberTracks }: Props) {
-  const hasPrecourse = archive.some((lvl) => lvl.repos.some((r) => r.tabCategory === 'precourse'));
+  const allLevels = archive.flatMap((a) => a.levels);
+  const hasPrecourse = allLevels.some((lvl) => lvl.repos.some((r) => r.tabCategory === 'precourse'));
   const [tab, setTab] = useState<Tab>('base');
   const [copied, setCopied] = useState(false);
 
@@ -42,20 +52,24 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // base 탭: 멤버 트랙에 해당하는 미션만 표시 (track=null은 항상 포함)
-  // common/precourse: tabCategory 기준으로만 필터
-  const filteredArchive = archive
-    .map((lvl) => ({
-      ...lvl,
-      repos: lvl.repos.filter((r) => {
-        if (r.tabCategory !== tab) return false;
-        if (tab === 'base' && memberTracks.length > 0) {
-          return r.track === null || memberTracks.includes(r.track);
-        }
-        return true;
-      }),
+  // Filter logic applied to each cohort's levels
+  const filteredArchives = archive
+    .map((ca) => ({
+      ...ca,
+      levels: ca.levels
+        .map((lvl) => ({
+          ...lvl,
+          repos: lvl.repos.filter((r) => {
+            if (r.tabCategory !== tab) return false;
+            if (tab === 'base' && memberTracks.length > 0) {
+              return r.track === null || memberTracks.includes(r.track);
+            }
+            return true;
+          }),
+        }))
+        .filter((lvl) => lvl.repos.length > 0),
     }))
-    .filter((lvl) => lvl.repos.length > 0);
+    .filter((ca) => ca.levels.length > 0);
 
   return (
     <div className="flex flex-col gap-5">
@@ -92,63 +106,83 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
         </div>
       </div>
 
-      {/* Mission levels */}
-      {filteredArchive.length === 0 ? (
+      {/* Cohort-grouped Mission levels */}
+      {filteredArchives.length === 0 ? (
         <p className="py-8 text-center text-[13px] text-text-muted">미션 제출 기록이 없습니다</p>
       ) : (
-        filteredArchive.map(({ level, repos }) => (
-          <div key={level ?? 'null'} className="flex flex-col gap-2">
-            {/* Level heading */}
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
-                Level {level ?? '–'}
-              </span>
-              <div className="h-px flex-1 bg-border-dim" />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              {repos.map((repo, idx) => (
-                <div
-                  key={repo.name}
-                  className="flex flex-col overflow-hidden rounded-md border border-border bg-surface"
-                >
-                  {/* Repo header */}
-                  <div className="flex items-center gap-3 border-b border-border-dim px-3 py-2">
-                    <span className="w-5 flex-shrink-0 font-mono text-[11px] text-text-dim">
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
-                    <span className="flex-1 text-[13px] text-text">{repo.name}</span>
-                  </div>
-
-                  {/* Steps */}
-                  {repo.submissions === null ? (
-                    <div className="flex items-center py-1.5 pl-11 pr-3">
-                      <span className="w-9 flex-shrink-0 font-mono text-[10px] text-text-dim">step1</span>
-                      <span className="ml-auto font-mono text-[11px] text-text-dim">미제출</span>
-                    </div>
-                  ) : (
-                    repo.submissions.map((step, si) => (
-                      <div
-                        key={step.prNumber}
-                        className="flex items-center border-b border-border-dim py-1.5 pl-11 pr-3 last:border-0"
-                      >
-                        <span className="w-9 flex-shrink-0 font-mono text-[10px] text-text-dim">step{si + 1}</span>
-                        <a
-                          href={step.prUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-auto font-mono text-[11px] text-accent-dm transition-opacity hover:opacity-80"
-                        >
-                          PR #{step.prNumber} →
-                        </a>
-                      </div>
-                    ))
-                  )}
+        <div className="flex flex-col gap-10">
+          {filteredArchives.map((ca) => (
+            <div key={ca.cohort} className="flex flex-col gap-6">
+              {ca.cohort > 0 && archive.length > 1 && (
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-border-dim" />
+                  <span className="px-3 py-1 rounded-full bg-surface-alt border border-border-dim text-[12px] font-bold text-text-secondary shadow-sm">
+                    {ca.cohort}기 미션
+                  </span>
+                  <div className="h-px flex-1 bg-border-dim" />
                 </div>
-              ))}
+              )}
+
+              <div className="flex flex-col gap-5">
+                {ca.levels.map(({ level, repos }) => (
+                  <div key={level ?? 'null'} className="flex flex-col gap-2">
+                    {/* Level heading */}
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
+                        Level {level ?? '–'}
+                      </span>
+                      <div className="h-px flex-1 bg-border-dim" />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      {repos.map((repo, idx) => (
+                        <div
+                          key={repo.name}
+                          className="flex flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm hover:shadow-md transition-shadow duration-300"
+                        >
+                          {/* Repo header */}
+                          <div className="flex items-center gap-3 border-b border-border-dim px-3 py-2 bg-surface-alt/30">
+                            <span className="w-5 flex-shrink-0 font-mono text-[11px] text-text-dim">
+                              {String(idx + 1).padStart(2, '0')}
+                            </span>
+                            <span className="flex-1 text-[13px] font-medium text-text">{repo.name}</span>
+                          </div>
+
+                          {/* Steps */}
+                          {repo.submissions === null ? (
+                            <div className="flex items-center py-1.5 pl-11 pr-3">
+                              <span className="w-9 flex-shrink-0 font-mono text-[10px] text-text-dim">step1</span>
+                              <span className="ml-auto font-mono text-[11px] text-text-dim">미제출</span>
+                            </div>
+                          ) : (
+                            repo.submissions.map((step, si) => (
+                              <div
+                                key={step.prNumber}
+                                className="flex items-center border-b border-border-dim py-1.5 pl-11 pr-3 last:border-0 hover:bg-surface-alt/50 transition-colors"
+                              >
+                                <span className="w-9 flex-shrink-0 font-mono text-[10px] text-text-dim">
+                                  step{si + 1}
+                                </span>
+                                <a
+                                  href={step.prUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="ml-auto font-mono text-[11px] text-accent-dm font-medium transition-opacity hover:opacity-80"
+                                >
+                                  PR #{step.prNumber} →
+                                </a>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

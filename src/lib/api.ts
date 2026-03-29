@@ -1,4 +1,4 @@
-import type { Member, MemberDetail, FeedItem, ArchiveLevel, ArchiveStep, TabCategory } from '@/types';
+import type { Member, MemberDetail, FeedItem, CohortArchive, ArchiveStep, TabCategory } from '@/types';
 
 const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
 // 브라우저에서는 CORS 우회를 위해 Next.js rewrite 프록시 사용
@@ -22,17 +22,20 @@ type RawRepo = {
   submissions?: ArchiveStep[] | null;
 };
 type RawDetail = Omit<MemberDetail, 'archive'> & {
-  archive?: Array<{ level: number | null; repos: RawRepo[] }>;
+  archive?: Array<{ cohort: number; levels: Array<{ level: number | null; repos: RawRepo[] }> }>;
 };
 
 function normalizeDetail(raw: RawDetail): MemberDetail {
-  const archive: ArchiveLevel[] = (raw.archive ?? []).map((lvl) => ({
-    level: lvl.level,
-    repos: lvl.repos.map((r) => ({
-      name: r.name,
-      track: r.track,
-      tabCategory: (r.tabCategory ?? 'base') as TabCategory,
-      submissions: r.submissions !== undefined ? r.submissions : r.submission != null ? [r.submission] : null,
+  const archive: CohortArchive[] = (raw.archive ?? []).map((cohortArchive) => ({
+    cohort: cohortArchive.cohort,
+    levels: cohortArchive.levels.map((lvl) => ({
+      level: lvl.level,
+      repos: lvl.repos.map((r) => ({
+        name: r.name,
+        track: r.track,
+        tabCategory: (r.tabCategory ?? 'base') as TabCategory,
+        submissions: r.submissions !== undefined ? r.submissions : r.submission != null ? [r.submission] : null,
+      })),
     })),
   }));
   return { ...raw, archive } as MemberDetail;

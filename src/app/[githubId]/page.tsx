@@ -39,13 +39,24 @@ export default async function DetailPage({ params }: Props) {
             <span className="font-mono text-[14px] text-text-muted">@{member.githubId}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            {member.cohort && <CohortBadge cohort={member.cohort} />}
-            {member.roles.map((r) => (
-              <RoleBadge key={r} role={r} />
+            {member.cohorts.map((mc) => (
+              <div
+                key={mc.cohort}
+                className="flex items-center gap-1.5 p-1 bg-surface-alt rounded-lg border border-border-dim shadow-sm animate-fade-in hover:shadow-md transition-all duration-300"
+              >
+                <CohortBadge cohort={mc.cohort} />
+                <div className="flex items-center gap-1">
+                  {mc.roles.map((r) => (
+                    <RoleBadge key={r} role={r} />
+                  ))}
+                </div>
+              </div>
             ))}
-            {member.tracks.map((t) => (
-              <TrackBadge key={t} track={t} />
-            ))}
+            <div className="flex items-center gap-2 px-2 py-1 ml-1 border-l border-border-dim">
+              {member.tracks.map((t) => (
+                <TrackBadge key={t} track={t} />
+              ))}
+            </div>
             {member.blog && (
               <a
                 href={member.blog}
