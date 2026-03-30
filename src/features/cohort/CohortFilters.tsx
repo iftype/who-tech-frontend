@@ -52,7 +52,7 @@ export function CohortFilters({ members, cohort }: Props) {
           <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
             <button
               onClick={() => setRoleGroup('crew')}
-              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer  ${
                 roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
               }`}
             >
@@ -60,7 +60,7 @@ export function CohortFilters({ members, cohort }: Props) {
             </button>
             <button
               onClick={() => setRoleGroup('staff')}
-              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer ${
                 roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
               }`}
             >

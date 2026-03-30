@@ -6,33 +6,47 @@ import type { CohortArchive } from '@/types';
 type Tab = 'base' | 'common' | 'precourse';
 
 const TAB_LABELS: Record<Tab, string> = { base: '기준', common: '공통', precourse: '프리코스' };
-
 function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
-  const lines: string[] = ['# 미션 PR 아카이브\n'];
+  const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n` || '# woowacourse-archive\n'];
 
   for (const archive of archives) {
-    const cohortLines: string[] = [];
+    if (archive.cohort > 0) {
+      lines.push(`## ${archive.cohort}기 아카이브\n`);
+    }
+
     for (const { level, repos } of archive.levels) {
       const filtered = repos.filter((r) => r.tabCategory === tab && r.submissions);
       if (filtered.length === 0) continue;
-      cohortLines.push(`## Level ${level ?? '–'}\n`);
-      filtered.forEach((repo, i) => {
-        cohortLines.push(`### ${i + 1}. ${repo.name}`);
-        repo.submissions!.forEach((s, si) => {
-          cohortLines.push(`- step${si + 1}: [PR #${s.prNumber}](${s.prUrl})`);
-        });
-        cohortLines.push('');
-      });
-    }
 
-    if (cohortLines.length > 0) {
-      if (archive.cohort > 0) lines.push(`## ${archive.cohort}기\n`);
-      lines.push(...cohortLines);
+      // 레벨 헤더 (예: 레벨1 - JavaScript)
+      const levelTitle = level === 1 ? '레벨1 - JavaScript' : level === 2 ? '레벨2 - React' : `Level ${level}`;
+      lines.push(`### ${levelTitle}\n`);
+
+      // 테이블 헤더
+      lines.push('| NO. | PROJECT | REPOSITORY | PR | PAIR |');
+      lines.push('| :-: | :---: | :---: | :---: | :---: |');
+
+      filtered.forEach((repo, i) => {
+        if (!repo.submissions || repo.submissions.length === 0) return;
+
+        repo.submissions.forEach((s, si) => {
+          const no = si === 0 ? String(i + 1) : ' '; // 첫 번째 스텝에만 번호 표시
+          const projectName = si === 0 ? repo.name : ' '; // 첫 번째 스텝에만 프로젝트명 표시
+
+          // REPOSITORY 링크 (브랜치명은 제출 정보에 없으므로 기본 URL 사용)
+          const repoLink = `[${repo.name}-step${si + 1}](${s.prUrl.split('/pull/')[0]})`;
+
+          // PR 링크
+          const prLink = `[PR](${s.prUrl})`;
+
+          lines.push(`| ${no} | ${projectName} | ${repoLink} | ${prLink} | - |`);
+        });
+      });
+      lines.push('\n'); // 레벨 간 간격
     }
   }
   return lines.join('\n');
 }
-
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];

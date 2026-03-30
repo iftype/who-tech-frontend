@@ -54,10 +54,10 @@ export const api = {
       return fetchApi<Member[]>(`/members${qs ? `?${qs}` : ''}`);
     },
     detail: async (githubId: string) => {
-      const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 3600 } });
+      const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
       return normalizeDetail(raw);
     },
-    feed: (params: { cohort?: number; track?: string } = {}) => {
+    feed: (params: { cohort?: number; track?: string; days?: number } = {}) => {
       const qs = new URLSearchParams(
         Object.fromEntries(
           Object.entries(params)

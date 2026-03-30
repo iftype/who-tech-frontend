@@ -82,7 +82,17 @@ function FeedList({ items }: { items: FeedItem[] }) {
 
 export default async function FeedPage({ searchParams }: { searchParams?: Promise<SearchParams> }) {
   const current = (await searchParams) ?? {};
-  const [feed] = await Promise.all([api.members.feed().catch(() => [])]);
+  const rangeValue = current.range === '30d' ? 30 : 7;
+
+  const [feed] = await Promise.all([
+    api.members
+      .feed({
+        days: rangeValue,
+        cohort: current.cohort ? Number(current.cohort) : undefined,
+        track: current.track,
+      })
+      .catch(() => []),
+  ]);
   const staffPosts = feed
     .filter((item) => {
       const roles = item.member.roles ?? [];
