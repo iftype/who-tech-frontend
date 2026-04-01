@@ -4,12 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-      },
-    ],
+    unoptimized: true,
   },
   async rewrites() {
     return [
