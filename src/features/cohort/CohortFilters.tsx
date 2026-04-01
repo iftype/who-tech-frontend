@@ -8,9 +8,6 @@ import { RoleBadge, TrackBadge } from '@/components/ui/Badge';
 
 type RoleGroup = 'crew' | 'staff';
 
-// 기수 번호 = 현재 연도 - 2018 (1기: 2019, 8기: 2026)
-const CURRENT_COHORT = new Date().getFullYear() - 2018;
-
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
   { label: '전체', value: 'all' },
   { label: '프론트엔드', value: 'frontend' },
@@ -24,14 +21,18 @@ interface Props {
 }
 
 export function CohortFilters({ members, cohort }: Props) {
-  const showStaffToggle = cohort === CURRENT_COHORT;
   const [roleGroup, setRoleGroup] = useState<RoleGroup>('crew');
   const [track, setTrack] = useState<Track | 'all'>('all');
 
+  const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
+  const crewCount = members.filter(
+    (m) => m.roles.includes('crew') && !isStaff(m) && (track === 'all' || m.tracks.includes(track)),
+  ).length;
+  const staffCount = members.filter((m) => isStaff(m) && (track === 'all' || m.tracks.includes(track))).length;
+
   const filtered = members.filter((m) => {
-    if (showStaffToggle && roleGroup === 'crew' && !m.roles.includes('crew')) return false;
-    if (showStaffToggle && roleGroup === 'staff' && !m.roles.some((r) => r === 'coach' || r === 'reviewer'))
-      return false;
+    if (roleGroup === 'crew' && (!m.roles.includes('crew') || isStaff(m))) return false;
+    if (roleGroup === 'staff' && !isStaff(m)) return false;
     if (track !== 'all' && !m.tracks.includes(track)) return false;
     return true;
   });
@@ -48,26 +49,24 @@ export function CohortFilters({ members, cohort }: Props) {
             우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
           </p>
         </div>
-        {showStaffToggle && (
-          <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-            <button
-              onClick={() => setRoleGroup('crew')}
-              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer  ${
-                roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-              }`}
-            >
-              크루
-            </button>
-            <button
-              onClick={() => setRoleGroup('staff')}
-              className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer ${
-                roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-              }`}
-            >
-              운영진
-            </button>
-          </div>
-        )}
+        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+          <button
+            onClick={() => setRoleGroup('crew')}
+            className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer  ${
+              roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+            }`}
+          >
+            크루 {crewCount}
+          </button>
+          <button
+            onClick={() => setRoleGroup('staff')}
+            className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer ${
+              roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
+            }`}
+          >
+            운영진 {staffCount}
+          </button>
+        </div>
       </div>
 
       {/* Filter Bar */}
