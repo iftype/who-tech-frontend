@@ -93,7 +93,7 @@ export function SearchDropdown() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="닉네임 또는 GitHub ID로 검색..."
-          className="flex-1 bg-transparent text-[14px] text-text placeholder:text-text-muted outline-none"
+          className="flex-1 bg-transparent text-[16px] sm:text-[14px] text-text placeholder:text-text-muted outline-none"
         />
         <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
           ⌘K
