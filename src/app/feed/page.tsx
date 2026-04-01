@@ -27,20 +27,32 @@ function buildFeedHref(current: SearchParams, next: Partial<SearchParams>) {
 function FeedRow({ item }: { item: FeedItem }) {
   const source = getBlogSource(item.url);
   return (
-    <a
-      href={item.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-start gap-3 border-b border-border-dim px-4 py-3.5 transition-colors hover:bg-surface-alt last:border-b-0"
-    >
-      <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} className="mt-0.5 flex-shrink-0" />
+    <div className="flex items-start gap-3 border-b border-border-dim px-4 py-3.5 transition-colors hover:bg-surface-alt last:border-b-0">
+      <a
+        href={`https://github.com/${item.member.githubId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-0.5 flex-shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} />
+      </a>
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 flex flex-wrap items-center gap-1">
-          <p className="text-[14px] font-medium text-text hover:underline break-all">{item.title}</p>
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[14px] font-medium text-text hover:underline break-all"
+          >
+            {item.title}
+          </a>
           <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
         </div>
         <div className="flex flex-wrap items-center gap-1.5 mt-1 text-[12px]">
-          <span className="text-[13px] font-semibold text-text">{item.member.nickname}</span>
+          <Link href={`/${item.member.githubId}`} className="text-[13px] font-semibold text-text hover:underline">
+            {item.member.nickname}
+          </Link>
           <div className="flex flex-wrap items-center gap-1">
             {(item.member.tracks ?? []).map((t) => (
               <TrackBadge key={t} track={t} />
@@ -55,11 +67,16 @@ function FeedRow({ item }: { item: FeedItem }) {
         </div>
       </div>
       {source && (
-        <span className="mt-0.5 flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] text-text-muted">
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-0.5 flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] text-text-muted hover:bg-surface-alt"
+        >
           {source}
-        </span>
+        </a>
       )}
-    </a>
+    </div>
   );
 }
 
