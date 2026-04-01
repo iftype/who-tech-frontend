@@ -82,20 +82,6 @@ const sections = [
       </>
     ),
   },
-  {
-    id: 'stats',
-    number: 5,
-    title: '통계',
-    description: (
-      <>
-        기수별, 트랙별 크루 현황과 미션 제출 통계를 한눈에 볼 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
-          <li>전체 크루 수, 블로그 등록 현황, 미션 제출 수를 확인할 수 있어요</li>
-          <li>기수별 활동 지표를 비교해볼 수 있습니다</li>
-        </ul>
-      </>
-    ),
-  },
 ];
 
 const navItems = [
@@ -103,7 +89,6 @@ const navItems = [
   { id: 'detail', label: '크루 상세 페이지' },
   { id: 'cohort', label: '기수별 목록' },
   { id: 'feed', label: '블로그 피드' },
-  { id: 'stats', label: '통계' },
 ];
 
 export default function GuidePage() {
@@ -167,15 +152,15 @@ export default function GuidePage() {
                   </span>
                   <h2 className="text-[16px] font-semibold text-text">{section.title}</h2>
                 </div>
-                <div className="pl-10 flex flex-col gap-4">
-                  <p className="text-[13px] text-text-secondary leading-relaxed">{section.description}</p>
+                <div className="flex flex-col gap-4">
+                  <p className="pl-10 text-[13px] text-text-secondary leading-relaxed">{section.description}</p>
                   <div className="overflow-hidden rounded-xl border border-border-dim shadow-sm">
                     <Image
                       src={`/guide/${section.id}.png`}
                       alt={section.title}
                       width={1280}
                       height={800}
-                      className="w-full"
+                      className="w-full h-auto"
                     />
                   </div>
                 </div>
