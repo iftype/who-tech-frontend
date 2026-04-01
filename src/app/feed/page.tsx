@@ -33,7 +33,6 @@ function FeedRow({ item }: { item: FeedItem }) {
         target="_blank"
         rel="noopener noreferrer"
         className="mt-0.5 flex-shrink-0"
-        onClick={(e) => e.stopPropagation()}
       >
         <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} />
       </a>
