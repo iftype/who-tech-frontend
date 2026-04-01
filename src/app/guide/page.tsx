@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = { title: '가이드' };
@@ -157,7 +158,7 @@ export default function GuidePage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-14">
             {sections.map((section) => (
               <section key={section.id} id={section.id} className="flex flex-col gap-4 scroll-mt-6">
                 <div className="flex items-center gap-3">
@@ -166,8 +167,17 @@ export default function GuidePage() {
                   </span>
                   <h2 className="text-[16px] font-semibold text-text">{section.title}</h2>
                 </div>
-                <div className="pl-10">
+                <div className="pl-10 flex flex-col gap-4">
                   <p className="text-[13px] text-text-secondary leading-relaxed">{section.description}</p>
+                  <div className="overflow-hidden rounded-xl border border-border-dim shadow-sm">
+                    <Image
+                      src={`/guide/${section.id}.png`}
+                      alt={section.title}
+                      width={1280}
+                      height={800}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               </section>
             ))}
