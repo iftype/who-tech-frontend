@@ -11,7 +11,6 @@ import { Moon, Sun } from 'lucide-react';
 const NAV_LINKS = [
   { href: '/cohort/8', label: '기수 목록' },
   { href: '/feed', label: '피드' },
-  { href: '/stats', label: '통계' },
   { href: '/guide', label: '가이드' },
 ];
 
