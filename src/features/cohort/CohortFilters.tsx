@@ -86,7 +86,10 @@ export function CohortFilters({ members, cohort }: Props) {
         <div className="ml-auto flex items-center gap-3">
           <p className="text-[12px] text-text-muted whitespace-nowrap">
             <span className="font-mono text-text">{filtered.length}</span>
-            {filtered.length !== members.length && <span className="text-text-dim">/{members.length}</span>}명
+            {filtered.length !== (roleGroup === 'crew' ? crewCount : staffCount) && (
+              <span className="text-text-dim">/{roleGroup === 'crew' ? crewCount : staffCount}</span>
+            )}
+            명
           </p>
         </div>
       </div>
