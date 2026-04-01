@@ -88,7 +88,6 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
     api.members
       .feed({
         days: rangeValue,
-        cohort: current.cohort ? Number(current.cohort) : undefined,
         track: current.track,
       })
       .catch(() => []),
