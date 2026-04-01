@@ -14,9 +14,12 @@ export default async function HomePage() {
     <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
       {/* Hero */}
       <div className="flex flex-col items-center gap-4 py-14 text-center sm:gap-5 sm:py-24">
-        <span className="inline-flex items-center rounded-full border border-accent-border bg-accent-bg px-3 py-1 font-mono text-[11px] text-accent-dm">
-          우아한테크코스
-        </span>
+        <Link
+          href="/cohort"
+          className="inline-flex items-center gap-1.5 rounded-full border border-accent-border bg-accent-bg px-3 py-1 font-mono text-[11px] text-accent-dm hover:opacity-80 transition-opacity"
+        >
+          크루 목록 보기 →
+        </Link>
         <h1 className="max-w-[620px] text-[38px] font-bold leading-[1.1] tracking-tight text-text sm:text-[56px]">
           크루를 찾아보세요
         </h1>
