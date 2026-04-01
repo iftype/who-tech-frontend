@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import type { Member, Track } from '@/types';
 import { Avatar } from '@/components/ui/Avatar';
-import { RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 
 type RoleGroup = 'crew' | 'staff';
 
@@ -114,6 +114,7 @@ export function CohortFilters({ members, cohort }: Props) {
                     <span className="ml-1.5 font-mono text-[11px] font-normal text-text-muted">@{member.githubId}</span>
                   </p>
                   <div className="mt-1 flex flex-wrap gap-1">
+                    {member.cohort != null && <CohortBadge cohort={member.cohort} />}
                     {member.tracks.map((t) => (
                       <TrackBadge key={t} track={t} />
                     ))}
