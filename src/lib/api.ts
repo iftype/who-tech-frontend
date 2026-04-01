@@ -65,7 +65,7 @@ export const api = {
             .map(([k, v]) => [k, String(v)]),
         ),
       ).toString();
-      return fetchApi<FeedItem[]>(`/members/feed${qs ? `?${qs}` : ''}`);
+      return fetchApi<FeedItem[]>(`/members/feed${qs ? `?${qs}` : ''}`, { next: { revalidate: 300 } });
     },
   },
 };

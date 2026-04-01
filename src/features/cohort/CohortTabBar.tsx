@@ -26,7 +26,7 @@ export function CohortTabBar({ activeCohort }: Props) {
   };
 
   const tabClass = (active: boolean) =>
-    `-mb-px rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
+    `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
       active ? 'border-accent-dm text-accent-dm' : 'border-transparent text-text-muted hover:text-text'
     }`;
 

@@ -25,10 +25,8 @@ export function CohortFilters({ members, cohort }: Props) {
   const [track, setTrack] = useState<Track | 'all'>('all');
 
   const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
-  const crewCount = members.filter(
-    (m) => m.roles.includes('crew') && !isStaff(m) && (track === 'all' || m.tracks.includes(track)),
-  ).length;
-  const staffCount = members.filter((m) => isStaff(m) && (track === 'all' || m.tracks.includes(track))).length;
+  const crewCount = members.filter((m) => m.roles.includes('crew') && !isStaff(m)).length;
+  const staffCount = members.filter((m) => isStaff(m)).length;
 
   const filtered = members.filter((m) => {
     if (roleGroup === 'crew' && (!m.roles.includes('crew') || isStaff(m))) return false;
