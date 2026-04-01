@@ -97,7 +97,9 @@ export default async function DetailPage({ params }: Props) {
       {/* Content Area */}
       <div className="pt-6 sm:pt-8">
         <ProfileTabs
-          archive={member.archive}
+          archive={member.archive.filter((ca) =>
+            member.cohorts.some((mc) => mc.cohort === ca.cohort && mc.roles.includes('crew')),
+          )}
           memberTracks={member.tracks}
           blogPosts={member.blogPosts}
           lastPostedAt={member.lastPostedAt}

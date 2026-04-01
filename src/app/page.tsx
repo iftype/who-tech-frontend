@@ -35,16 +35,20 @@ export default async function HomePage() {
               <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-muted">
                 Pick of the Week
               </p>
-              <a
-                href={pick.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/30 hover:bg-surface-alt"
-              >
+              <div className="group rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/30 hover:bg-surface-alt">
                 {/* Author row */}
                 <div className="mb-5 flex items-center gap-2.5">
-                  <Avatar src={pick.member.avatarUrl} alt={pick.member.nickname} size={28} />
-                  <span className="text-[13px] font-medium text-text">{pick.member.nickname}</span>
+                  <a
+                    href={`https://github.com/${pick.member.githubId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-shrink-0"
+                  >
+                    <Avatar src={pick.member.avatarUrl} alt={pick.member.nickname} size={28} />
+                  </a>
+                  <Link href={`/${pick.member.githubId}`} className="text-[13px] font-medium text-text hover:underline">
+                    {pick.member.nickname}
+                  </Link>
                   {pick.member.cohort && <CohortBadge cohort={pick.member.cohort} />}
                   {(() => {
                     const src = getBlogSource(pick.url);
@@ -57,18 +61,25 @@ export default async function HomePage() {
                 </div>
 
                 {/* Title */}
-                <h2 className="mb-4 text-[20px] font-bold leading-snug tracking-tight text-text line-clamp-3 sm:text-[24px]">
-                  {pick.title}
-                </h2>
+                <a href={pick.url} target="_blank" rel="noopener noreferrer">
+                  <h2 className="mb-4 text-[20px] font-bold leading-snug tracking-tight text-text line-clamp-3 hover:underline sm:text-[24px]">
+                    {pick.title}
+                  </h2>
+                </a>
 
                 {/* Footer */}
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[12px] text-accent-dm transition-opacity group-hover:opacity-70">
+                  <a
+                    href={pick.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[12px] text-accent-dm transition-opacity group-hover:opacity-70"
+                  >
                     읽기 →
-                  </span>
+                  </a>
                   <span className="text-[12px] text-text-dim">{formatRelativeDate(pick.publishedAt)}</span>
                 </div>
-              </a>
+              </div>
             </section>
           )}
 
@@ -81,17 +92,23 @@ export default async function HomePage() {
               {recent.map((item) => {
                 const source = getBlogSource(item.url);
                 return (
-                  <a
+                  <div
                     key={`${item.url}-${item.publishedAt}`}
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="flex items-start gap-3 border-b border-border-dim px-4 py-3 transition-colors hover:bg-surface-alt last:border-0"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="line-clamp-2 text-[13px] font-medium leading-5 text-text">{item.title}</p>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="line-clamp-2 text-[13px] font-medium leading-5 text-text hover:underline"
+                      >
+                        {item.title}
+                      </a>
                       <p className="mt-0.5 text-[11px] text-text-muted">
-                        {item.member.nickname}
+                        <Link href={`/${item.member.githubId}`} className="hover:underline">
+                          {item.member.nickname}
+                        </Link>
                         <span className="mx-1 text-text-dim">·</span>
                         {formatRelativeDate(item.publishedAt)}
                       </p>
@@ -101,7 +118,7 @@ export default async function HomePage() {
                         {source}
                       </span>
                     )}
-                  </a>
+                  </div>
                 );
               })}
             </div>
