@@ -5,6 +5,7 @@ import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { formatRelativeDate, getBlogSource } from '@/lib/utils';
 import Link from 'next/link';
 import type { FeedItem } from '@/types';
+import { FeedFilters } from '@/features/feed/FeedFilters';
 
 export const metadata: Metadata = { title: '블로그 피드' };
 
@@ -13,16 +14,6 @@ type SearchParams = {
   track?: string;
   range?: string;
 };
-
-function buildFeedHref(current: SearchParams, next: Partial<SearchParams>) {
-  const params = new URLSearchParams();
-  const merged = { ...current, ...next };
-  Object.entries(merged).forEach(([key, value]) => {
-    if (value) params.set(key, value);
-  });
-  const query = params.toString();
-  return query ? `/feed?${query}` : '/feed';
-}
 
 function FeedRow({ item }: { item: FeedItem }) {
   const source = getBlogSource(item.url);
@@ -165,86 +156,11 @@ export default async function FeedPage({ searchParams }: { searchParams?: Promis
     <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 sm:py-10">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
         <section className="min-w-0">
-          {/* 기수 탭 (h1 위) */}
-          <div className="mb-5 overflow-x-auto border-b border-border [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="flex min-w-max items-center gap-1 sm:gap-0">
-              <Link
-                href={buildFeedHref(current, { cohort: undefined })}
-                className={`-mb-px rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
-                  !cohortFilter
-                    ? 'border-accent-dm text-accent-dm'
-                    : 'border-transparent text-text-muted hover:text-text'
-                }`}
-              >
-                전체
-              </Link>
-              {cohorts.map((c) => (
-                <Link
-                  key={c}
-                  href={buildFeedHref(current, { cohort: String(c) })}
-                  className={`-mb-px rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
-                    cohortFilter === String(c)
-                      ? 'border-accent-dm text-accent-dm'
-                      : 'border-transparent text-text-muted hover:text-text'
-                  }`}
-                >
-                  {c}기
-                </Link>
-              ))}
-            </div>
-          </div>
+          <FeedFilters current={current} cohorts={cohorts} />
 
-          {/* 헤더 */}
-          <div className="mb-5 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">
-                {cohortFilter ? `${cohortFilter}기 피드` : '피드'}
-              </h1>
-              <p className="mt-1 text-[12px] text-text-secondary">모든 크루의 최신 블로그 글</p>
-            </div>
-            <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-              <Link
-                href={buildFeedHref(current, { range: '7d' })}
-                className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                  range === '7d' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                최근 7일
-              </Link>
-              <Link
-                href={buildFeedHref(current, { range: '30d' })}
-                className={`rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                  range === '30d' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                30일
-              </Link>
-            </div>
-          </div>
-
-          {/* 트랙 필터 */}
-          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
-            <div className="flex items-center gap-0.5">
-              {[
-                [undefined, '전체'],
-                ['frontend', '프론트엔드'],
-                ['backend', '백엔드'],
-                ['android', '안드로이드'],
-              ].map(([value, label]) => (
-                <Link
-                  key={value ?? 'all'}
-                  href={buildFeedHref(current, { track: value })}
-                  className={`rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                    (trackFilter ?? undefined) === value
-                      ? 'bg-accent-bg text-accent-dm'
-                      : 'text-text-muted hover:text-text'
-                  }`}
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <p className="ml-auto text-[12px] text-text-muted whitespace-nowrap">
+          {/* 아이템 수 */}
+          <div className="mb-5 flex justify-end border-b border-border pb-4 -mt-4">
+            <p className="text-[12px] text-text-muted whitespace-nowrap">
               <span className="font-mono text-text">{cohortFilter ? selectedItems.length : filtered.length}</span>개
             </p>
           </div>

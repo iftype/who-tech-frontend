@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { api } from '@/lib/api';
 import { CohortFilters } from '@/features/cohort/CohortFilters';
+import { CohortTabBar } from '@/features/cohort/CohortTabBar';
 
 interface Props {
   params: Promise<{ number: string }>;
 }
-
-const COHORTS = [8, 7, 6, 5, 4, 3, 2, 1];
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { number } = await params;
@@ -21,29 +19,7 @@ export default async function CohortPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-8 sm:py-10">
-      {/* Cohort Tab Bar */}
-      <div className="mb-5 overflow-x-auto border-b border-border [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-max items-center gap-1 sm:gap-0">
-          <Link
-            href="/cohort"
-            className="-mb-px rounded-t-md border-b-2 border-transparent px-4 py-2.5 text-[13px] font-medium whitespace-nowrap text-text-muted transition-colors hover:text-text sm:rounded-none sm:px-4 sm:py-2"
-          >
-            전체
-          </Link>
-          {COHORTS.map((c) => (
-            <Link
-              key={c}
-              href={`/cohort/${c}`}
-              className={`-mb-px rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
-                c === cohort ? 'border-accent-dm text-accent-dm' : 'border-transparent text-text-muted hover:text-text'
-              }`}
-            >
-              {c}기
-            </Link>
-          ))}
-        </div>
-      </div>
-
+      <CohortTabBar activeCohort={cohort} />
       <CohortFilters members={members} cohort={cohort} />
     </div>
   );
