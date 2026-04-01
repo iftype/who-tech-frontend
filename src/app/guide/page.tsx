@@ -82,6 +82,34 @@ const sections = [
       </>
     ),
   },
+  {
+    id: 'blog-register',
+    number: 5,
+    title: '블로그 등록 방법',
+    description: (
+      <>
+        블로그는 <strong className="text-text">GitHub 프로필</strong>에 등록된 URL을 자동으로 수집합니다. 별도 신청 없이
+        GitHub 프로필만 업데이트하면 돼요.
+        <ol className="mt-3 flex flex-col gap-2 list-decimal pl-4">
+          <li>
+            GitHub 프로필 편집 → <strong className="text-text">Website 또는 Bio</strong> 필드에 블로그 URL 입력
+          </li>
+          <li>다음 수집 주기(매시간)에 자동으로 반영됩니다</li>
+        </ol>
+        <div className="mt-4 flex flex-col gap-2">
+          <div className="rounded-md border border-border-dim bg-surface px-4 py-3 text-[12px] text-text-secondary">
+            <strong className="text-text block mb-1">지원 플랫폼</strong>
+            Velog, Tistory, GitHub Pages, 브런치, Medium, 개인 블로그 등 RSS를 제공하는 모든 블로그
+          </div>
+          <div className="rounded-md border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-[12px] text-amber-400">
+            <strong className="block mb-1">블로그 글이 안 보인다면?</strong>
+            블로그가 RSS를 지원하지 않거나 URL이 잘못 등록된 경우 글이 수집되지 않을 수 있어요. Notion, Instagram,
+            LinkedIn 등 RSS가 없는 플랫폼은 지원하지 않습니다.
+          </div>
+        </div>
+      </>
+    ),
+  },
 ];
 
 const navItems = [
@@ -89,6 +117,7 @@ const navItems = [
   { id: 'detail', label: '크루 상세 페이지' },
   { id: 'cohort', label: '기수별 목록' },
   { id: 'feed', label: '블로그 피드' },
+  { id: 'blog-register', label: '블로그 등록 방법' },
 ];
 
 export default function GuidePage() {
@@ -154,15 +183,17 @@ export default function GuidePage() {
                 </div>
                 <div className="flex flex-col gap-4">
                   <p className="pl-10 text-[13px] text-text-secondary leading-relaxed">{section.description}</p>
-                  <div className="overflow-hidden rounded-xl border border-border-dim shadow-sm">
-                    <Image
-                      src={`/guide/${section.id}.png`}
-                      alt={section.title}
-                      width={1280}
-                      height={800}
-                      className="w-full h-auto"
-                    />
-                  </div>
+                  {section.id !== 'blog-register' && (
+                    <div className="overflow-hidden rounded-xl border border-border-dim shadow-sm">
+                      <Image
+                        src={`/guide/${section.id}.png`}
+                        alt={section.title}
+                        width={1280}
+                        height={800}
+                        className="w-full h-auto"
+                      />
+                    </div>
+                  )}
                 </div>
               </section>
             ))}
