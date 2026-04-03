@@ -3,6 +3,8 @@ import { api } from '@/lib/api';
 import { CohortFilters } from '@/features/cohort/CohortFilters';
 import { CohortTabBar } from '@/features/cohort/CohortTabBar';
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ number: string }>;
 }

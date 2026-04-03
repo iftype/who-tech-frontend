@@ -3,6 +3,8 @@ import { api } from '@/lib/api';
 import { CohortFilters } from '@/features/cohort/CohortFilters';
 import { CohortTabBar } from '@/features/cohort/CohortTabBar';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = { title: '전체 크루 목록' };
 
 export default async function CohortAllPage() {
