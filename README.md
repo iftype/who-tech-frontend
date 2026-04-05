@@ -19,6 +19,8 @@
 - 탭 클릭 시 서버 라우팅 대신 클라이언트에서 멤버를 필터링
 - URL은 `history.pushState()`로 `/cohort` 또는 `/cohort/:number` 형태를 유지
 - 브라우저 뒤로가기/앞으로가기는 `popstate`로 동기화
+- 클라이언트에서는 TanStack Query `['members', 'cohort-explorer']` 캐시를 사용
+- 서버 fetch는 `revalidate: 300`으로 5분 재검증
 
 ## Commands
 

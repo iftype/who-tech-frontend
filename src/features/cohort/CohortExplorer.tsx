@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import type { Member } from '@/types';
+import { api } from '@/lib/api';
 import { CohortFilters } from './CohortFilters';
 import { CohortTabBar } from './CohortTabBar';
 
@@ -18,6 +20,15 @@ function getCohortFromPath(pathname: string): number | null {
 export function CohortExplorer({ members, initialCohort }: Props) {
   const [activeCohort, setActiveCohort] = useState<number | null>(initialCohort);
 
+  const { data: allMembers = members } = useQuery({
+    queryKey: ['members', 'cohort-explorer'],
+    queryFn: () => api.members.search({}),
+    initialData: members,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
   useEffect(() => {
     setActiveCohort(initialCohort);
   }, [initialCohort]);
@@ -33,15 +44,15 @@ export function CohortExplorer({ members, initialCohort }: Props) {
 
   const cohorts = useMemo(
     () =>
-      [...new Set(members.map((member) => member.cohort).filter((cohort): cohort is number => cohort !== null))].sort(
-        (a, b) => b - a,
-      ),
-    [members],
+      [
+        ...new Set(allMembers.map((member) => member.cohort).filter((cohort): cohort is number => cohort !== null)),
+      ].sort((a, b) => b - a),
+    [allMembers],
   );
 
   const filteredMembers = useMemo(
-    () => (activeCohort === null ? members : members.filter((member) => member.cohort === activeCohort)),
-    [activeCohort, members],
+    () => (activeCohort === null ? allMembers : allMembers.filter((member) => member.cohort === activeCohort)),
+    [activeCohort, allMembers],
   );
 
   const handleCohortChange = (cohort: number | null) => {

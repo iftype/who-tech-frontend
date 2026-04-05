@@ -49,6 +49,7 @@ app/
   - 피드 탭/기간/트랙 전환은 클라이언트 필터링 중심
   - 모바일 상단 메뉴는 prefetch + optimistic navigation 적용
   - 기수 목록 탭은 `CohortExplorer`에서 클라이언트 필터링 + `history.pushState` 기반 URL 동기화 적용
+  - 기수 목록 멤버 데이터는 TanStack Query 캐시(`['members', 'cohort-explorer']`)를 사용하고, 서버 fetch는 `revalidate: 300`
 
 ### 백엔드 공개 API
 

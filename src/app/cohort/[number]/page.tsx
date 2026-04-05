@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CohortPage({ params }: Props) {
   const { number } = await params;
   const cohort = Number(number);
-  const members = await api.members.search({}).catch(() => []);
+  const members = await api.members.search({}, { next: { revalidate: 300 } }).catch(() => []);
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-8 sm:py-10">

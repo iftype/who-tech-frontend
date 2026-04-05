@@ -43,7 +43,7 @@ function normalizeDetail(raw: RawDetail): MemberDetail {
 
 export const api = {
   members: {
-    search: (params: { q?: string; cohort?: number; track?: string; role?: string }) => {
+    search: (params: { q?: string; cohort?: number; track?: string; role?: string }, init?: RequestInit) => {
       const qs = new URLSearchParams(
         Object.fromEntries(
           Object.entries(params)
@@ -51,7 +51,7 @@ export const api = {
             .map(([k, v]) => [k, String(v)]),
         ),
       ).toString();
-      return fetchApi<Member[]>(`/members${qs ? `?${qs}` : ''}`);
+      return fetchApi<Member[]>(`/members${qs ? `?${qs}` : ''}`, init);
     },
     detail: async (githubId: string) => {
       const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
