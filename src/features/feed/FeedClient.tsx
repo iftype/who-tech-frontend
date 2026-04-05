@@ -166,7 +166,9 @@ export function FeedClient({ allItems }: Props) {
             <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">
               {cohort ? `${cohort}기 피드` : '피드'}
             </h1>
-            <p className="mt-1 text-[12px] text-text-secondary">모든 크루의 최신 블로그 글</p>
+            <p className="mt-1 text-[12px] text-text-secondary">
+              {cohort ? `${cohort}기 크루의 최신 블로그 글` : '모든 크루의 최신 블로그 글'}
+            </p>
           </div>
           <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
             {(['7d', '30d'] as const).map((r) => (

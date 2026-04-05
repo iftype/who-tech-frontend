@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Member, Track } from '@/types';
 import { Avatar } from '@/components/ui/Avatar';
@@ -28,9 +28,25 @@ export function CohortFilters({ members, cohort }: Props) {
   const crewCount = members.filter((m) => m.roles.includes('crew') && !isStaff(m)).length;
   const staffCount = members.filter((m) => isStaff(m)).length;
 
-  const filtered = members.filter((m) => {
-    if (roleGroup === 'crew' && (!m.roles.includes('crew') || isStaff(m))) return false;
-    if (roleGroup === 'staff' && !isStaff(m)) return false;
+  const roleScopedMembers = useMemo(() => {
+    if (roleGroup === 'crew') {
+      return members.filter((m) => m.roles.includes('crew') && !isStaff(m));
+    }
+    return members.filter((m) => isStaff(m));
+  }, [members, roleGroup]);
+
+  const visibleTrackOptions = useMemo(() => {
+    const availableTracks = new Set(roleScopedMembers.flatMap((member) => member.tracks));
+    return TRACK_OPTIONS.filter(({ value }) => value === 'all' || availableTracks.has(value));
+  }, [roleScopedMembers]);
+
+  useEffect(() => {
+    if (track === 'all') return;
+    if (visibleTrackOptions.some((option) => option.value === track)) return;
+    setTrack('all');
+  }, [track, visibleTrackOptions]);
+
+  const filtered = roleScopedMembers.filter((m) => {
     if (track !== 'all' && !m.tracks.includes(track)) return false;
     return true;
   });
@@ -70,7 +86,7 @@ export function CohortFilters({ members, cohort }: Props) {
       {/* Filter Bar */}
       <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
-          {TRACK_OPTIONS.map(({ label, value }) => (
+          {visibleTrackOptions.map(({ label, value }) => (
             <button
               key={value}
               onClick={() => setTrack(value)}
@@ -125,9 +141,7 @@ export function CohortFilters({ members, cohort }: Props) {
                   </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {member.cohort != null && <CohortBadge cohort={member.cohort} />}
-                    {member.tracks.map((t) => (
-                      <TrackBadge key={t} track={t} />
-                    ))}
+                    {member.tracks.length > 0 && member.tracks.map((t) => <TrackBadge key={t} track={t} />)}
                     {member.roles
                       .filter((r) => r !== 'crew')
                       .map((r) => (
@@ -160,9 +174,7 @@ export function CohortFilters({ members, cohort }: Props) {
                 .map((r) => (
                   <RoleBadge key={r} role={r} />
                 ))}
-              {member.tracks.map((t) => (
-                <TrackBadge key={t} track={t} />
-              ))}
+              {member.tracks.length > 0 && member.tracks.map((t) => <TrackBadge key={t} track={t} />)}
             </div>
           </Link>
         ))}

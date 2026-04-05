@@ -49,7 +49,9 @@ app/
   - 피드 탭/기간/트랙 전환은 클라이언트 필터링 중심
   - 모바일 상단 메뉴는 prefetch + optimistic navigation 적용
   - 기수 목록 탭은 `CohortExplorer`에서 클라이언트 필터링 + `history.pushState` 기반 URL 동기화 적용
-  - 기수 목록 멤버 데이터는 TanStack Query 캐시(`['members', 'cohort-explorer']`)를 사용하고, 서버 fetch는 `revalidate: 300`
+  - 기수 목록 멤버 데이터는 TanStack Query 캐시(`['members', 'cohort-explorer']`)를 사용하고, 페이지/서버 fetch는 `revalidate: 300`
+  - 기수 전환 렌더는 `startTransition` + `useDeferredValue`로 부하를 완화
+  - 기수 목록 트랙 필터는 현재 역할군에 실제로 존재하는 트랙만 노출
 
 ### 백엔드 공개 API
 
@@ -90,6 +92,7 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 - **테마**: 다크모드 기본값, `localStorage` 기반 유지, `html.dark` 클래스 토글
   - `ThemeProvider` + `ThemeToggle` (Navbar 우측 Sun/Moon)
   - CSS 변수 `:root` (라이트) / `html.dark` (다크) — `globals.css` 참고
+  - `color-scheme`도 함께 동기화해서 토글 버튼, 테두리, 기본 UI가 한 번에 전환되도록 유지
 - **컬러 토큰**: `bg`, `surface`, `surface-alt`, `border`, `text`, `text-secondary`, `text-muted`, `accent`, `accent-dm`
 - **다크모드 팔레트** (Paper 디자인 시스템 기준):
   - bg `#000`, surface `#0d0d0d`, border `#1c1c1c`, text `#ededed`, accent `#2AC1BC`, accent-dm `#0CEFD3`

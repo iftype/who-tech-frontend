@@ -58,6 +58,11 @@ html.dark {
 html {
   background-color: var(--bg);
   color: var(--text);
+  color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark {
+  color-scheme: dark;
 }
