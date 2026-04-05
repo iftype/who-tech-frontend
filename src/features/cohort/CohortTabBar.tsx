@@ -31,7 +31,7 @@ export function CohortTabBar({ activeCohort }: Props) {
     }`;
 
   return (
-    <div className="mb-5 overflow-x-auto border-b border-border [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
       <div className="flex min-w-max items-center gap-1 sm:gap-0">
         <button onClick={() => navigate(null)} className={tabClass(optimistic === null)}>
           전체

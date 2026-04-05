@@ -110,7 +110,7 @@ export function SearchDropdown() {
                 <li key={member.githubId}>
                   <button
                     onClick={() => handleSelect(member)}
-                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-alt transition-colors text-left border-b border-border last:border-0"
+                    className="flex w-full cursor-pointer items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors hover:bg-surface-alt last:border-0"
                   >
                     <Avatar src={member.avatarUrl} alt={member.nickname} size={32} />
                     <div className="flex-1 min-w-0">

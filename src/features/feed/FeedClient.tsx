@@ -147,7 +147,7 @@ export function FeedClient({ allItems }: Props) {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
       <section className="min-w-0">
         {/* 기수 탭 */}
-        <div className="mb-5 overflow-x-auto border-b border-border [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
           <div className="flex min-w-max items-center gap-1 sm:gap-0">
             <button onClick={() => setCohort(null)} className={tabClass(cohort === null)}>
               전체
