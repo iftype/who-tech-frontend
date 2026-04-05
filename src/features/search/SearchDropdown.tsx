@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
 import type { Member } from '@/types';
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -17,7 +18,13 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export function SearchDropdown() {
+interface SearchDropdownProps {
+  className?: string;
+  compact?: boolean;
+  dropdownClassName?: string;
+}
+
+export function SearchDropdown({ className, compact = false, dropdownClassName }: SearchDropdownProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
@@ -71,10 +78,15 @@ export function SearchDropdown() {
   const showDropdown = open && debouncedQuery.length >= 1;
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-[560px]">
-      <div className="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 focus-within:border-accent/50">
+    <div ref={containerRef} className={cn('relative w-full max-w-[560px]', className)}>
+      <div
+        className={cn(
+          'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50',
+          compact ? 'px-3 py-2.5' : 'px-4 py-3',
+        )}
+      >
         <svg
-          className="w-4 h-4 text-text-muted flex-shrink-0"
+          className={cn('text-text-muted flex-shrink-0', compact ? 'h-3.5 w-3.5' : 'h-4 w-4')}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -92,16 +104,26 @@ export function SearchDropdown() {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          placeholder="닉네임 또는 GitHub ID로 검색..."
-          className="flex-1 bg-transparent text-[16px] sm:text-[14px] text-text placeholder:text-text-muted outline-none"
+          placeholder={compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...'}
+          className={cn(
+            'flex-1 bg-transparent text-text placeholder:text-text-muted outline-none',
+            compact ? 'text-[13px]' : 'text-[16px] sm:text-[14px]',
+          )}
         />
-        <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
-          ⌘K
-        </kbd>
+        {!compact && (
+          <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
+            ⌘K
+          </kbd>
+        )}
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-border bg-surface shadow-xl overflow-hidden z-50">
+        <div
+          className={cn(
+            'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-border bg-surface shadow-xl',
+            dropdownClassName,
+          )}
+        >
           {results.length === 0 ? (
             <div className="px-4 py-6 text-center text-[13px] text-text-muted">검색 결과가 없습니다</div>
           ) : (

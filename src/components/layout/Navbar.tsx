@@ -7,6 +7,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from './ThemeProvider';
 import { Moon, Sun } from 'lucide-react';
+import { SearchDropdown } from '@/features/search/SearchDropdown';
 
 const NAV_LINKS = [
   { href: '/cohort/8', label: '기수 목록' },
@@ -48,9 +49,11 @@ export function Navbar() {
       : `cursor-pointer text-[13px] transition-colors ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
   };
 
+  const showHeaderSearch = pathname !== '/';
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
-      <nav className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-6">
+      <nav className="mx-auto flex h-14 max-w-[1200px] items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo.png"
@@ -65,7 +68,23 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        {showHeaderSearch && (
+          <div className="hidden min-w-0 flex-1 sm:block">
+            <SearchDropdown className="max-w-[320px]" compact />
+          </div>
+        )}
+
+        {showHeaderSearch && (
+          <div className="min-w-0 flex-1 sm:hidden">
+            <SearchDropdown
+              className="max-w-none"
+              compact
+              dropdownClassName="fixed left-2 right-2 top-[3.85rem] w-auto max-w-none"
+            />
+          </div>
+        )}
+
+        <div className="ml-auto flex items-center gap-3">
           {/* Desktop nav */}
           <div className="hidden sm:flex items-center gap-4 sm:gap-6">
             {NAV_LINKS.map(({ href, label }) => (
@@ -104,13 +123,17 @@ export function Navbar() {
         <div className="sm:hidden border-t border-border bg-surface-alt/95 backdrop-blur-sm">
           <div className="flex flex-col py-1">
             {NAV_LINKS.map(({ href, label }) => (
-              <button key={href} onClick={() => navigate(href)} className={linkClass(href, true)}>
+              <button
+                key={href}
+                onClick={() => navigate(href)}
+                className={`${linkClass(href, true)} flex items-center justify-start text-left`}
+              >
                 {label}
               </button>
             ))}
             <button
               onClick={toggle}
-              className="flex cursor-pointer items-center gap-2 px-6 py-3 text-[14px] text-text-secondary transition-colors hover:bg-surface hover:text-text"
+              className="flex cursor-pointer items-center justify-start gap-2 px-6 py-3 text-left text-[14px] text-text-secondary transition-colors hover:bg-surface hover:text-text"
             >
               {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
               {theme === 'dark' ? '라이트 모드' : '다크 모드'}
