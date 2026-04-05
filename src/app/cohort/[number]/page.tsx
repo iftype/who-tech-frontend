@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { api } from '@/lib/api';
 import { CohortExplorer } from '@/features/cohort/CohortExplorer';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 interface Props {
   params: Promise<{ number: string }>;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Member } from '@/types';
 import { api } from '@/lib/api';
@@ -19,6 +19,7 @@ function getCohortFromPath(pathname: string): number | null {
 
 export function CohortExplorer({ members, initialCohort }: Props) {
   const [activeCohort, setActiveCohort] = useState<number | null>(initialCohort);
+  const deferredActiveCohort = useDeferredValue(activeCohort);
 
   const { data: allMembers = members } = useQuery({
     queryKey: ['members', 'cohort-explorer'],
@@ -51,12 +52,17 @@ export function CohortExplorer({ members, initialCohort }: Props) {
   );
 
   const filteredMembers = useMemo(
-    () => (activeCohort === null ? allMembers : allMembers.filter((member) => member.cohort === activeCohort)),
-    [activeCohort, allMembers],
+    () =>
+      deferredActiveCohort === null
+        ? allMembers
+        : allMembers.filter((member) => member.cohort === deferredActiveCohort),
+    [deferredActiveCohort, allMembers],
   );
 
   const handleCohortChange = (cohort: number | null) => {
-    setActiveCohort(cohort);
+    startTransition(() => {
+      setActiveCohort(cohort);
+    });
     const nextPath = cohort === null ? '/cohort' : `/cohort/${cohort}`;
     window.history.pushState(null, '', nextPath);
   };

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { api } from '@/lib/api';
 import { CohortExplorer } from '@/features/cohort/CohortExplorer';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata: Metadata = { title: '전체 크루 목록' };
 
