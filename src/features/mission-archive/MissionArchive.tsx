@@ -6,6 +6,11 @@ import type { CohortArchive } from '@/types';
 type Tab = 'base' | 'common' | 'precourse';
 
 const TAB_LABELS: Record<Tab, string> = { base: '기준', common: '공통', precourse: '프리코스' };
+
+function getRepoUrl(prUrl: string) {
+  return prUrl.split('/pull/')[0] ?? prUrl;
+}
+
 function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
   const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n` || '# woowacourse-archive\n'];
 
@@ -34,7 +39,7 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
           const projectName = si === 0 ? repo.name : ' '; // 첫 번째 스텝에만 프로젝트명 표시
 
           // REPOSITORY 링크 (브랜치명은 제출 정보에 없으므로 기본 URL 사용)
-          const repoLink = `[${repo.name}-step${si + 1}](${s.prUrl.split('/pull/')[0]})`;
+          const repoLink = `[${repo.name}-step${si + 1}](${getRepoUrl(s.prUrl)})`;
 
           // PR 링크
           const prLink = `[PR](${s.prUrl})`;
@@ -97,7 +102,7 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-3 py-1.5 text-[11px] transition-colors ${
+                className={`cursor-pointer px-3 py-1.5 text-[11px] transition-colors ${
                   tab === t ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
                 }`}
               >
@@ -108,7 +113,7 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
           {/* Copy */}
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted transition-colors hover:text-text"
+            className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted transition-colors hover:text-text"
           >
             <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -159,7 +164,18 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
                             <span className="w-5 flex-shrink-0 font-mono text-[11px] text-text-dim">
                               {String(idx + 1).padStart(2, '0')}
                             </span>
-                            <span className="flex-1 text-[13px] font-medium text-text">{repo.name}</span>
+                            {repo.submissions && repo.submissions.length > 0 ? (
+                              <a
+                                href={getRepoUrl(repo.submissions[0].prUrl)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-[13px] font-medium text-text transition-colors hover:text-accent-dm hover:underline"
+                              >
+                                {repo.name}
+                              </a>
+                            ) : (
+                              <span className="flex-1 text-[13px] font-medium text-text">{repo.name}</span>
+                            )}
                           </div>
 
                           {/* Steps */}
@@ -181,7 +197,15 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
                                   href={step.prUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="ml-auto font-mono text-[11px] text-accent-dm font-medium transition-opacity hover:opacity-80"
+                                  className="min-w-0 flex-1 truncate text-[12px] font-medium text-text transition-colors hover:text-accent-dm hover:underline"
+                                >
+                                  {step.title}
+                                </a>
+                                <a
+                                  href={step.prUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="ml-3 flex-shrink-0 font-mono text-[11px] text-accent-dm font-medium transition-opacity hover:opacity-80"
                                 >
                                   PR #{step.prNumber} →
                                 </a>

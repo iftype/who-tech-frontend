@@ -110,10 +110,19 @@ export function CohortFilters({ members, cohort }: Props) {
               >
                 <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[14px] font-semibold text-text">
-                    {member.nickname}
-                    <span className="ml-1.5 font-mono text-[11px] font-normal text-text-muted">@{member.githubId}</span>
-                  </p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="min-w-0 truncate text-[14px] font-semibold text-text">
+                      {member.nickname}
+                      <span className="ml-1.5 font-mono text-[11px] font-normal text-text-muted">
+                        @{member.githubId}
+                      </span>
+                    </p>
+                    {member.blog && (
+                      <span className="flex-shrink-0 rounded-full border border-accent-border bg-accent-bg px-2 py-0.5 text-[10px] font-medium text-accent-dm">
+                        블로그
+                      </span>
+                    )}
+                  </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {member.cohort != null && <CohortBadge cohort={member.cohort} />}
                     {member.tracks.map((t) => (
@@ -146,9 +155,11 @@ export function CohortFilters({ members, cohort }: Props) {
               <p className="truncate text-[11px] text-text-dim">@{member.githubId}</p>
             </div>
             <div className="flex flex-wrap justify-center gap-1">
-              {member.roles.map((r) => (
-                <RoleBadge key={r} role={r} />
-              ))}
+              {member.roles
+                .filter((r) => r !== 'crew')
+                .map((r) => (
+                  <RoleBadge key={r} role={r} />
+                ))}
               {member.tracks.map((t) => (
                 <TrackBadge key={t} track={t} />
               ))}

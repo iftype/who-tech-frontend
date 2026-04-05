@@ -42,11 +42,12 @@ app/
 
 ### 렌더링 전략
 
-- 크루 상세, 기수 목록, 피드 → **Server Component** (SEO, searchParams 기반 필터)
-- 검색 드롭다운, 기수 목록 역할/트랙 필터(`CohortFilters`) → `'use client'`
-  - 역할 필터: 크루/운영진 2단 토글 (현재 기수에서만 표시, `CURRENT_COHORT = 연도 - 2018`)
-  - 운영진 = coach || reviewer
-- 피드 기수 탭, 트랙 필터 → Server Component (Link 기반 URL 파라미터)
+- 크루 상세, 기수 목록, 피드 → **Server Component** 기반 페이지 진입
+- 검색 드롭다운, 기수 목록 역할/트랙 필터(`CohortFilters`), 피드 필터(`FeedClient`), 모바일 네비게이션 → `'use client'`
+  - 역할 필터: 크루/운영진 2단 토글
+  - 운영진 = `coach || reviewer`
+  - 피드 탭/기간/트랙 전환은 클라이언트 필터링 중심
+  - 모바일 상단 메뉴는 prefetch + optimistic navigation 적용
 
 ### 백엔드 공개 API
 
@@ -69,7 +70,7 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 
 - debounce 300ms
 - 입력 시 `GET /members?q=` 호출
-- 결과: avatar, nickname, githubId, 기수 뱃지, role 뱃지(crew/coach/reviewer), track
+- 결과: avatar, nickname, githubId, 기수 뱃지, 운영진 role 뱃지(coach/reviewer), track
 
 ### 미션 아카이브 스펙
 
@@ -77,6 +78,7 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 - `base` 탭: `memberTracks` 기반 트랙 필터링 (`track === null`인 공통 미션은 항상 포함)
 - 레벨(1~4)별 그룹핑, CohortRepo.order 순서
 - `submissions === null` → "미제출" 표시
+- 레포 이름은 저장소 링크, PR 제목/번호는 PR 링크
 - "Markdown 복사" 버튼으로 현재 탭 전체 목록 클립보드 복사
 
 ## 디자인 시스템

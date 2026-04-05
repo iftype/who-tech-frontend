@@ -121,9 +121,11 @@ export function SearchDropdown() {
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       {member.cohort && <CohortBadge cohort={member.cohort} />}
-                      {member.roles.map((r) => (
-                        <RoleBadge key={r} role={r} />
-                      ))}
+                      {member.roles
+                        .filter((r) => r !== 'crew')
+                        .map((r) => (
+                          <RoleBadge key={r} role={r} />
+                        ))}
                       {member.tracks.map((t) => (
                         <TrackBadge key={t} track={t} />
                       ))}

@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from './ThemeProvider';
 import { Moon, Sun } from 'lucide-react';
@@ -16,12 +16,37 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, toggle } = useTheme();
 
   useEffect(() => {
     setOpen(false);
+    setOptimisticPath(pathname);
   }, [pathname]);
+
+  useEffect(() => {
+    NAV_LINKS.forEach(({ href }) => router.prefetch(href));
+  }, [router]);
+
+  const navigate = (href: string) => {
+    setOptimisticPath(href);
+    setOpen(false);
+    startTransition(() => {
+      router.push(href);
+    });
+  };
+
+  const linkClass = (href: string, mobile = false) => {
+    const active = (optimisticPath ?? pathname) === href;
+    return mobile
+      ? `px-6 py-3 text-[14px] transition-colors ${
+          active ? 'bg-surface text-text' : 'text-text-secondary hover:bg-surface hover:text-text'
+        }`
+      : `cursor-pointer text-[13px] transition-colors ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
@@ -44,13 +69,9 @@ export function Navbar() {
           {/* Desktop nav */}
           <div className="hidden sm:flex items-center gap-4 sm:gap-6">
             {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="text-[13px] text-text-secondary hover:text-text transition-colors"
-              >
+              <button key={href} onClick={() => navigate(href)} className={linkClass(href)}>
                 {label}
-              </Link>
+              </button>
             ))}
           </div>
 
@@ -83,17 +104,13 @@ export function Navbar() {
         <div className="sm:hidden border-t border-border bg-surface-alt/95 backdrop-blur-sm">
           <div className="flex flex-col py-1">
             {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="px-6 py-3 text-[14px] text-text-secondary hover:text-text hover:bg-surface transition-colors"
-              >
+              <button key={href} onClick={() => navigate(href)} className={linkClass(href, true)}>
                 {label}
-              </Link>
+              </button>
             ))}
             <button
               onClick={toggle}
-              className="flex items-center gap-2 px-6 py-3 text-[14px] text-text-secondary hover:text-text hover:bg-surface transition-colors"
+              className="flex cursor-pointer items-center gap-2 px-6 py-3 text-[14px] text-text-secondary transition-colors hover:bg-surface hover:text-text"
             >
               {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
               {theme === 'dark' ? '라이트 모드' : '다크 모드'}
