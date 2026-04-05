@@ -22,9 +22,15 @@ interface SearchDropdownProps {
   className?: string;
   compact?: boolean;
   dropdownClassName?: string;
+  mobileHeader?: boolean;
 }
 
-export function SearchDropdown({ className, compact = false, dropdownClassName }: SearchDropdownProps) {
+export function SearchDropdown({
+  className,
+  compact = false,
+  dropdownClassName,
+  mobileHeader = false,
+}: SearchDropdownProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
@@ -82,7 +88,7 @@ export function SearchDropdown({ className, compact = false, dropdownClassName }
       <div
         className={cn(
           'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50',
-          compact ? 'px-3 py-2.5' : 'px-4 py-3',
+          compact ? 'px-2.5 py-2' : 'px-4 py-3',
         )}
       >
         <svg
@@ -107,7 +113,7 @@ export function SearchDropdown({ className, compact = false, dropdownClassName }
           placeholder={compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...'}
           className={cn(
             'flex-1 bg-transparent text-text placeholder:text-text-muted outline-none',
-            compact ? 'text-[13px]' : 'text-[16px] sm:text-[14px]',
+            compact ? (mobileHeader ? 'text-[16px] sm:text-[13px]' : 'text-[13px]') : 'text-[16px] sm:text-[14px]',
           )}
         />
         {!compact && (
@@ -121,6 +127,7 @@ export function SearchDropdown({ className, compact = false, dropdownClassName }
         <div
           className={cn(
             'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-border bg-surface shadow-xl',
+            mobileHeader && 'max-h-[min(60vh,24rem)] overflow-y-auto overscroll-contain',
             dropdownClassName,
           )}
         >

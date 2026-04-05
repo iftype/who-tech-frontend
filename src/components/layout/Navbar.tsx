@@ -53,8 +53,8 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
-      <nav className="mx-auto flex h-14 max-w-[1200px] items-center gap-3 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
+      <nav className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-4 sm:px-6">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
             alt="who.tech"
@@ -63,7 +63,7 @@ export function Navbar() {
             style={{ filter: 'invert(1)', mixBlendMode: 'screen' }}
           />
           <span className="font-mono text-[15px] font-semibold text-text">who.tech</span>
-          <span className="inline-flex items-center rounded px-1 py-0.5 text-[9px] font-semibold tracking-widest text-text-muted border border-border">
+          <span className="hidden sm:inline-flex items-center rounded px-1 py-0.5 text-[9px] font-semibold tracking-widest text-text-muted border border-border">
             BETA
           </span>
         </Link>
@@ -79,12 +79,13 @@ export function Navbar() {
             <SearchDropdown
               className="max-w-none"
               compact
-              dropdownClassName="fixed left-2 right-2 top-[3.85rem] w-auto max-w-none"
+              mobileHeader
+              dropdownClassName="fixed left-2 right-2 top-[3.65rem] z-[70] w-auto max-w-none"
             />
           </div>
         )}
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex shrink-0 items-center gap-3">
           {/* Desktop nav */}
           <div className="hidden sm:flex items-center gap-4 sm:gap-6">
             {NAV_LINKS.map(({ href, label }) => (
