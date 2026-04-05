@@ -48,6 +48,7 @@ app/
   - 운영진 = `coach || reviewer`
   - 피드 탭/기간/트랙 전환은 클라이언트 필터링 중심
   - 모바일 상단 메뉴는 prefetch + optimistic navigation 적용
+  - 기수 목록 탭은 `CohortExplorer`에서 클라이언트 필터링 + `history.pushState` 기반 URL 동기화 적용
 
 ### 백엔드 공개 API
 

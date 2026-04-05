@@ -3,13 +3,15 @@
 import { useTransition, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const COHORTS = [8, 7, 6, 5, 4, 3, 2, 1];
-
 interface Props {
   activeCohort: number | null; // null = 전체
+  cohorts?: number[];
+  onChange?: (cohort: number | null) => void;
 }
 
-export function CohortTabBar({ activeCohort }: Props) {
+const DEFAULT_COHORTS = [8, 7, 6, 5, 4, 3, 2, 1];
+
+export function CohortTabBar({ activeCohort, cohorts = DEFAULT_COHORTS, onChange }: Props) {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [optimistic, setOptimistic] = useState(activeCohort);
@@ -20,6 +22,10 @@ export function CohortTabBar({ activeCohort }: Props) {
 
   const navigate = (cohort: number | null) => {
     setOptimistic(cohort);
+    if (onChange) {
+      onChange(cohort);
+      return;
+    }
     startTransition(() => {
       router.push(cohort === null ? '/cohort' : `/cohort/${cohort}`);
     });
@@ -36,7 +42,7 @@ export function CohortTabBar({ activeCohort }: Props) {
         <button onClick={() => navigate(null)} className={tabClass(optimistic === null)}>
           전체
         </button>
-        {COHORTS.map((c) => (
+        {cohorts.map((c) => (
           <button key={c} onClick={() => navigate(c)} className={tabClass(optimistic === c)}>
             {c}기
           </button>
