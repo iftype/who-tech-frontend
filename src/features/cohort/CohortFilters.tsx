@@ -122,7 +122,7 @@ export function CohortFilters({ members, cohort }: Props) {
               <Link
                 key={member.githubId}
                 href={`/${member.githubId}`}
-                className="flex items-center gap-3 border-b border-border-dim px-4 py-3 transition-colors hover:bg-surface-alt last:border-0"
+                className="flex items-center gap-3 border-b border-border-dim px-4 py-3 hover:bg-surface-alt last:border-0"
               >
                 <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />
                 <div className="min-w-0 flex-1">
@@ -161,7 +161,7 @@ export function CohortFilters({ members, cohort }: Props) {
           <Link
             key={member.githubId}
             href={`/${member.githubId}`}
-            className="group flex min-h-[148px] flex-col items-center justify-center gap-2.5 rounded-xl border border-border bg-surface p-4 transition-all hover:border-accent/30 hover:bg-surface-alt"
+            className="group flex min-h-[148px] flex-col items-center justify-center gap-2.5 rounded-xl border border-border bg-surface p-4 hover:border-accent/30 hover:bg-surface-alt"
           >
             <Avatar src={member.avatarUrl} alt={member.nickname} size={48} />
             <div className="w-full text-center">

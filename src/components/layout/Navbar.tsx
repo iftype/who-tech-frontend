@@ -83,7 +83,7 @@ export function Navbar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen((v) => !v)}
-            className="sm:hidden flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border text-text-muted transition-colors hover:border-border-dim hover:text-text"
+            className="sm:hidden flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border text-text-muted transition-colors hover:text-text"
             aria-label="메뉴"
           >
             {open ? (
@@ -110,7 +110,7 @@ export function Navbar() {
             ))}
             <button
               onClick={toggle}
-              className="flex cursor-pointer items-center gap-2 border-t border-border px-6 py-3 text-[14px] text-text-secondary transition-colors hover:bg-surface hover:text-text"
+              className="flex cursor-pointer items-center gap-2 px-6 py-3 text-[14px] text-text-secondary transition-colors hover:bg-surface hover:text-text"
             >
               {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
               {theme === 'dark' ? '라이트 모드' : '다크 모드'}

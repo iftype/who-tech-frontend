@@ -13,7 +13,7 @@ type Range = '7d' | '30d';
 function FeedRow({ item }: { item: FeedItem }) {
   const source = getBlogSource(item.url);
   return (
-    <div className="flex items-start gap-3 border-b border-border-dim px-4 py-3.5 transition-colors hover:bg-surface-alt last:border-b-0">
+    <div className="flex items-start gap-3 border-b border-border-dim px-4 py-3.5 hover:bg-surface-alt last:border-b-0">
       <a
         href={`https://github.com/${item.member.githubId}`}
         target="_blank"
