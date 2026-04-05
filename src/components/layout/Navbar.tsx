@@ -46,7 +46,7 @@ export function Navbar() {
       ? `px-6 py-3 text-[14px] transition-colors ${
           active ? 'bg-surface text-text' : 'text-text-secondary hover:bg-surface hover:text-text'
         }`
-      : `cursor-pointer text-[13px] transition-colors ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
+      : `cursor-pointer whitespace-nowrap text-[13px] transition-colors ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
   };
 
   const showHeaderSearch = pathname !== '/';
@@ -69,12 +69,6 @@ export function Navbar() {
         </Link>
 
         {showHeaderSearch && (
-          <div className="hidden min-w-0 flex-1 sm:block">
-            <SearchDropdown className="max-w-[320px]" compact />
-          </div>
-        )}
-
-        {showHeaderSearch && (
           <div className="min-w-0 flex-1 sm:hidden">
             <SearchDropdown
               className="max-w-none"
@@ -86,21 +80,20 @@ export function Navbar() {
         )}
 
         <div className="ml-auto flex shrink-0 items-center gap-3">
-          {/* Desktop nav */}
-          <div className="hidden sm:flex items-center gap-4 sm:gap-6">
-            {NAV_LINKS.map(({ href, label }) => (
-              <button key={href} onClick={() => navigate(href)} className={linkClass(href)}>
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Desktop theme toggle */}
-          <div className="hidden sm:block">
+          <div className="hidden sm:flex items-center gap-3">
+            {showHeaderSearch && (
+              <SearchDropdown className="w-[220px] max-w-[220px] xl:w-[260px] xl:max-w-[260px]" compact />
+            )}
+            <div className="flex items-center gap-4 sm:gap-6">
+              {NAV_LINKS.map(({ href, label }) => (
+                <button key={href} onClick={() => navigate(href)} className={linkClass(href)}>
+                  {label}
+                </button>
+              ))}
+            </div>
             <ThemeToggle />
           </div>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setOpen((v) => !v)}
             className="sm:hidden flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border text-text-muted transition-colors hover:text-text"

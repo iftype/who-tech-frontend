@@ -84,6 +84,7 @@ export function SearchDropdown({
   const showDropdown = open && debouncedQuery.length >= 1;
 
   const placeholder = mobileHeader ? '검색' : compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...';
+  const mobileHeaderInputScale = 0.86;
 
   return (
     <div ref={containerRef} className={cn('relative w-full max-w-[560px]', className)}>
@@ -106,25 +107,35 @@ export function SearchDropdown({
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setOpen(true);
-          }}
-          onFocus={() => setOpen(true)}
-          placeholder={placeholder}
-          className={cn(
-            'flex-1 bg-transparent text-text placeholder:text-text-muted outline-none',
-            compact
-              ? mobileHeader
-                ? 'text-[16px] placeholder:text-[12px] sm:text-[13px]'
-                : 'text-[13px]'
-              : 'text-[16px] sm:text-[14px]',
-          )}
-        />
+        <div className={cn('min-w-0 flex-1', mobileHeader && 'overflow-hidden')}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            placeholder={placeholder}
+            className={cn(
+              'w-full bg-transparent text-text placeholder:text-text-muted outline-none',
+              compact
+                ? mobileHeader
+                  ? 'origin-left text-[16px] placeholder:text-[12px] sm:text-[13px]'
+                  : 'text-[13px]'
+                : 'text-[16px] sm:text-[14px]',
+            )}
+            style={
+              mobileHeader
+                ? {
+                    transform: `scale(${mobileHeaderInputScale})`,
+                    width: `${100 / mobileHeaderInputScale}%`,
+                  }
+                : undefined
+            }
+          />
+        </div>
         {!compact && (
           <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
             ⌘K

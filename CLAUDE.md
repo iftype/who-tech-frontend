@@ -75,7 +75,7 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 - debounce 300ms
 - 입력 시 `GET /members?q=` 호출
 - 결과: avatar, nickname, githubId, 기수 뱃지, 운영진 role 뱃지(coach/reviewer), track
-- 홈 이외 페이지에서는 헤더에서도 재사용하며, 모바일 compact 모드는 짧은 placeholder와 viewport 기준 드롭다운 폭을 사용
+- 홈 이외 페이지에서는 헤더에서도 재사용하며, 데스크톱은 네비 목록 왼쪽에 배치하고 모바일 compact 모드는 헤더 안에서 동작
 
 ### 미션 아카이브 스펙
 
