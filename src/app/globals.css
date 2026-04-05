@@ -55,6 +55,12 @@ html.dark {
   box-sizing: border-box;
 }
 
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
 html {
   background-color: var(--bg);
   color: var(--text);

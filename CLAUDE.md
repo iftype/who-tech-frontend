@@ -93,6 +93,7 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
   - `ThemeProvider` + `ThemeToggle` (Navbar 우측 Sun/Moon)
   - CSS 변수 `:root` (라이트) / `html.dark` (다크) — `globals.css` 참고
   - `color-scheme`도 함께 동기화해서 토글 버튼, 테두리, 기본 UI가 한 번에 전환되도록 유지
+  - 테마 토글 순간에는 `theme-switching` 클래스로 전역 transition을 잠깐 비활성화해 카드/리스트 지연 전환을 줄임
 - **컬러 토큰**: `bg`, `surface`, `surface-alt`, `border`, `text`, `text-secondary`, `text-muted`, `accent`, `accent-dm`
 - **다크모드 팔레트** (Paper 디자인 시스템 기준):
   - bg `#000`, surface `#0d0d0d`, border `#1c1c1c`, text `#ededed`, accent `#2AC1BC`, accent-dm `#0CEFD3`
