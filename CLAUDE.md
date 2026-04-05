@@ -76,8 +76,10 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 
 ### 미션 아카이브 스펙
 
-- `tabCategory` 기준 탭 분리: `base` / `common` / `precourse` (precourse는 데이터 있을 때만 표시)
-- `base` 탭: `memberTracks` 기반 트랙 필터링 (`track === null`인 공통 미션은 항상 포함)
+- 탭 구성: `mission` / `pending` / `precourse` (precourse는 데이터 있을 때만 표시)
+- `mission` 탭: `base + common` 함께 표시
+- `mission` 탭은 `memberTracks` 기반 트랙 필터링 (`track === null`인 공통 미션은 항상 포함)
+- `pending` 탭: 현재는 `status === 'closed'` 제출만 표시
 - 레벨(1~4)별 그룹핑, CohortRepo.order 순서
 - `submissions === null` → "미제출" 표시
 - 레포 이름은 저장소 링크, PR 제목/번호는 PR 링크

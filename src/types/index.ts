@@ -23,6 +23,7 @@ export interface ArchiveStep {
   prUrl: string;
   prNumber: number;
   title: string;
+  status: string;
   submittedAt: string;
 }
 
