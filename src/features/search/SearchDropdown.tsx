@@ -83,16 +83,21 @@ export function SearchDropdown({
 
   const showDropdown = open && debouncedQuery.length >= 1;
 
+  const placeholder = mobileHeader ? '검색' : compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...';
+
   return (
     <div ref={containerRef} className={cn('relative w-full max-w-[560px]', className)}>
       <div
         className={cn(
           'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50',
-          compact ? 'px-2.5 py-2' : 'px-4 py-3',
+          compact ? (mobileHeader ? 'gap-2 px-2 py-1.5' : 'px-2.5 py-2') : 'px-4 py-3',
         )}
       >
         <svg
-          className={cn('text-text-muted flex-shrink-0', compact ? 'h-3.5 w-3.5' : 'h-4 w-4')}
+          className={cn(
+            'text-text-muted flex-shrink-0',
+            compact ? (mobileHeader ? 'h-3 w-3' : 'h-3.5 w-3.5') : 'h-4 w-4',
+          )}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -110,10 +115,14 @@ export function SearchDropdown({
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          placeholder={compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...'}
+          placeholder={placeholder}
           className={cn(
             'flex-1 bg-transparent text-text placeholder:text-text-muted outline-none',
-            compact ? (mobileHeader ? 'text-[16px] sm:text-[13px]' : 'text-[13px]') : 'text-[16px] sm:text-[14px]',
+            compact
+              ? mobileHeader
+                ? 'text-[16px] placeholder:text-[12px] sm:text-[13px]'
+                : 'text-[13px]'
+              : 'text-[16px] sm:text-[14px]',
           )}
         />
         {!compact && (
