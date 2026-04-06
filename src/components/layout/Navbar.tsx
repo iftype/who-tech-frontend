@@ -82,7 +82,7 @@ export function Navbar() {
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <div className="hidden sm:flex items-center gap-3">
             {showHeaderSearch && (
-              <SearchDropdown className="w-[220px] max-w-[220px] xl:w-[260px] xl:max-w-[260px]" compact />
+              <SearchDropdown className="w-[300px] max-w-[300px] xl:w-[360px] xl:max-w-[360px]" compact />
             )}
             <div className="flex items-center gap-4 sm:gap-6">
               {NAV_LINKS.map(({ href, label }) => (
