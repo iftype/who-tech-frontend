@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-type Theme = 'dark' | 'light';
-type DesignSystem = 'paper' | 'apple' | 'sentry';
+export type Theme = 'dark' | 'light';
+export type DesignSystem = 'paper' | 'apple' | 'sentry';
 
 const ThemeContext = createContext<{
   theme: Theme;
@@ -16,6 +16,10 @@ const ThemeContext = createContext<{
   designSystem: 'paper',
   setDesign: () => {},
 });
+
+function setCookie(name: string, value: string) {
+  document.cookie = `${name}=${value}; path=/; max-age=31536000; SameSite=Lax`;
+}
 
 function freezeTransitions() {
   document.documentElement.classList.add('theme-switching');
@@ -36,46 +40,37 @@ function applyDesign(ds: DesignSystem) {
   freezeTransitions();
   const el = document.documentElement;
   el.classList.remove('apple', 'sentry');
-  if (ds === 'apple') el.classList.add('apple');
-  if (ds === 'sentry') el.classList.add('sentry');
+  if (ds !== 'paper') el.classList.add(ds);
 }
 
 export function useTheme() {
   return useContext(ThemeContext);
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [designSystem, setDesignSystem] = useState<DesignSystem>('paper');
-
-  useLayoutEffect(() => {
-    const storedTheme = localStorage.getItem('theme') as Theme | null;
-    const initialTheme = storedTheme ?? 'dark';
-    setTheme(initialTheme);
-    applyTheme(initialTheme);
-
-    const storedDs = localStorage.getItem('designSystem') as DesignSystem | null;
-    const initialDs = storedDs ?? 'paper';
-    setDesignSystem(initialDs);
-    applyDesign(initialDs);
-  }, []);
+export function ThemeProvider({
+  children,
+  initialTheme = 'dark',
+  initialDesign = 'paper',
+}: {
+  children: React.ReactNode;
+  initialTheme?: Theme;
+  initialDesign?: DesignSystem;
+}) {
+  const [theme, setTheme] = useState<Theme>(initialTheme);
+  const [designSystem, setDesignSystem] = useState<DesignSystem>(initialDesign);
 
   const toggle = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     applyTheme(next);
     setTheme(next);
-    localStorage.setItem('theme', next);
+    setCookie('theme', next);
   };
 
   const setDesign = (ds: DesignSystem) => {
     applyDesign(ds);
     setDesignSystem(ds);
-    localStorage.setItem('designSystem', ds);
+    setCookie('designSystem', ds);
   };
-
-  useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
 
   return <ThemeContext.Provider value={{ theme, toggle, designSystem, setDesign }}>{children}</ThemeContext.Provider>;
 }

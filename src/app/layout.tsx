@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { Rubik } from 'next/font/google';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { QueryProvider } from '@/components/layout/QueryProvider';
@@ -21,22 +22,37 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+type Theme = 'dark' | 'light';
+type DesignSystem = 'paper' | 'apple' | 'sentry';
+
+const VALID_THEMES: Theme[] = ['dark', 'light'];
+const VALID_DESIGNS: DesignSystem[] = ['paper', 'apple', 'sentry'];
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+
+  const rawTheme = cookieStore.get('theme')?.value;
+  const rawDesign = cookieStore.get('designSystem')?.value;
+
+  const theme: Theme = VALID_THEMES.includes(rawTheme as Theme) ? (rawTheme as Theme) : 'dark';
+  const design: DesignSystem = VALID_DESIGNS.includes(rawDesign as DesignSystem)
+    ? (rawDesign as DesignSystem)
+    : 'paper';
+
+  const htmlClass = [
+    GeistSans.variable,
+    GeistMono.variable,
+    rubik.variable,
+    theme === 'dark' ? 'dark' : '',
+    design !== 'paper' ? design : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <html
-      lang="ko"
-      suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable} ${rubik.variable} dark`}
-    >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem('theme');var d=localStorage.getItem('designSystem');var el=document.documentElement;el.classList.toggle('dark',t!=='light');if(d==='apple')el.classList.add('apple');else if(d==='sentry')el.classList.add('sentry');})();`,
-          }}
-        />
-      </head>
+    <html lang="ko" suppressHydrationWarning className={htmlClass}>
       <body className="min-h-screen bg-bg font-sans">
-        <ThemeProvider>
+        <ThemeProvider initialTheme={theme} initialDesign={design}>
           <QueryProvider>
             <Navbar />
             <main>{children}</main>
