@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import type { CohortArchive } from '@/types';
 
-type Tab = 'mission' | 'pending' | 'precourse';
+type Tab = 'mission' | 'pending';
 
-const TAB_LABELS: Record<Tab, string> = { mission: '미션', pending: '확인전', precourse: '프리코스' };
+const TAB_LABELS: Record<Tab, string> = { mission: '미션', pending: '확인전' };
 
 function getRepoUrl(prUrl: string) {
   return prUrl.split('/pull/')[0] ?? prUrl;
@@ -13,8 +13,7 @@ function getRepoUrl(prUrl: string) {
 
 function matchesTab(tabCategory: string, tab: Tab) {
   if (tab === 'mission') return tabCategory === 'base' || tabCategory === 'common';
-  if (tab === 'pending') return tabCategory === 'base' || tabCategory === 'common';
-  return tabCategory === 'precourse';
+  return false;
 }
 
 function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
@@ -78,12 +77,9 @@ interface Props {
 }
 
 export function MissionArchive({ archive = [], memberTracks }: Props) {
-  const allLevels = archive.flatMap((a) => a.levels);
-  const hasPrecourse = allLevels.some((lvl) => lvl.repos.some((r) => r.tabCategory === 'precourse'));
   const [tab, setTab] = useState<Tab>('mission');
   const [copied, setCopied] = useState(false);
-
-  const tabs: Tab[] = ['mission', 'pending', ...(hasPrecourse ? (['precourse'] as Tab[]) : [])];
+  const tabs: Tab[] = ['mission', 'pending'];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(buildMarkdown(archive, tab));
