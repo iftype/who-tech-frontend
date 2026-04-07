@@ -38,18 +38,21 @@ export default async function HomePage() {
               <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-muted">
                 Pick of the Week
               </p>
-              <div className="group rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/30 hover:bg-surface-alt">
+              <div className="group relative rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/30 hover:bg-surface-alt">
                 {/* Author row */}
                 <div className="mb-5 flex items-center gap-2.5">
                   <a
                     href={`https://github.com/${pick.member.githubId}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-shrink-0"
+                    className="relative z-10 flex-shrink-0"
                   >
                     <Avatar src={pick.member.avatarUrl} alt={pick.member.nickname} size={28} />
                   </a>
-                  <Link href={`/${pick.member.githubId}`} className="text-[13px] font-medium text-text hover:underline">
+                  <Link
+                    href={`/${pick.member.githubId}`}
+                    className="relative z-10 text-[13px] font-medium text-text hover:underline"
+                  >
                     {pick.member.nickname}
                   </Link>
                   {pick.member.cohort && <CohortBadge cohort={pick.member.cohort} />}
@@ -64,7 +67,12 @@ export default async function HomePage() {
                 </div>
 
                 {/* Title */}
-                <a href={pick.url} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={pick.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="after:absolute after:inset-0 after:content-['']"
+                >
                   <h2 className="mb-4 text-[20px] font-bold leading-snug tracking-tight text-text line-clamp-3 hover:underline sm:text-[24px]">
                     {pick.title}
                   </h2>
