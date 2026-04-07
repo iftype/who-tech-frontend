@@ -31,18 +31,12 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
           ...repo,
           submissions:
             repo.submissions?.filter((submission) => {
-              if (tab === 'pending') {
-                if (archive.cohort === 0) return true;
-                return submission.status === 'closed';
-              }
+              if (tab === 'pending') return true;
               return submission.status !== 'closed';
             }) ?? null,
         }))
         .filter((r) => {
-          if (tab === 'pending') {
-            if (archive.cohort === 0) return Boolean(r.submissions && r.submissions.length > 0);
-            return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
-          }
+          if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
           if (archive.cohort === 0) return false;
           return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
         });
@@ -109,18 +103,12 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
               ...repo,
               submissions:
                 repo.submissions?.filter((submission) => {
-                  if (tab === 'pending') {
-                    if (ca.cohort === 0) return true;
-                    return submission.status === 'closed';
-                  }
+                  if (tab === 'pending') return true;
                   return submission.status !== 'closed';
                 }) ?? null,
             }))
             .filter((r) => {
-              if (tab === 'pending') {
-                if (ca.cohort === 0) return Boolean(r.submissions && r.submissions.length > 0);
-                return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
-              }
+              if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
               if (ca.cohort === 0) return false;
               if (!matchesTab(r.tabCategory, tab)) return false;
               if (tab === 'mission' && memberTracks.length > 0) {
