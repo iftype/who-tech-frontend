@@ -30,9 +30,8 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
         .map((repo) => ({
           ...repo,
           submissions:
-            repo.submissions?.filter((submission) =>
-              tab === 'pending' ? submission.status === 'closed' : submission.status !== 'closed',
-            ) ?? null,
+            repo.submissions?.filter((submission) => (tab === 'pending' ? true : submission.status !== 'closed')) ??
+            null,
         }))
         .filter((r) => matchesTab(r.tabCategory, tab) && r.submissions && r.submissions.length > 0);
 
@@ -97,9 +96,8 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
             .map((repo) => ({
               ...repo,
               submissions:
-                repo.submissions?.filter((submission) =>
-                  tab === 'pending' ? submission.status === 'closed' : submission.status !== 'closed',
-                ) ?? null,
+                repo.submissions?.filter((submission) => (tab === 'pending' ? true : submission.status !== 'closed')) ??
+                null,
             }))
             .filter((r) => {
               if (!matchesTab(r.tabCategory, tab)) return false;
