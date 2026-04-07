@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { Rubik } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { QueryProvider } from '@/components/layout/QueryProvider';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
+
+const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 
 export const metadata: Metadata = {
   title: {
@@ -20,11 +23,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable} dark`}>
+    <html
+      lang="ko"
+      suppressHydrationWarning
+      className={`${GeistSans.variable} ${GeistMono.variable} ${rubik.variable} dark`}
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem('theme');var d=localStorage.getItem('designSystem');var el=document.documentElement;el.classList.toggle('dark',t!=='light');if(d==='apple')el.classList.add('apple');})();`,
+            __html: `(function(){var t=localStorage.getItem('theme');var d=localStorage.getItem('designSystem');var el=document.documentElement;el.classList.toggle('dark',t!=='light');if(d==='apple')el.classList.add('apple');else if(d==='sentry')el.classList.add('sentry');})();`,
           }}
         />
       </head>

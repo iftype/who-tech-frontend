@@ -3,18 +3,18 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 
 type Theme = 'dark' | 'light';
-type DesignSystem = 'paper' | 'apple';
+type DesignSystem = 'paper' | 'apple' | 'sentry';
 
 const ThemeContext = createContext<{
   theme: Theme;
   toggle: () => void;
   designSystem: DesignSystem;
-  toggleDesign: () => void;
+  setDesign: (ds: DesignSystem) => void;
 }>({
   theme: 'dark',
   toggle: () => {},
   designSystem: 'paper',
-  toggleDesign: () => {},
+  setDesign: () => {},
 });
 
 function freezeTransitions() {
@@ -34,7 +34,10 @@ function applyTheme(next: Theme) {
 
 function applyDesign(ds: DesignSystem) {
   freezeTransitions();
-  document.documentElement.classList.toggle('apple', ds === 'apple');
+  const el = document.documentElement;
+  el.classList.remove('apple', 'sentry');
+  if (ds === 'apple') el.classList.add('apple');
+  if (ds === 'sentry') el.classList.add('sentry');
 }
 
 export function useTheme() {
@@ -64,18 +67,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('theme', next);
   };
 
-  const toggleDesign = () => {
-    const next = designSystem === 'paper' ? 'apple' : 'paper';
-    applyDesign(next);
-    setDesignSystem(next);
-    localStorage.setItem('designSystem', next);
+  const setDesign = (ds: DesignSystem) => {
+    applyDesign(ds);
+    setDesignSystem(ds);
+    localStorage.setItem('designSystem', ds);
   };
 
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggle, designSystem, toggleDesign }}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggle, designSystem, setDesign }}>{children}</ThemeContext.Provider>;
 }

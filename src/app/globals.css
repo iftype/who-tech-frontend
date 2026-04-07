@@ -86,6 +86,50 @@ html.apple.dark {
   --accent-border: rgba(41, 151, 255, 0.2);
 }
 
+/* ── Sentry Design System ──────────────────────────────── */
+/* Sentry는 라이트/다크 무관하게 항상 dark purple 팔레트 사용 */
+html.sentry {
+  --bg: #1f1633;
+  --surface: #2a1f45;
+  --surface-alt: #150f23;
+  --border: #362d59;
+  --border-dim: #2a2050;
+  --text: #ffffff;
+  --text-secondary: #e5e7eb;
+  --text-muted: rgba(255, 255, 255, 0.48);
+  --text-dim: rgba(255, 255, 255, 0.28);
+  --accent: #6a5fc1;
+  --accent-dm: #c2ef4e;
+  --accent-bg: rgba(106, 95, 193, 0.18);
+  --accent-border: rgba(106, 95, 193, 0.35);
+  color-scheme: dark;
+}
+
+html.sentry:not(.dark) {
+  --bg: #2d2248;
+  --surface: #362d59;
+  --surface-alt: #1f1633;
+}
+
+/* Sentry 전역 타이포그래피 */
+html.sentry {
+  font-family:
+    var(--font-rubik),
+    -apple-system,
+    system-ui,
+    'Segoe UI',
+    sans-serif;
+  letter-spacing: normal;
+}
+
+/* Sentry 네비게이션 */
+html.sentry header[data-nav] {
+  background: rgba(21, 15, 35, 0.85) !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-bottom-color: #362d59;
+}
+
 /* Apple 전역 타이포그래피 */
 :root {
   --fs-hero: 38px;
