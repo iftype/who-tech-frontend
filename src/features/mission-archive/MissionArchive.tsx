@@ -33,7 +33,11 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
             repo.submissions?.filter((submission) => (tab === 'pending' ? true : submission.status !== 'closed')) ??
             null,
         }))
-        .filter((r) => matchesTab(r.tabCategory, tab) && r.submissions && r.submissions.length > 0);
+        .filter((r) => {
+          if (tab === 'pending') return archive.cohort === 0 && Boolean(r.submissions && r.submissions.length > 0);
+          if (tab === 'mission' && archive.cohort === 0) return false;
+          return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
+        });
 
       if (filtered.length === 0) continue;
 
@@ -100,12 +104,13 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
                 null,
             }))
             .filter((r) => {
+              if (tab === 'pending') {
+                return ca.cohort === 0 && Boolean(r.submissions && r.submissions.length > 0);
+              }
+              if (tab === 'mission' && ca.cohort === 0) return false;
               if (!matchesTab(r.tabCategory, tab)) return false;
               if (tab === 'mission' && memberTracks.length > 0) {
                 return r.track === null || memberTracks.includes(r.track);
-              }
-              if (tab === 'pending') {
-                return Boolean(r.submissions && r.submissions.length > 0);
               }
               return true;
             }),
