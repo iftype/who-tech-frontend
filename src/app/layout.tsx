@@ -25,8 +25,16 @@ export const metadata: Metadata = {
 type Theme = 'dark' | 'light';
 type DesignSystem = 'paper' | 'apple' | 'sentry';
 
-const VALID_THEMES: Theme[] = ['dark', 'light'];
-const VALID_DESIGNS: DesignSystem[] = ['paper', 'apple', 'sentry'];
+const VALID_THEMES = ['dark', 'light'] as const;
+const VALID_DESIGNS = ['paper', 'apple', 'sentry'] as const;
+
+function isTheme(v: unknown): v is Theme {
+  return VALID_THEMES.includes(v as Theme);
+}
+
+function isDesign(v: unknown): v is DesignSystem {
+  return VALID_DESIGNS.includes(v as DesignSystem);
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -34,10 +42,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const rawTheme = cookieStore.get('theme')?.value;
   const rawDesign = cookieStore.get('designSystem')?.value;
 
-  const theme: Theme = VALID_THEMES.includes(rawTheme as Theme) ? (rawTheme as Theme) : 'dark';
-  const design: DesignSystem = VALID_DESIGNS.includes(rawDesign as DesignSystem)
-    ? (rawDesign as DesignSystem)
-    : 'paper';
+  const theme: Theme = isTheme(rawTheme) ? rawTheme : 'dark';
+  const design: DesignSystem = isDesign(rawDesign) ? rawDesign : 'paper';
 
   const htmlClass = [
     GeistSans.variable,

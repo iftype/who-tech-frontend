@@ -18,7 +18,8 @@ const ThemeContext = createContext<{
 });
 
 function setCookie(name: string, value: string) {
-  document.cookie = `${name}=${value}; path=/; max-age=31536000; SameSite=Lax`;
+  const secure = location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${name}=${value}; path=/; max-age=31536000; SameSite=Lax${secure}`;
 }
 
 function freezeTransitions() {
