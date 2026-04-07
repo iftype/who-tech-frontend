@@ -10,7 +10,7 @@ export default async function CohortAllPage() {
   const members = await api.members.search({}, { next: { revalidate: 300 } }).catch(() => []);
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-8 sm:py-10">
+    <div className="mx-auto px-4 sm:px-6 py-8 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
       <CohortExplorer members={members} initialCohort={null} />
     </div>
   );

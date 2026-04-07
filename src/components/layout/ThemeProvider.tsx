@@ -3,10 +3,18 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 
 type Theme = 'dark' | 'light';
+type DesignSystem = 'paper' | 'apple';
 
-const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
+const ThemeContext = createContext<{
+  theme: Theme;
+  toggle: () => void;
+  designSystem: DesignSystem;
+  toggleDesign: () => void;
+}>({
   theme: 'dark',
   toggle: () => {},
+  designSystem: 'paper',
+  toggleDesign: () => {},
 });
 
 function freezeTransitions() {
@@ -24,18 +32,29 @@ function applyTheme(next: Theme) {
   document.documentElement.style.colorScheme = next;
 }
 
+function applyDesign(ds: DesignSystem) {
+  freezeTransitions();
+  document.documentElement.classList.toggle('apple', ds === 'apple');
+}
+
 export function useTheme() {
   return useContext(ThemeContext);
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
+  const [designSystem, setDesignSystem] = useState<DesignSystem>('paper');
 
   useLayoutEffect(() => {
-    const stored = localStorage.getItem('theme') as Theme | null;
-    const initial = stored ?? 'dark';
-    setTheme(initial);
-    applyTheme(initial);
+    const storedTheme = localStorage.getItem('theme') as Theme | null;
+    const initialTheme = storedTheme ?? 'dark';
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
+
+    const storedDs = localStorage.getItem('designSystem') as DesignSystem | null;
+    const initialDs = storedDs ?? 'paper';
+    setDesignSystem(initialDs);
+    applyDesign(initialDs);
   }, []);
 
   const toggle = () => {
@@ -45,9 +64,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('theme', next);
   };
 
+  const toggleDesign = () => {
+    const next = designSystem === 'paper' ? 'apple' : 'paper';
+    applyDesign(next);
+    setDesignSystem(next);
+    localStorage.setItem('designSystem', next);
+  };
+
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  return <ThemeContext.Provider value={{ theme, toggle }}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={{ theme, toggle, designSystem, toggleDesign }}>{children}</ThemeContext.Provider>
+  );
 }

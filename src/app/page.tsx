@@ -11,7 +11,7 @@ export default async function HomePage() {
   const recent = feed.slice(1, 6);
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+    <div className="mx-auto px-4 sm:px-6" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
       {/* Hero */}
       <div className="flex flex-col items-center gap-4 py-14 text-center sm:gap-5 sm:py-24">
         <Link
