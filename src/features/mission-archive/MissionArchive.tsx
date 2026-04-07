@@ -30,12 +30,20 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
         .map((repo) => ({
           ...repo,
           submissions:
-            repo.submissions?.filter((submission) => (tab === 'pending' ? true : submission.status !== 'closed')) ??
-            null,
+            repo.submissions?.filter((submission) => {
+              if (tab === 'pending') {
+                if (archive.cohort === 0) return true;
+                return submission.status === 'closed';
+              }
+              return submission.status !== 'closed';
+            }) ?? null,
         }))
         .filter((r) => {
-          if (tab === 'pending') return archive.cohort === 0 && Boolean(r.submissions && r.submissions.length > 0);
-          if (tab === 'mission' && archive.cohort === 0) return false;
+          if (tab === 'pending') {
+            if (archive.cohort === 0) return Boolean(r.submissions && r.submissions.length > 0);
+            return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
+          }
+          if (archive.cohort === 0) return false;
           return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
         });
 
@@ -100,19 +108,25 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
             .map((repo) => ({
               ...repo,
               submissions:
-                repo.submissions?.filter((submission) => (tab === 'pending' ? true : submission.status !== 'closed')) ??
-                null,
+                repo.submissions?.filter((submission) => {
+                  if (tab === 'pending') {
+                    if (ca.cohort === 0) return true;
+                    return submission.status === 'closed';
+                  }
+                  return submission.status !== 'closed';
+                }) ?? null,
             }))
             .filter((r) => {
               if (tab === 'pending') {
-                return ca.cohort === 0 && Boolean(r.submissions && r.submissions.length > 0);
+                if (ca.cohort === 0) return Boolean(r.submissions && r.submissions.length > 0);
+                return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
               }
-              if (tab === 'mission' && ca.cohort === 0) return false;
+              if (ca.cohort === 0) return false;
               if (!matchesTab(r.tabCategory, tab)) return false;
               if (tab === 'mission' && memberTracks.length > 0) {
                 return r.track === null || memberTracks.includes(r.track);
               }
-              return true;
+              return Boolean(r.submissions && r.submissions.length > 0);
             }),
         }))
         .filter((lvl) => lvl.repos.length > 0),
