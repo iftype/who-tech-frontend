@@ -101,6 +101,7 @@ export default async function DetailPage({ params }: Props) {
             (ca) => ca.cohort === 0 || member.cohorts.some((mc) => mc.cohort === ca.cohort),
           )}
           memberTracks={member.tracks}
+          githubId={member.githubId}
           blogPosts={member.blogPosts}
           lastPostedAt={member.lastPostedAt}
         />

@@ -8,11 +8,12 @@ import type { CohortArchive, BlogPost } from '@/types';
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
+  githubId: string;
   blogPosts: BlogPost[];
   lastPostedAt: string | null;
 }
 
-export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: Props) {
+export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt }: Props) {
   const [tab, setTab] = useState<'mission' | 'blog'>('mission');
 
   return (
@@ -39,7 +40,7 @@ export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: 
       {/* Mobile content */}
       <div className="sm:hidden">
         {tab === 'mission' ? (
-          <MissionArchive archive={archive} memberTracks={memberTracks} />
+          <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         ) : (
           <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
         )}
@@ -48,7 +49,7 @@ export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: 
       {/* Desktop: side-by-side */}
       <div className="hidden sm:flex flex-row gap-8">
         <div className="flex-1 min-w-0">
-          <MissionArchive archive={archive} memberTracks={memberTracks} />
+          <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         </div>
         <aside className="w-[360px] flex-shrink-0">
           <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
