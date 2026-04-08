@@ -85,7 +85,7 @@ GET /members/:githubId        — 멤버 상세 (archive, blogPosts 포함)
 - `pending` 탭: 현재는 `status === 'closed'` 제출만 표시
 - 레벨(1~4)별 그룹핑, CohortRepo.order 순서
 - `submissions === null` → "미제출" 표시
-- 레포 이름은 저장소 링크, PR 제목/번호는 PR 링크
+- 레포 이름은 크루 포크 레포 링크(`github.com/{githubId}/{repoName}`), PR 제목/번호는 원본 레포 PR 링크
 - "Markdown 복사" 버튼으로 현재 탭 전체 목록 클립보드 복사
 
 ## 디자인 시스템
