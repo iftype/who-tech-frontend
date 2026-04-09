@@ -37,6 +37,8 @@ export function cn(...classes: (string | undefined | null | false)[]): string {
 
 export function decodeHtml(str: string): string {
   return str
+    .replace(/&zwj;/g, '\u200D')
+    .replace(/&nbsp;/g, '\u00A0')
     .replace(/&mdash;/g, '—')
     .replace(/&ndash;/g, '–')
     .replace(/&amp;/g, '&')

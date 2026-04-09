@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
-import { formatDate, formatRelativeDate } from '@/lib/utils';
+import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
 import type { CohortArchive, BlogPost } from '@/types';
 
 interface Props {
@@ -76,7 +76,7 @@ function BlogSection({ blogPosts, lastPostedAt }: { blogPosts: BlogPost[]; lastP
                 rel="noopener noreferrer"
                 className="flex flex-col gap-1 px-4 py-3 hover:bg-surface-alt transition-colors"
               >
-                <p className="text-[13px] font-medium text-text line-clamp-2">{post.title}</p>
+                <p className="text-[13px] font-medium text-text line-clamp-2">{decodeHtml(post.title)}</p>
                 <p className="text-[11px] text-text-dim">{formatDate(post.publishedAt)}</p>
               </a>
             ))}
