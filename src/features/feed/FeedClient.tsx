@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
-import { formatRelativeDate, getBlogSource } from '@/lib/utils';
+import { formatRelativeDate, getBlogSource, decodeHtml } from '@/lib/utils';
 import type { FeedItem } from '@/types';
 
 type Track = 'frontend' | 'backend' | 'android';
@@ -30,7 +30,7 @@ function FeedRow({ item }: { item: FeedItem }) {
             rel="noopener noreferrer"
             className="break-all text-[14px] font-medium text-text hover:underline after:absolute after:inset-0 after:content-['']"
           >
-            {item.title}
+            {decodeHtml(item.title)}
           </a>
           <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
         </div>
@@ -247,7 +247,7 @@ export function FeedClient({ allItems }: Props) {
                 staffPosts.map((post) => (
                   <a key={post.url} href={post.url} target="_blank" rel="noopener noreferrer" className="group block">
                     <p className="line-clamp-2 text-[13px] font-medium leading-relaxed text-text group-hover:underline">
-                      {post.title}
+                      {decodeHtml(post.title)}
                     </p>
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">

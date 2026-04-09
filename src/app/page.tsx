@@ -1,6 +1,6 @@
 import { SearchDropdown } from '@/features/search/SearchDropdown';
 import { api } from '@/lib/api';
-import { formatRelativeDate, getBlogSource } from '@/lib/utils';
+import { formatRelativeDate, getBlogSource, decodeHtml } from '@/lib/utils';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge } from '@/components/ui/Badge';
 import Link from 'next/link';
@@ -74,7 +74,7 @@ export default async function HomePage() {
                   className="after:absolute after:inset-0 after:content-['']"
                 >
                   <h2 className="mb-4 text-[20px] font-bold leading-snug tracking-tight text-text line-clamp-3 hover:underline sm:text-[24px]">
-                    {pick.title}
+                    {decodeHtml(pick.title)}
                   </h2>
                 </a>
 
@@ -105,18 +105,18 @@ export default async function HomePage() {
                 return (
                   <div
                     key={`${item.url}-${item.publishedAt}`}
-                    className="flex items-start gap-3 border-b border-border-dim px-4 py-3 transition-colors hover:bg-surface-alt last:border-0"
+                    className="relative flex items-start gap-3 border-b border-border-dim px-4 py-3 transition-colors hover:bg-surface-alt last:border-0 cursor-pointer"
                   >
                     <div className="min-w-0 flex-1">
                       <a
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="line-clamp-2 text-[13px] font-medium leading-5 text-text hover:underline"
+                        className="line-clamp-2 text-[13px] font-medium leading-5 text-text hover:underline after:absolute after:inset-0 after:content-['']"
                       >
-                        {item.title}
+                        {decodeHtml(item.title)}
                       </a>
-                      <p className="mt-0.5 text-[11px] text-text-muted">
+                      <p className="relative z-10 mt-0.5 text-[11px] text-text-muted">
                         <Link href={`/${item.member.githubId}`} className="hover:underline">
                           {item.member.nickname}
                         </Link>
@@ -125,7 +125,7 @@ export default async function HomePage() {
                       </p>
                     </div>
                     {source && (
-                      <span className="mt-0.5 flex-shrink-0 rounded border border-border px-1.5 py-0.5 text-[10px] text-text-muted">
+                      <span className="relative z-10 mt-0.5 flex-shrink-0 rounded border border-border px-1.5 py-0.5 text-[10px] text-text-muted">
                         {source}
                       </span>
                     )}
