@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import { Rubik } from 'next/font/google';
 import { cookies } from 'next/headers';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/components/layout/Navbar';
 import { QueryProvider } from '@/components/layout/QueryProvider';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <main>{children}</main>
           </QueryProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
