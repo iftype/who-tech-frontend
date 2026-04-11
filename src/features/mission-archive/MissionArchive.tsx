@@ -4,19 +4,15 @@ import { useState } from 'react';
 import type { CohortArchive } from '@/types';
 
 type Tab = 'mission' | 'pending';
+type MissionMode = 'base' | 'common';
 
-const TAB_LABELS: Record<Tab, string> = { mission: '미션', pending: '확인전' };
+const TAB_LABELS: Record<Tab, string> = { mission: '미션/공통', pending: '확인전' };
 
 function getForkUrl(githubId: string, repoName: string) {
   return `https://github.com/${githubId}/${repoName}`;
 }
 
-function matchesTab(tabCategory: string, tab: Tab) {
-  if (tab === 'mission') return tabCategory === 'base' || tabCategory === 'common';
-  return false;
-}
-
-function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): string {
+function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string, missionMode: MissionMode): string {
   const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n` || '# woowacourse-archive\n'];
 
   for (const archive of archives) {
@@ -37,7 +33,7 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): s
         .filter((r) => {
           if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
           if (archive.cohort === 0) return false;
-          return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
+          return r.tabCategory === missionMode && Boolean(r.submissions && r.submissions.length > 0);
         });
 
       if (filtered.length === 0) continue;
@@ -79,11 +75,12 @@ interface Props {
 
 export function MissionArchive({ archive = [], memberTracks, githubId }: Props) {
   const [tab, setTab] = useState<Tab>('mission');
+  const [missionMode, setMissionMode] = useState<MissionMode>('base');
   const [copied, setCopied] = useState(false);
   const tabs: Tab[] = ['mission', 'pending'];
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId));
+    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId, missionMode));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -107,8 +104,8 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
             .filter((r) => {
               if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
               if (ca.cohort === 0) return false;
-              if (!matchesTab(r.tabCategory, tab)) return false;
-              if (tab === 'mission' && memberTracks.length > 0) {
+              if (r.tabCategory !== missionMode) return false;
+              if (missionMode === 'base' && memberTracks.length > 0) {
                 return r.track === null || memberTracks.includes(r.track);
               }
               return Boolean(r.submissions && r.submissions.length > 0);
@@ -138,6 +135,22 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               </button>
             ))}
           </div>
+          {/* Mission mode toggle */}
+          {tab === 'mission' && (
+            <div className="flex overflow-hidden rounded-md border border-border bg-surface">
+              {(['base', 'common'] as MissionMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setMissionMode(mode)}
+                  className={`cursor-pointer px-3 py-1.5 text-[11px] transition-colors ${
+                    missionMode === mode ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
+                  }`}
+                >
+                  {mode === 'base' ? '미션' : '공통'}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Copy */}
           <button
             onClick={handleCopy}
