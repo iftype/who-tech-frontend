@@ -7,8 +7,8 @@ type Tab = 'mission' | 'pending';
 
 const TAB_LABELS: Record<Tab, string> = { mission: '미션', pending: '확인전' };
 
-function getRepoUrl(prUrl: string) {
-  return prUrl.split('/pull/')[0] ?? prUrl;
+function getForkUrl(githubId: string, repoName: string) {
+  return `https://github.com/${githubId}/${repoName}`;
 }
 
 function matchesTab(tabCategory: string, tab: Tab) {
@@ -16,7 +16,7 @@ function matchesTab(tabCategory: string, tab: Tab) {
   return false;
 }
 
-function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
+function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): string {
   const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n` || '# woowacourse-archive\n'];
 
   for (const archive of archives) {
@@ -57,8 +57,8 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
           const no = si === 0 ? String(i + 1) : ' '; // 첫 번째 스텝에만 번호 표시
           const projectName = si === 0 ? repo.name : ' '; // 첫 번째 스텝에만 프로젝트명 표시
 
-          // REPOSITORY 링크 (브랜치명은 제출 정보에 없으므로 기본 URL 사용)
-          const repoLink = `[${repo.name}-step${si + 1}](${getRepoUrl(s.prUrl)})`;
+          // REPOSITORY 링크 (크루 포크 레포)
+          const repoLink = `[${repo.name}-step${si + 1}](${getForkUrl(githubId, repo.name)})`;
 
           // PR 링크
           const prLink = `[PR](${s.prUrl})`;
@@ -74,15 +74,16 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab): string {
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
+  githubId: string;
 }
 
-export function MissionArchive({ archive = [], memberTracks }: Props) {
+export function MissionArchive({ archive = [], memberTracks, githubId }: Props) {
   const [tab, setTab] = useState<Tab>('mission');
   const [copied, setCopied] = useState(false);
   const tabs: Tab[] = ['mission', 'pending'];
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(buildMarkdown(archive, tab));
+    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -193,7 +194,7 @@ export function MissionArchive({ archive = [], memberTracks }: Props) {
                             </span>
                             {repo.submissions && repo.submissions.length > 0 ? (
                               <a
-                                href={getRepoUrl(repo.submissions[0].prUrl)}
+                                href={getForkUrl(githubId, repo.name)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex-1 text-[13px] font-medium text-text transition-colors hover:text-accent-dm hover:underline"

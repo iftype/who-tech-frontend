@@ -5,14 +5,12 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { ThemeToggle } from './ThemeToggle';
-import { useTheme } from './ThemeProvider';
-import { Moon, Sun } from 'lucide-react';
 import { SearchDropdown } from '@/features/search/SearchDropdown';
 
 const NAV_LINKS = [
   { href: '/cohort/8', label: '기수 목록' },
   { href: '/feed', label: '피드' },
-  { href: '/guide', label: '가이드' },
+  { href: '/settings', label: '설정' },
 ];
 
 export function Navbar() {
@@ -21,7 +19,6 @@ export function Navbar() {
   const [, startTransition] = useTransition();
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     setOpen(false);
@@ -52,8 +49,11 @@ export function Navbar() {
   const showHeaderSearch = pathname !== '/';
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
-      <nav className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-4 sm:px-6">
+    <header data-nav className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
+      <nav
+        className="mx-auto flex h-14 items-center gap-2 px-4 sm:px-6"
+        style={{ maxWidth: 'var(--container-max, 1200px)' }}
+      >
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
@@ -125,13 +125,6 @@ export function Navbar() {
                 {label}
               </button>
             ))}
-            <button
-              onClick={toggle}
-              className="flex cursor-pointer items-center justify-start gap-2 px-6 py-3 text-left text-[14px] text-text-secondary transition-colors hover:bg-surface hover:text-text"
-            >
-              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
-              {theme === 'dark' ? '라이트 모드' : '다크 모드'}
-            </button>
           </div>
         </div>
       )}

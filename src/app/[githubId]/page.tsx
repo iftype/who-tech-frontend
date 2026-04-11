@@ -29,7 +29,7 @@ export default async function DetailPage({ params }: Props) {
   if (!member) notFound();
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-8 sm:py-10">
+    <div className="mx-auto px-4 sm:px-6 py-8 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
       {/* Profile Header */}
       <div className="flex items-center gap-5 pb-8 border-b border-border-dim">
         <a
@@ -101,6 +101,7 @@ export default async function DetailPage({ params }: Props) {
             (ca) => ca.cohort === 0 || member.cohorts.some((mc) => mc.cohort === ca.cohort),
           )}
           memberTracks={member.tracks}
+          githubId={member.githubId}
           blogPosts={member.blogPosts}
           lastPostedAt={member.lastPostedAt}
         />

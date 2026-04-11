@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { Rubik } from 'next/font/google';
+import { cookies } from 'next/headers';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/components/layout/Navbar';
 import { QueryProvider } from '@/components/layout/QueryProvider';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
+
+const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 
 export const metadata: Metadata = {
   title: {
@@ -18,23 +23,49 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+type Theme = 'dark' | 'light';
+type DesignSystem = 'paper' | 'apple' | 'sentry';
+
+const VALID_THEMES = ['dark', 'light'] as const;
+const VALID_DESIGNS = ['paper', 'apple', 'sentry'] as const;
+
+function isTheme(v: unknown): v is Theme {
+  return VALID_THEMES.includes(v as Theme);
+}
+
+function isDesign(v: unknown): v is DesignSystem {
+  return VALID_DESIGNS.includes(v as DesignSystem);
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+
+  const rawTheme = cookieStore.get('theme')?.value;
+  const rawDesign = cookieStore.get('designSystem')?.value;
+
+  const theme: Theme = isTheme(rawTheme) ? rawTheme : 'dark';
+  const design: DesignSystem = isDesign(rawDesign) ? rawDesign : 'paper';
+
+  const htmlClass = [
+    GeistSans.variable,
+    GeistMono.variable,
+    rubik.variable,
+    theme === 'dark' ? 'dark' : '',
+    design !== 'paper' ? design : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <html lang="ko" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable} dark`}>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem('theme');document.documentElement.classList.toggle('dark', t!=='light');})();`,
-          }}
-        />
-      </head>
+    <html lang="ko" suppressHydrationWarning className={htmlClass}>
       <body className="min-h-screen bg-bg font-sans">
-        <ThemeProvider>
+        <ThemeProvider initialTheme={theme} initialDesign={design}>
           <QueryProvider>
             <Navbar />
             <main>{children}</main>
           </QueryProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

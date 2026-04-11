@@ -2,17 +2,18 @@
 
 import { useState } from 'react';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
-import { formatDate, formatRelativeDate } from '@/lib/utils';
+import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
 import type { CohortArchive, BlogPost } from '@/types';
 
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
+  githubId: string;
   blogPosts: BlogPost[];
   lastPostedAt: string | null;
 }
 
-export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: Props) {
+export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt }: Props) {
   const [tab, setTab] = useState<'mission' | 'blog'>('mission');
 
   return (
@@ -39,7 +40,7 @@ export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: 
       {/* Mobile content */}
       <div className="sm:hidden">
         {tab === 'mission' ? (
-          <MissionArchive archive={archive} memberTracks={memberTracks} />
+          <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         ) : (
           <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
         )}
@@ -48,7 +49,7 @@ export function ProfileTabs({ archive, memberTracks, blogPosts, lastPostedAt }: 
       {/* Desktop: side-by-side */}
       <div className="hidden sm:flex flex-row gap-8">
         <div className="flex-1 min-w-0">
-          <MissionArchive archive={archive} memberTracks={memberTracks} />
+          <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         </div>
         <aside className="w-[360px] flex-shrink-0">
           <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
@@ -75,7 +76,7 @@ function BlogSection({ blogPosts, lastPostedAt }: { blogPosts: BlogPost[]; lastP
                 rel="noopener noreferrer"
                 className="flex flex-col gap-1 px-4 py-3 hover:bg-surface-alt transition-colors"
               >
-                <p className="text-[13px] font-medium text-text line-clamp-2">{post.title}</p>
+                <p className="text-[13px] font-medium text-text line-clamp-2">{decodeHtml(post.title)}</p>
                 <p className="text-[11px] text-text-dim">{formatDate(post.publishedAt)}</p>
               </a>
             ))}
