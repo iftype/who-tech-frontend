@@ -5,9 +5,8 @@ import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { formatRelativeDate, getBlogSource, decodeHtml } from '@/lib/utils';
-import type { FeedItem } from '@/types';
+import type { FeedItem, Track } from '@/types';
 
-type Track = 'frontend' | 'backend' | 'android';
 type Range = '7d' | '30d';
 
 function FeedRow({ item }: { item: FeedItem }) {
@@ -67,7 +66,6 @@ function FeedRow({ item }: { item: FeedItem }) {
     </div>
   );
 }
-
 function FeedList({ items }: { items: FeedItem[] }) {
   if (items.length === 0)
     return (
