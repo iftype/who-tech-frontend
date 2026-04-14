@@ -3,16 +3,30 @@
 import { useState } from 'react';
 import type { CohortArchive } from '@/types';
 
-type Tab = 'mission' | 'pending';
-type MissionMode = 'base' | 'common';
+type Tab = 'mission' | 'pending' | 'precourse';
 
-const TAB_LABELS: Record<Tab, string> = { mission: '미션/공통', pending: '확인전' };
+const TAB_LABELS: Record<Tab, string> = { mission: '미션', pending: '확인전', precourse: '프리코스' };
 
 function getForkUrl(githubId: string, repoName: string) {
   return `https://github.com/${githubId}/${repoName}`;
 }
 
-function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string, missionMode: MissionMode): string {
+function isMissionRepo(tabCategory: string) {
+  return tabCategory === 'base' || tabCategory === 'common';
+}
+
+function isPendingRepo(cohort: number, tabCategory: string) {
+  if (cohort === 0) return true;
+  return !isMissionRepo(tabCategory) && tabCategory !== 'precourse';
+}
+
+function matchesTab(tabCategory: string, tab: Tab) {
+  if (tab === 'mission') return isMissionRepo(tabCategory);
+  if (tab === 'pending') return isPendingRepo(1, tabCategory);
+  return tabCategory === 'precourse';
+}
+
+function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): string {
   const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n` || '# woowacourse-archive\n'];
 
   for (const archive of archives) {
@@ -26,23 +40,23 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string, mi
           ...repo,
           submissions:
             repo.submissions?.filter((submission) => {
-              if (tab === 'pending') return true;
+              if (tab === 'pending') return submission.status === 'closed';
               return submission.status !== 'closed';
             }) ?? null,
         }))
         .filter((r) => {
-          if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
+          if (tab === 'pending') {
+            return isPendingRepo(archive.cohort, r.tabCategory) && Boolean(r.submissions && r.submissions.length > 0);
+          }
           if (archive.cohort === 0) return false;
-          return r.tabCategory === missionMode && Boolean(r.submissions && r.submissions.length > 0);
+          return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
         });
 
       if (filtered.length === 0) continue;
 
-      // 레벨 헤더 (예: 레벨1 - JavaScript)
       const levelTitle = level === 1 ? '레벨1 - JavaScript' : level === 2 ? '레벨2 - React' : `Level ${level}`;
       lines.push(`### ${levelTitle}\n`);
 
-      // 테이블 헤더
       lines.push('| NO. | PROJECT | REPOSITORY | PR | PAIR |');
       lines.push('| :-: | :---: | :---: | :---: | :---: |');
 
@@ -50,23 +64,20 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string, mi
         if (!repo.submissions || repo.submissions.length === 0) return;
 
         repo.submissions.forEach((s, si) => {
-          const no = si === 0 ? String(i + 1) : ' '; // 첫 번째 스텝에만 번호 표시
-          const projectName = si === 0 ? repo.name : ' '; // 첫 번째 스텝에만 프로젝트명 표시
-
-          // REPOSITORY 링크 (크루 포크 레포)
+          const no = si === 0 ? String(i + 1) : ' ';
+          const projectName = si === 0 ? repo.name : ' ';
           const repoLink = `[${repo.name}-step${si + 1}](${getForkUrl(githubId, repo.name)})`;
-
-          // PR 링크
           const prLink = `[PR](${s.prUrl})`;
 
           lines.push(`| ${no} | ${projectName} | ${repoLink} | ${prLink} | - |`);
         });
       });
-      lines.push('\n'); // 레벨 간 간격
+      lines.push('\n');
     }
   }
   return lines.join('\n');
 }
+
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
@@ -74,19 +85,19 @@ interface Props {
 }
 
 export function MissionArchive({ archive = [], memberTracks, githubId }: Props) {
+  const allLevels = archive.flatMap((a) => a.levels);
+  const hasPrecourse = allLevels.some((lvl) => lvl.repos.some((r) => r.tabCategory === 'precourse'));
   const [tab, setTab] = useState<Tab>('mission');
-  const [missionMode, setMissionMode] = useState<MissionMode>('base');
   const [copied, setCopied] = useState(false);
 
-  const tabs: Tab[] = ['mission', 'pending'];
+  const tabs: Tab[] = ['mission', 'pending', ...(hasPrecourse ? (['precourse'] as Tab[]) : [])];
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId, missionMode));
+    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Filter logic applied to each cohort's levels
   const filteredArchives = archive
     .map((ca) => ({
       ...ca,
@@ -98,15 +109,17 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               ...repo,
               submissions:
                 repo.submissions?.filter((submission) => {
-                  if (tab === 'pending') return true;
+                  if (tab === 'pending') return submission.status === 'closed';
                   return submission.status !== 'closed';
                 }) ?? null,
             }))
             .filter((r) => {
-              if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
+              if (tab === 'pending') {
+                return isPendingRepo(ca.cohort, r.tabCategory) && Boolean(r.submissions && r.submissions.length > 0);
+              }
               if (ca.cohort === 0) return false;
-              if (r.tabCategory !== missionMode) return false;
-              if (missionMode === 'base' && memberTracks.length > 0) {
+              if (!matchesTab(r.tabCategory, tab)) return false;
+              if (tab === 'mission' && memberTracks.length > 0) {
                 return r.track === null || memberTracks.includes(r.track);
               }
               return Boolean(r.submissions && r.submissions.length > 0);
@@ -118,11 +131,9 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-[13px] font-semibold text-text">미션 PR 아카이브</h2>
         <div className="flex items-center gap-2">
-          {/* Tabs */}
           <div className="flex overflow-hidden rounded-md border border-border bg-surface">
             {tabs.map((t) => (
               <button
@@ -136,23 +147,6 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               </button>
             ))}
           </div>
-          {/* Mission mode toggle */}
-          {tab === 'mission' && (
-            <div className="flex overflow-hidden rounded-md border border-border bg-surface">
-              {(['base', 'common'] as MissionMode[]).map((mode) => (
-                <button
-                  key={mode}
-                  onClick={() => setMissionMode(mode)}
-                  className={`cursor-pointer px-3 py-1.5 text-[11px] transition-colors ${
-                    missionMode === mode ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
-                  }`}
-                >
-                  {mode === 'base' ? '미션' : '공통'}
-                </button>
-              ))}
-            </div>
-          )}
-          {/* Copy */}
           <button
             onClick={handleCopy}
             className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted transition-colors hover:text-text"
@@ -167,7 +161,6 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
         </div>
       </div>
 
-      {/* Cohort-grouped Mission levels */}
       {filteredArchives.length === 0 ? (
         <p className="py-8 text-center text-[13px] text-text-muted">미션 제출 기록이 없습니다</p>
       ) : (
@@ -177,7 +170,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               {ca.cohort > 0 && archive.length > 1 && (
                 <div className="flex items-center gap-3">
                   <div className="h-px flex-1 bg-border-dim" />
-                  <span className="px-3 py-1 rounded-full bg-surface-alt border border-border-dim text-[12px] font-bold text-text-secondary shadow-sm">
+                  <span className="rounded-full border border-border-dim bg-surface-alt px-3 py-1 text-[12px] font-bold text-text-secondary shadow-sm">
                     {ca.cohort}기 미션
                   </span>
                   <div className="h-px flex-1 bg-border-dim" />
@@ -187,7 +180,6 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               <div className="flex flex-col gap-5">
                 {ca.levels.map(({ level, repos }) => (
                   <div key={level ?? 'null'} className="flex flex-col gap-2">
-                    {/* Level heading */}
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
                         Level {level ?? '–'}
@@ -199,10 +191,9 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                       {repos.map((repo, idx) => (
                         <div
                           key={repo.name}
-                          className="flex flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm hover:shadow-md transition-shadow duration-300"
+                          className="flex flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm transition-shadow duration-300 hover:shadow-md"
                         >
-                          {/* Repo header */}
-                          <div className="flex items-center gap-3 border-b border-border-dim px-3 py-2 bg-surface-alt/30">
+                          <div className="flex items-center gap-3 border-b border-border-dim bg-surface-alt/30 px-3 py-2">
                             <span className="w-5 flex-shrink-0 font-mono text-[11px] text-text-dim">
                               {String(idx + 1).padStart(2, '0')}
                             </span>
@@ -220,7 +211,6 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                             )}
                           </div>
 
-                          {/* Steps */}
                           {repo.submissions === null ? (
                             <div className="flex items-center py-1.5 pl-11 pr-3">
                               <span className="w-9 flex-shrink-0 font-mono text-[10px] text-text-dim">step1</span>
@@ -247,7 +237,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                                   href={step.prUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="ml-3 flex-shrink-0 font-mono text-[11px] text-accent-dm font-medium transition-opacity hover:opacity-80"
+                                  className="ml-3 flex-shrink-0 font-mono text-[11px] font-medium text-accent-dm transition-opacity hover:opacity-80"
                                 >
                                   PR #{step.prNumber} →
                                 </a>
