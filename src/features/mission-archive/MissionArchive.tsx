@@ -25,7 +25,7 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): s
           ...repo,
           submissions:
             repo.submissions?.filter((submission) => {
-              if (tab === 'pending') return true;
+              if (tab === 'pending') return submission.status === 'closed' || archive.cohort === 0;
               return submission.status !== 'closed';
             }) ?? null,
         }))
@@ -97,7 +97,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               ...repo,
               submissions:
                 repo.submissions?.filter((submission) => {
-                  if (tab === 'pending') return true;
+                  if (tab === 'pending') return submission.status === 'closed' || ca.cohort === 0;
                   return submission.status !== 'closed';
                 }) ?? null,
             }))
@@ -113,6 +113,14 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               if (tab === 'common')
                 return r.tabCategory === 'common' && Boolean(r.submissions && r.submissions.length > 0);
               return Boolean(r.submissions && r.submissions.length > 0);
+            })
+            .sort((a, b) => {
+              if (tab !== 'pending') return 0;
+              const aDate = a.submissions?.[0]?.submittedAt;
+              const bDate = b.submissions?.[0]?.submittedAt;
+              if (!aDate) return 1;
+              if (!bDate) return -1;
+              return new Date(String(bDate)).getTime() - new Date(String(aDate)).getTime();
             }),
         }))
         .filter((lvl) => lvl.repos.length > 0),
