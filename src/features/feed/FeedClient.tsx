@@ -34,10 +34,7 @@ function FeedRow({ item }: { item: FeedItem }) {
           <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]">
-          <Link
-            href={`/${item.member.githubId}`}
-            className="relative z-10 text-[13px] font-semibold text-text hover:underline"
-          >
+          <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text hover:underline">
             {item.member.nickname}
           </Link>
           <div className="flex flex-wrap items-center gap-1">
