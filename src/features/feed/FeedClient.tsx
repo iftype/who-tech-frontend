@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { formatRelativeDate, getBlogSource } from '@/lib/utils';
+import { useFilterState } from '@/hooks/useFilterState';
 import type { FeedItem, Track } from '@/types';
 
 type Range = '7d' | '30d';
@@ -63,6 +63,7 @@ function FeedRow({ item }: { item: FeedItem }) {
     </div>
   );
 }
+
 function FeedList({ items }: { items: FeedItem[] }) {
   if (items.length === 0)
     return (
@@ -79,49 +80,18 @@ function FeedList({ items }: { items: FeedItem[] }) {
   );
 }
 
-function readFilterFromUrl(): { range: Range; cohort: string | null; track: Track | null } {
-  if (typeof window === 'undefined') return { range: '7d', cohort: null, track: null };
-  const params = new URLSearchParams(window.location.search);
-  const range = (params.get('range') as Range) === '30d' ? '30d' : '7d';
-  const cohort = params.get('cohort');
-  const trackParam = params.get('track');
-  const track = trackParam === 'frontend' || trackParam === 'backend' || trackParam === 'android' ? trackParam : null;
-  return { range, cohort, track };
-}
-
-function updateUrl(filters: { range: Range; cohort: string | null; track: Track | null }) {
-  if (typeof window === 'undefined') return;
-  const params = new URLSearchParams();
-  if (filters.range === '30d') params.set('range', '30d');
-  if (filters.cohort) params.set('cohort', filters.cohort);
-  if (filters.track) params.set('track', filters.track);
-  const query = params.toString();
-  const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-  window.history.replaceState(null, '', newUrl);
-}
-
 interface Props {
   allItems: FeedItem[];
 }
 
 export function FeedClient({ allItems }: Props) {
-  const initial = readFilterFromUrl();
-  const [range, setRange] = useState<Range>(initial.range);
-  const [cohort, setCohort] = useState<string | null>(initial.cohort);
-  const [track, setTrack] = useState<Track | null>(initial.track);
+  const [filters, applyFilters] = useFilterState('feed', {
+    range: '7d' as Range,
+    cohort: null as string | null,
+    track: null as Track | null,
+  });
 
-  const applyFilters = useCallback(
-    (next: { range?: Range; cohort?: string | null; track?: Track | null }) => {
-      const r = next.range ?? range;
-      const c = next.cohort !== undefined ? next.cohort : cohort;
-      const t = next.track !== undefined ? next.track : track;
-      setRange(r);
-      setCohort(c);
-      setTrack(t);
-      updateUrl({ range: r, cohort: c, track: t });
-    },
-    [range, cohort, track],
-  );
+  const { range, cohort, track } = filters;
 
   const now = Date.now();
 
@@ -132,7 +102,7 @@ export function FeedClient({ allItems }: Props) {
 
   const byTrack = track ? byRange.filter((item) => (item.member.tracks ?? []).includes(track)) : byRange;
 
-  const cohorts = [...new Set(byTrack.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
+  const cohorts = [...new Set(allItems.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
     (a, b) => b - a,
   );
 

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import type { Member, Track } from '@/types';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { useFilterState } from '@/hooks/useFilterState';
 
 type RoleGroup = 'crew' | 'staff';
 
@@ -21,8 +22,12 @@ interface Props {
 }
 
 export function CohortFilters({ members, cohort }: Props) {
-  const [roleGroup, setRoleGroup] = useState<RoleGroup>('crew');
-  const [track, setTrack] = useState<Track | 'all'>('all');
+  const [filters, applyFilters] = useFilterState('crew', {
+    roleGroup: 'crew' as RoleGroup,
+    track: 'all' as Track | 'all',
+  });
+
+  const { roleGroup, track } = filters;
 
   const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
   const crewCount = members.filter((m) => m.roles.includes('crew') && !isStaff(m)).length;
@@ -43,8 +48,8 @@ export function CohortFilters({ members, cohort }: Props) {
   useEffect(() => {
     if (track === 'all') return;
     if (visibleTrackOptions.some((option) => option.value === track)) return;
-    setTrack('all');
-  }, [track, visibleTrackOptions]);
+    applyFilters({ track: 'all' });
+  }, [track, visibleTrackOptions, applyFilters]);
 
   const filtered = roleScopedMembers.filter((m) => {
     if (track !== 'all' && !m.tracks.includes(track)) return false;
@@ -53,7 +58,6 @@ export function CohortFilters({ members, cohort }: Props) {
 
   return (
     <>
-      {/* Heading with Toggle */}
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">
@@ -65,7 +69,7 @@ export function CohortFilters({ members, cohort }: Props) {
         </div>
         <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
           <button
-            onClick={() => setRoleGroup('crew')}
+            onClick={() => applyFilters({ roleGroup: 'crew' })}
             className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer  ${
               roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
             }`}
@@ -73,7 +77,7 @@ export function CohortFilters({ members, cohort }: Props) {
             크루 {crewCount}
           </button>
           <button
-            onClick={() => setRoleGroup('staff')}
+            onClick={() => applyFilters({ roleGroup: 'staff' })}
             className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer ${
               roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'
             }`}
@@ -83,13 +87,12 @@ export function CohortFilters({ members, cohort }: Props) {
         </div>
       </div>
 
-      {/* Filter Bar */}
       <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
           {visibleTrackOptions.map(({ label, value }) => (
             <button
               key={value}
-              onClick={() => setTrack(value)}
+              onClick={() => applyFilters({ track: value })}
               className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
                 track === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
               }`}
@@ -110,7 +113,6 @@ export function CohortFilters({ members, cohort }: Props) {
         </div>
       </div>
 
-      {/* Mobile: 세로 리스트 */}
       <div className="sm:hidden">
         {filtered.length === 0 ? (
           <div className="rounded-xl border border-border bg-surface px-4 py-12 text-center text-[14px] text-text-muted">
@@ -155,7 +157,6 @@ export function CohortFilters({ members, cohort }: Props) {
         )}
       </div>
 
-      {/* PC: 격자 그리드 */}
       <div className="hidden sm:grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
         {filtered.map((member) => (
           <Link
