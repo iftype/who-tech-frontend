@@ -40,8 +40,8 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): s
           ...repo,
           submissions:
             repo.submissions?.filter((submission) => {
-              if (tab === 'pending') return submission.status === 'closed';
-              return submission.status !== 'closed';
+              if (tab === 'mission') return submission.status !== 'closed';
+              return true;
             }) ?? null,
         }))
         .filter((r) => {
@@ -109,8 +109,8 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               ...repo,
               submissions:
                 repo.submissions?.filter((submission) => {
-                  if (tab === 'pending') return submission.status === 'closed';
-                  return submission.status !== 'closed';
+                  if (tab === 'mission') return submission.status !== 'closed';
+                  return true;
                 }) ?? null,
             }))
             .filter((r) => {
@@ -232,12 +232,19 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                                   className="min-w-0 flex-1 truncate text-[12px] font-medium text-text transition-colors hover:text-accent-dm hover:underline"
                                 >
                                   {step.title}
+                                  {step.status === 'closed' && (
+                                    <span className="ml-1.5 inline-flex items-center rounded px-1 py-0.5 text-[9px] font-medium bg-red-100 text-red-600">
+                                      closed
+                                    </span>
+                                  )}
                                 </a>
                                 <a
                                   href={step.prUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="ml-3 flex-shrink-0 font-mono text-[11px] font-medium text-accent-dm transition-opacity hover:opacity-80"
+                                  className={`ml-3 flex-shrink-0 font-mono text-[11px] font-medium transition-opacity hover:opacity-80 ${
+                                    step.status === 'closed' ? 'text-red-400' : 'text-accent-dm'
+                                  }`}
                                 >
                                   PR #{step.prNumber} →
                                 </a>
