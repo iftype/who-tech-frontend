@@ -1,4 +1,5 @@
 import type { Member, MemberDetail, FeedItem, CohortArchive, ArchiveStep, TabCategory } from '@/types';
+import { decodeHtml } from './utils';
 
 const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
 // 브라우저에서는 CORS 우회를 위해 Next.js rewrite 프록시 사용
@@ -57,7 +58,7 @@ export const api = {
       const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
       return normalizeDetail(raw);
     },
-    feed: (params: { cohort?: number; track?: string; days?: number } = {}) => {
+    feed: async (params: { cohort?: number; track?: string; days?: number } = {}) => {
       const qs = new URLSearchParams(
         Object.fromEntries(
           Object.entries(params)
@@ -65,7 +66,11 @@ export const api = {
             .map(([k, v]) => [k, String(v)]),
         ),
       ).toString();
-      return fetchApi<FeedItem[]>(`/members/feed${qs ? `?${qs}` : ''}`, { next: { revalidate: 300 } });
+      const items = await fetchApi<FeedItem[]>(`/members/feed${qs ? `?${qs}` : ''}`, { next: { revalidate: 300 } });
+      return items.map((item) => ({
+        ...item,
+        title: decodeHtml(item.title),
+      }));
     },
   },
 };

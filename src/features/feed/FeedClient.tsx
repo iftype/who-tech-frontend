@@ -4,10 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
-import { formatRelativeDate, getBlogSource, decodeHtml } from '@/lib/utils';
-import type { FeedItem } from '@/types';
+import { formatRelativeDate, getBlogSource } from '@/lib/utils';
+import type { FeedItem, Track } from '@/types';
 
-type Track = 'frontend' | 'backend' | 'android';
 type Range = '7d' | '30d';
 
 function FeedRow({ item }: { item: FeedItem }) {
@@ -30,15 +29,12 @@ function FeedRow({ item }: { item: FeedItem }) {
             rel="noopener noreferrer"
             className="break-all text-[14px] font-medium text-text hover:underline after:absolute after:inset-0 after:content-['']"
           >
-            {decodeHtml(item.title)}
+            {item.title}
           </a>
           <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]">
-          <Link
-            href={`/${item.member.githubId}`}
-            className="relative z-10 text-[13px] font-semibold text-text hover:underline"
-          >
+          <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text hover:underline">
             {item.member.nickname}
           </Link>
           <div className="flex flex-wrap items-center gap-1">
@@ -67,7 +63,6 @@ function FeedRow({ item }: { item: FeedItem }) {
     </div>
   );
 }
-
 function FeedList({ items }: { items: FeedItem[] }) {
   if (items.length === 0)
     return (
@@ -247,7 +242,7 @@ export function FeedClient({ allItems }: Props) {
                 staffPosts.map((post) => (
                   <a key={post.url} href={post.url} target="_blank" rel="noopener noreferrer" className="group block">
                     <p className="line-clamp-2 text-[13px] font-medium leading-relaxed text-text group-hover:underline">
-                      {decodeHtml(post.title)}
+                      {post.title}
                     </p>
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">
