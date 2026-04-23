@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
@@ -79,35 +79,65 @@ function FeedList({ items }: { items: FeedItem[] }) {
   );
 }
 
+function readFilterFromUrl(): { range: Range; cohort: string | null; track: Track | null } {
+  if (typeof window === 'undefined') return { range: '7d', cohort: null, track: null };
+  const params = new URLSearchParams(window.location.search);
+  const range = (params.get('range') as Range) === '30d' ? '30d' : '7d';
+  const cohort = params.get('cohort');
+  const trackParam = params.get('track');
+  const track = trackParam === 'frontend' || trackParam === 'backend' || trackParam === 'android' ? trackParam : null;
+  return { range, cohort, track };
+}
+
+function updateUrl(filters: { range: Range; cohort: string | null; track: Track | null }) {
+  if (typeof window === 'undefined') return;
+  const params = new URLSearchParams();
+  if (filters.range === '30d') params.set('range', '30d');
+  if (filters.cohort) params.set('cohort', filters.cohort);
+  if (filters.track) params.set('track', filters.track);
+  const query = params.toString();
+  const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  window.history.replaceState(null, '', newUrl);
+}
+
 interface Props {
   allItems: FeedItem[];
 }
 
 export function FeedClient({ allItems }: Props) {
-  const [range, setRange] = useState<Range>('7d');
-  const [cohort, setCohort] = useState<string | null>(null);
-  const [track, setTrack] = useState<Track | null>(null);
+  const initial = readFilterFromUrl();
+  const [range, setRange] = useState<Range>(initial.range);
+  const [cohort, setCohort] = useState<string | null>(initial.cohort);
+  const [track, setTrack] = useState<Track | null>(initial.track);
+
+  const applyFilters = useCallback(
+    (next: { range?: Range; cohort?: string | null; track?: Track | null }) => {
+      const r = next.range ?? range;
+      const c = next.cohort !== undefined ? next.cohort : cohort;
+      const t = next.track !== undefined ? next.track : track;
+      setRange(r);
+      setCohort(c);
+      setTrack(t);
+      updateUrl({ range: r, cohort: c, track: t });
+    },
+    [range, cohort, track],
+  );
 
   const now = Date.now();
 
-  // 기간 필터
   const byRange = allItems.filter((item) => {
     const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
     return diffDays <= (range === '30d' ? 30 : 7);
   });
 
-  // 트랙 필터
   const byTrack = track ? byRange.filter((item) => (item.member.tracks ?? []).includes(track)) : byRange;
 
-  // 기수 목록 (내림차순)
   const cohorts = [...new Set(byTrack.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
     (a, b) => b - a,
   );
 
-  // 기수 필터
   const filtered = cohort ? byTrack.filter((item) => item.member.cohort === Number(cohort)) : byTrack;
 
-  // 기수별 그룹핑
   const grouped = new Map<number, FeedItem[]>();
   for (const item of byTrack) {
     const key = item.member.cohort;
@@ -116,7 +146,6 @@ export function FeedClient({ allItems }: Props) {
     grouped.get(key)!.push(item);
   }
 
-  // 사이드바 — 8기 운영진 최신 글 (range 기준, track 무관)
   const staffPosts = byRange
     .filter((item) => {
       const roles = item.member.roles ?? [];
@@ -124,7 +153,6 @@ export function FeedClient({ allItems }: Props) {
     })
     .slice(0, 5);
 
-  // 플랫폼 통계 (현재 filtered 기준)
   const platformStats = Object.entries(
     filtered.reduce<Record<string, number>>((acc, item) => {
       const source = getBlogSource(item.url) ?? '기타';
@@ -144,21 +172,23 @@ export function FeedClient({ allItems }: Props) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
       <section className="min-w-0">
-        {/* 기수 탭 */}
         <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
           <div className="flex min-w-max items-center gap-1 sm:gap-0">
-            <button onClick={() => setCohort(null)} className={tabClass(cohort === null)}>
+            <button onClick={() => applyFilters({ cohort: null })} className={tabClass(cohort === null)}>
               전체
             </button>
             {cohorts.map((c) => (
-              <button key={c} onClick={() => setCohort(String(c))} className={tabClass(cohort === String(c))}>
+              <button
+                key={c}
+                onClick={() => applyFilters({ cohort: String(c) })}
+                className={tabClass(cohort === String(c))}
+              >
                 {c}기
               </button>
             ))}
           </div>
         </div>
 
-        {/* 헤더 + 기간 필터 */}
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">
@@ -172,7 +202,7 @@ export function FeedClient({ allItems }: Props) {
             {(['7d', '30d'] as const).map((r) => (
               <button
                 key={r}
-                onClick={() => setRange(r)}
+                onClick={() => applyFilters({ range: r })}
                 className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
                   range === r ? 'bg-border text-text' : 'text-text-muted hover:text-text'
                 }`}
@@ -183,13 +213,12 @@ export function FeedClient({ allItems }: Props) {
           </div>
         </div>
 
-        {/* 트랙 필터 */}
         <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
           <div className="flex items-center gap-0.5">
             {([null, 'frontend', 'backend', 'android'] as (Track | null)[]).map((v) => (
               <button
                 key={v ?? 'all'}
-                onClick={() => setTrack(v)}
+                onClick={() => applyFilters({ track: v })}
                 className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
                   track === v ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
                 }`}
@@ -203,7 +232,6 @@ export function FeedClient({ allItems }: Props) {
           </p>
         </div>
 
-        {/* 콘텐츠 */}
         {cohort ? (
           <div className="flex flex-col gap-6">
             {cohorts
@@ -230,7 +258,6 @@ export function FeedClient({ allItems }: Props) {
         )}
       </section>
 
-      {/* 사이드바 */}
       <aside className="hidden lg:block">
         <div className="sticky top-24 space-y-7 border-l border-border pl-5">
           <section>
