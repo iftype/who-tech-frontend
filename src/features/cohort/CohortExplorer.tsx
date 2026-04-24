@@ -148,25 +148,49 @@ export function CohortExplorer({ members, initialCohort }: Props) {
     <>
       <CohortTabBar activeCohort={activeCohort} cohorts={cohorts} onChange={handleCohortChange} />
       {!hydrated ? (
-        <CohortFilterBarSkeleton
-          cohort={activeCohort ?? 0}
-          counts={{ crew: crewCount, staff: staffCount }}
-          visibleTrackOptions={visibleTrackOptions}
-          filteredCount={filtered.length}
-        />
+        <>
+          <CohortFilterBarSkeleton
+            cohort={activeCohort ?? 0}
+            counts={{ crew: crewCount, staff: staffCount }}
+            visibleTrackOptions={visibleTrackOptions}
+            filteredCount={filtered.length}
+          />
+          <div className="flex flex-col gap-2 sm:hidden">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3">
+                <div className="h-8 w-8 flex-shrink-0 animate-pulse rounded-full bg-surface-alt" />
+                <div className="flex-1">
+                  <div className="mb-1.5 h-3.5 w-24 animate-pulse rounded bg-surface-alt" />
+                  <div className="h-3 w-16 animate-pulse rounded bg-surface-alt" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="hidden sm:grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface p-4">
+                <div className="h-14 w-14 animate-pulse rounded-full bg-surface-alt" />
+                <div className="h-3.5 w-20 animate-pulse rounded bg-surface-alt" />
+                <div className="h-3 w-14 animate-pulse rounded bg-surface-alt" />
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
-        <CohortFilterBar
-          cohort={activeCohort ?? 0}
-          filters={filters}
-          applyFilters={applyFilters}
-          counts={{ crew: crewCount, staff: staffCount }}
-          visibleTrackOptions={visibleTrackOptions}
-          filteredCount={filtered.length}
-          totalCount={roleGroup === 'crew' ? crewCount : staffCount}
-        />
+        <>
+          <CohortFilterBar
+            cohort={activeCohort ?? 0}
+            filters={filters}
+            applyFilters={applyFilters}
+            counts={{ crew: crewCount, staff: staffCount }}
+            visibleTrackOptions={visibleTrackOptions}
+            filteredCount={filtered.length}
+            totalCount={roleGroup === 'crew' ? crewCount : staffCount}
+          />
+          <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
+          <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
+        </>
       )}
-      <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
-      <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
     </>
   );
 }
