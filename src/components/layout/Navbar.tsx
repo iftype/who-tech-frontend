@@ -8,7 +8,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { SearchDropdown } from '@/features/search/SearchDropdown';
 
 const NAV_LINKS = [
-  { href: '/cohort/8', label: '기수 목록' },
+  { href: '/cohort', label: '기수 목록' },
   { href: '/feed', label: '피드' },
   { href: '/settings', label: '설정' },
 ];
@@ -46,7 +46,7 @@ export function Navbar() {
       : `cursor-pointer whitespace-nowrap text-[13px] transition-colors ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
   };
 
-  const showHeaderSearch = pathname !== '/';
+  const showHeaderSearch = true;
 
   return (
     <header data-nav className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">

@@ -164,7 +164,7 @@ function GuideTab() {
               기수별 목록 보기 →
             </Link>
             <Link
-              href="/feed"
+              href="/"
               className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[12px] text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
             >
               블로그 피드 보기 →
