@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CohortArchive } from '@/types';
+import { useFilterState } from '@/hooks/useFilterState';
 
 type Tab = 'mission' | 'pending' | 'precourse';
 
@@ -87,7 +88,8 @@ interface Props {
 export function MissionArchive({ archive = [], memberTracks, githubId }: Props) {
   const allLevels = archive.flatMap((a) => a.levels);
   const hasPrecourse = allLevels.some((lvl) => lvl.repos.some((r) => r.tabCategory === 'precourse'));
-  const [tab, setTab] = useState<Tab>('mission');
+  const [filters, applyFilters] = useFilterState('mission', { tab: 'mission' as Tab });
+  const tab = filters.tab;
   const [copied, setCopied] = useState(false);
 
   const tabs: Tab[] = ['mission', 'pending', ...(hasPrecourse ? (['precourse'] as Tab[]) : [])];
@@ -138,7 +140,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
             {tabs.map((t) => (
               <button
                 key={t}
-                onClick={() => setTab(t)}
+                onClick={() => applyFilters({ tab: t })}
                 className={`cursor-pointer px-3 py-1.5 text-[11px] transition-colors ${
                   tab === t ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
                 }`}
