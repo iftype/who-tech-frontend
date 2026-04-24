@@ -9,33 +9,49 @@ import type { FeedItem, Track } from '@/types';
 
 type Range = '7d' | '30d';
 
-function FeedFilterBarSkeleton() {
+interface FeedSkeletonProps {
+  cohorts: number[];
+  filteredCount: number;
+}
+
+function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
+  const tabCls = '-mb-px border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap sm:py-2';
   return (
     <>
-      <div className="mb-5 border-b border-border pb-0">
-        <div className="flex items-center gap-1">
-          {[40, 36, 36, 36, 36].map((w, i) => (
-            <div key={i} className="mb-[-1px] h-9 animate-pulse rounded-t-md bg-surface-alt" style={{ width: w }} />
+      <div className="pointer-events-none mb-5 overflow-x-auto border-b border-border">
+        <div className="flex min-w-max items-center gap-1 sm:gap-0">
+          <div className={`${tabCls} border-accent-dm text-accent-dm`}>전체</div>
+          {cohorts.map((c) => (
+            <div key={c} className={`${tabCls} border-transparent text-text-dim`}>
+              {c}기
+            </div>
           ))}
         </div>
       </div>
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <div className="h-8 w-16 animate-pulse rounded bg-surface-alt" />
-          <div className="mt-1.5 h-3 w-48 animate-pulse rounded bg-surface-alt" />
+          <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">피드</h1>
+          <p className="mt-1 text-[12px] text-text-secondary">모든 크루의 최신 블로그 글</p>
         </div>
-        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-          <div className="h-7 w-16 animate-pulse rounded bg-surface-alt" />
-          <div className="h-7 w-12 animate-pulse rounded bg-surface-alt" />
+        <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+          <div className="rounded bg-border px-2.5 py-1.5 text-[11px] text-text">최근 7일</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-dim">30일</div>
         </div>
       </div>
-      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
+      <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
-          {[40, 60, 48, 60].map((w, i) => (
-            <div key={i} className="h-7 animate-pulse rounded-md bg-surface-alt" style={{ width: w }} />
+          {(['전체', '프론트엔드', '백엔드', '안드로이드'] as const).map((label, i) => (
+            <div
+              key={label}
+              className={`rounded-md px-2.5 py-1 text-[12px] font-medium ${i === 0 ? 'bg-accent-bg text-accent-dm' : 'text-text-dim'}`}
+            >
+              {label}
+            </div>
           ))}
         </div>
-        <div className="ml-auto h-3.5 w-10 animate-pulse rounded bg-surface-alt" />
+        <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
+          <span className="font-mono text-text">{filteredCount}</span>개
+        </p>
       </div>
     </>
   );
@@ -43,7 +59,6 @@ function FeedFilterBarSkeleton() {
 
 const FeedFilterBar = dynamic(() => import('@/features/feed/FeedFilterBar').then((m) => m.FeedFilterBar), {
   ssr: false,
-  loading: () => <FeedFilterBarSkeleton />,
 });
 
 interface Props {
@@ -51,7 +66,7 @@ interface Props {
 }
 
 export function FeedClient({ allItems }: Props) {
-  const [filters, applyFilters] = useFilterState('feed', {
+  const [filters, applyFilters, , hydrated] = useFilterState('feed', {
     range: '7d' as Range,
     cohort: null as string | null,
     track: null as Track | null,
@@ -101,12 +116,16 @@ export function FeedClient({ allItems }: Props) {
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
       <section className="min-w-0">
-        <FeedFilterBar
-          filters={filters}
-          applyFilters={applyFilters}
-          cohorts={cohorts}
-          filteredCount={filtered.length}
-        />
+        {!hydrated ? (
+          <FeedFilterBarSkeleton cohorts={cohorts} filteredCount={filtered.length} />
+        ) : (
+          <FeedFilterBar
+            filters={filters}
+            applyFilters={applyFilters}
+            cohorts={cohorts}
+            filteredCount={filtered.length}
+          />
+        )}
         <FeedListSection cohort={cohort} cohorts={cohorts} filtered={filtered} grouped={grouped} />
       </section>
       <FeedSidebar staffPosts={staffPosts} platformStats={platformStats} />

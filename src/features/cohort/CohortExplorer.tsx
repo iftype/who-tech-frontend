@@ -13,26 +13,44 @@ import { CohortMemberGrid } from './CohortMemberGrid';
 
 type RoleGroup = 'crew' | 'staff';
 
-function CohortFilterBarSkeleton() {
+interface SkeletonProps {
+  cohort: number;
+  counts: { crew: number; staff: number };
+  visibleTrackOptions: { label: string; value: Track | 'all' }[];
+  filteredCount: number;
+}
+
+function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filteredCount }: SkeletonProps) {
   return (
     <>
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <div className="h-7 w-28 animate-pulse rounded bg-surface-alt" />
-          <div className="mt-1.5 h-3 w-44 animate-pulse rounded bg-surface-alt" />
+          <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">
+            {cohort === 0 ? '전체 크루' : `${cohort}기 크루`}
+          </h1>
+          <p className="mt-1 text-[12px] text-text-muted">
+            우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
+          </p>
         </div>
-        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-          <div className="h-7 w-14 animate-pulse rounded bg-surface-alt" />
-          <div className="h-7 w-14 animate-pulse rounded bg-surface-alt" />
+        <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+          <div className="rounded bg-border px-2.5 py-1.5 text-[11px] text-text">크루 {counts.crew}</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-dim">운영진 {counts.staff}</div>
         </div>
       </div>
-      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
+      <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
-          {[40, 60, 48, 60].map((w, i) => (
-            <div key={i} className="h-7 animate-pulse rounded-md bg-surface-alt" style={{ width: w }} />
+          {visibleTrackOptions.map(({ label, value }) => (
+            <div
+              key={value}
+              className={`rounded-md px-2.5 py-1 text-[12px] font-medium ${value === 'all' ? 'bg-accent-bg text-accent-dm' : 'text-text-dim'}`}
+            >
+              {label}
+            </div>
           ))}
         </div>
-        <div className="ml-auto h-3.5 w-10 animate-pulse rounded bg-surface-alt" />
+        <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
+          <span className="font-mono text-text">{filteredCount}</span>명
+        </p>
       </div>
     </>
   );
@@ -40,7 +58,6 @@ function CohortFilterBarSkeleton() {
 
 const CohortFilterBar = dynamic(() => import('./CohortFilterBar').then((m) => ({ default: m.CohortFilterBar })), {
   ssr: false,
-  loading: () => <CohortFilterBarSkeleton />,
 });
 
 interface Props {
@@ -59,7 +76,7 @@ export function CohortExplorer({ members, initialCohort }: Props) {
   const [activeCohort, setActiveCohort] = useState<number | null>(initialCohort);
   const deferredActiveCohort = useDeferredValue(activeCohort);
 
-  const [filters, applyFilters] = useFilterState('crew', {
+  const [filters, applyFilters, , hydrated] = useFilterState('crew', {
     roleGroup: 'crew' as RoleGroup,
     track: 'all' as Track | 'all',
   });
@@ -138,15 +155,24 @@ export function CohortExplorer({ members, initialCohort }: Props) {
   return (
     <>
       <CohortTabBar activeCohort={activeCohort} cohorts={cohorts} onChange={handleCohortChange} />
-      <CohortFilterBar
-        cohort={activeCohort ?? 0}
-        filters={filters}
-        applyFilters={applyFilters}
-        counts={{ crew: crewCount, staff: staffCount }}
-        visibleTrackOptions={visibleTrackOptions}
-        filteredCount={filtered.length}
-        totalCount={roleGroup === 'crew' ? crewCount : staffCount}
-      />
+      {!hydrated ? (
+        <CohortFilterBarSkeleton
+          cohort={activeCohort ?? 0}
+          counts={{ crew: crewCount, staff: staffCount }}
+          visibleTrackOptions={visibleTrackOptions}
+          filteredCount={filtered.length}
+        />
+      ) : (
+        <CohortFilterBar
+          cohort={activeCohort ?? 0}
+          filters={filters}
+          applyFilters={applyFilters}
+          counts={{ crew: crewCount, staff: staffCount }}
+          visibleTrackOptions={visibleTrackOptions}
+          filteredCount={filtered.length}
+          totalCount={roleGroup === 'crew' ? crewCount : staffCount}
+        />
+      )}
       <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
       <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
     </>
