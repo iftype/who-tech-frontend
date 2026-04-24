@@ -1,7 +1,7 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useFilterState } from '@/hooks/useFilterState';
+import { FeedFilterBar } from '@/features/feed/FeedFilterBar';
 import { FeedListSection } from '@/features/feed/FeedListSection';
 import { FeedSidebar } from '@/features/feed/FeedSidebar';
 import { getBlogSource } from '@/lib/utils';
@@ -22,7 +22,7 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
         <div className="flex min-w-max items-center gap-1 sm:gap-0">
           <div className={`${tabCls} border-accent-dm text-accent-dm`}>전체</div>
           {cohorts.map((c) => (
-            <div key={c} className={`${tabCls} border-transparent text-text-dim`}>
+            <div key={c} className={`${tabCls} border-transparent text-text-muted`}>
               {c}기
             </div>
           ))}
@@ -35,7 +35,7 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
           <div className="rounded bg-border px-2.5 py-1.5 text-[11px] text-text">최근 7일</div>
-          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-dim">30일</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">30일</div>
         </div>
       </div>
       <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
@@ -43,7 +43,7 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
           {(['전체', '프론트엔드', '백엔드', '안드로이드'] as const).map((label, i) => (
             <div
               key={label}
-              className={`rounded-md px-2.5 py-1 text-[12px] font-medium ${i === 0 ? 'bg-accent-bg text-accent-dm' : 'text-text-dim'}`}
+              className={`rounded-md px-2.5 py-1 text-[12px] font-medium ${i === 0 ? 'bg-accent-bg text-accent-dm' : 'text-text-muted'}`}
             >
               {label}
             </div>
@@ -56,10 +56,6 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
     </>
   );
 }
-
-const FeedFilterBar = dynamic(() => import('@/features/feed/FeedFilterBar').then((m) => m.FeedFilterBar), {
-  ssr: false,
-});
 
 interface Props {
   allItems: FeedItem[];

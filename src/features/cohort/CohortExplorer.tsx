@@ -1,12 +1,11 @@
 'use client';
 
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import type { Member, Track } from '@/types';
 import { api } from '@/lib/api';
 import { useFilterState } from '@/hooks/useFilterState';
-import { TRACK_OPTIONS } from './CohortFilterBar';
+import { CohortFilterBar, TRACK_OPTIONS } from './CohortFilterBar';
 import { CohortTabBar } from './CohortTabBar';
 import { CohortMemberList } from './CohortMemberList';
 import { CohortMemberGrid } from './CohortMemberGrid';
@@ -34,7 +33,7 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
           <div className="rounded bg-border px-2.5 py-1.5 text-[11px] text-text">크루 {counts.crew}</div>
-          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-dim">운영진 {counts.staff}</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">운영진 {counts.staff}</div>
         </div>
       </div>
       <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
@@ -55,10 +54,6 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
     </>
   );
 }
-
-const CohortFilterBar = dynamic(() => import('./CohortFilterBar').then((m) => ({ default: m.CohortFilterBar })), {
-  ssr: false,
-});
 
 interface Props {
   members: Member[];
