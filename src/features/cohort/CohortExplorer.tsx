@@ -13,9 +13,34 @@ import { CohortMemberGrid } from './CohortMemberGrid';
 
 type RoleGroup = 'crew' | 'staff';
 
+function CohortFilterBarSkeleton() {
+  return (
+    <>
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <div className="h-7 w-28 animate-pulse rounded bg-surface-alt" />
+          <div className="mt-1.5 h-3 w-44 animate-pulse rounded bg-surface-alt" />
+        </div>
+        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+          <div className="h-7 w-14 animate-pulse rounded bg-surface-alt" />
+          <div className="h-7 w-14 animate-pulse rounded bg-surface-alt" />
+        </div>
+      </div>
+      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
+        <div className="flex items-center gap-0.5">
+          {[40, 60, 48, 60].map((w, i) => (
+            <div key={i} className="h-7 animate-pulse rounded-md bg-surface-alt" style={{ width: w }} />
+          ))}
+        </div>
+        <div className="ml-auto h-3.5 w-10 animate-pulse rounded bg-surface-alt" />
+      </div>
+    </>
+  );
+}
+
 const CohortFilterBar = dynamic(() => import('./CohortFilterBar').then((m) => ({ default: m.CohortFilterBar })), {
   ssr: false,
-  loading: () => <div className="mb-5 h-[88px]" />,
+  loading: () => <CohortFilterBarSkeleton />,
 });
 
 interface Props {
