@@ -155,23 +155,32 @@ export function CohortExplorer({ members, initialCohort }: Props) {
             visibleTrackOptions={visibleTrackOptions}
             filteredCount={filtered.length}
           />
-          <div className="flex flex-col gap-2 sm:hidden">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3">
-                <div className="h-8 w-8 flex-shrink-0 animate-pulse rounded-full bg-surface-alt" />
-                <div className="flex-1">
-                  <div className="mb-1.5 h-3.5 w-24 animate-pulse rounded bg-surface-alt" />
-                  <div className="h-3 w-16 animate-pulse rounded bg-surface-alt" />
+          <div className="sm:hidden flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
+            {[72, 56, 88, 64, 76].map((w) => (
+              <div key={w} className="flex items-center gap-3 border-b border-border-dim px-4 py-3 last:border-0">
+                <div className="h-9 w-9 flex-shrink-0 animate-pulse rounded-full bg-surface-alt" />
+                <div className="min-w-0 flex-1">
+                  <div className="h-3.5 animate-pulse rounded bg-surface-alt" style={{ width: w }} />
+                  <div className="mt-1 flex gap-1">
+                    <div className="h-4 w-8 animate-pulse rounded-full bg-surface-alt" />
+                    <div className="h-4 w-14 animate-pulse rounded-full bg-surface-alt" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="hidden sm:grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface p-4">
-                <div className="h-14 w-14 animate-pulse rounded-full bg-surface-alt" />
-                <div className="h-3.5 w-20 animate-pulse rounded bg-surface-alt" />
-                <div className="h-3 w-14 animate-pulse rounded bg-surface-alt" />
+          <div className="hidden sm:grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+              <div
+                key={i}
+                className="flex min-h-[148px] flex-col items-center justify-center gap-2.5 rounded-xl border border-border bg-surface p-4"
+              >
+                <div className="h-12 w-12 animate-pulse rounded-full bg-surface-alt" />
+                <div className="w-full text-center">
+                  <div className="mx-auto h-3.5 w-16 animate-pulse rounded bg-surface-alt" />
+                  <div className="mx-auto mt-1 h-2.5 w-12 animate-pulse rounded bg-surface-alt" />
+                </div>
+                <div className="h-4 w-10 animate-pulse rounded-full bg-surface-alt" />
               </div>
             ))}
           </div>
