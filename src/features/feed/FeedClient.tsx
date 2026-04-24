@@ -1,84 +1,55 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Avatar } from '@/components/ui/Avatar';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
-import { formatRelativeDate, getBlogSource } from '@/lib/utils';
+import { useFilterState } from '@/hooks/useFilterState';
+import { FeedFilterBar } from '@/features/feed/FeedFilterBar';
+import { FeedListSection } from '@/features/feed/FeedListSection';
+import { FeedSidebar } from '@/features/feed/FeedSidebar';
+import { getBlogSource } from '@/lib/utils';
 import type { FeedItem, Track } from '@/types';
 
 type Range = '7d' | '30d';
 
-function FeedRow({ item }: { item: FeedItem }) {
-  const source = getBlogSource(item.url);
-  return (
-    <div className="relative flex items-start gap-3 border-b border-border-dim px-4 py-3.5 hover:bg-surface-alt last:border-b-0">
-      <a
-        href={`https://github.com/${item.member.githubId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="relative z-10 mt-0.5 flex-shrink-0"
-      >
-        <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} />
-      </a>
-      <div className="min-w-0 flex-1">
-        <div className="mb-1.5 flex flex-wrap items-center gap-1">
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="break-all text-[14px] font-medium text-text hover:underline after:absolute after:inset-0 after:content-['']"
-          >
-            {item.title}
-          </a>
-          <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]">
-          <Link
-            href={`/${item.member.githubId}`}
-            className="relative z-10 text-[13px] font-semibold text-text hover:underline"
-          >
-            {item.member.nickname}
-          </Link>
-          <div className="flex flex-wrap items-center gap-1">
-            {(item.member.tracks ?? []).map((t) => (
-              <TrackBadge key={t} track={t} />
-            ))}
-            {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
-            {(item.member.roles ?? [])
-              .filter((r) => r !== 'crew')
-              .map((r) => (
-                <RoleBadge key={r} role={r} />
-              ))}
-          </div>
-        </div>
-      </div>
-      {source && (
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative z-10 mt-0.5 flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] text-text-muted hover:bg-surface-alt"
-        >
-          {source}
-        </a>
-      )}
-    </div>
-  );
+interface FeedSkeletonProps {
+  cohorts: number[];
+  filteredCount: number;
 }
-function FeedList({ items }: { items: FeedItem[] }) {
-  if (items.length === 0)
-    return (
-      <div className="rounded-xl border border-border bg-surface py-16 text-center text-[14px] text-text-muted">
-        조건에 맞는 블로그 글이 없습니다
-      </div>
-    );
+
+function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
+  const tabCls = '-mb-px border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap sm:py-2';
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-surface">
-      {items.map((item) => (
-        <FeedRow key={`${item.url}-${item.publishedAt}`} item={item} />
-      ))}
-    </div>
+    <>
+      <div className="pointer-events-none mb-5 overflow-x-auto border-b border-border">
+        <div className="flex min-w-max items-center gap-1 sm:gap-0">
+          {['전체', ...cohorts.map((c) => `${c}기`)].map((label) => (
+            <div key={label} className={`${tabCls} border-transparent text-text-muted`}>
+              {label}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">피드</h1>
+          <p className="mt-1 text-[12px] text-text-secondary">모든 크루의 최신 블로그 글</p>
+        </div>
+        <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">최근 7일</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">30일</div>
+        </div>
+      </div>
+      <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
+        <div className="flex items-center gap-0.5">
+          {(['전체', '프론트엔드', '백엔드', '안드로이드'] as const).map((label) => (
+            <div key={label} className="rounded-md px-2.5 py-1 text-[12px] font-medium text-text-muted">
+              {label}
+            </div>
+          ))}
+        </div>
+        <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
+          <span className="font-mono text-text">{filteredCount}</span>개
+        </p>
+      </div>
+    </>
   );
 }
 
@@ -87,30 +58,28 @@ interface Props {
 }
 
 export function FeedClient({ allItems }: Props) {
-  const [range, setRange] = useState<Range>('7d');
-  const [cohort, setCohort] = useState<string | null>(null);
-  const [track, setTrack] = useState<Track | null>(null);
+  const [filters, applyFilters, , hydrated] = useFilterState('feed', {
+    range: '7d' as Range,
+    cohort: null as string | null,
+    track: null as Track | null,
+  });
 
+  const { range, cohort, track } = filters;
   const now = Date.now();
 
-  // 기간 필터
   const byRange = allItems.filter((item) => {
     const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
     return diffDays <= (range === '30d' ? 30 : 7);
   });
 
-  // 트랙 필터
   const byTrack = track ? byRange.filter((item) => (item.member.tracks ?? []).includes(track)) : byRange;
 
-  // 기수 목록 (내림차순)
-  const cohorts = [...new Set(byTrack.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
+  const cohorts = [...new Set(allItems.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
     (a, b) => b - a,
   );
 
-  // 기수 필터
   const filtered = cohort ? byTrack.filter((item) => item.member.cohort === Number(cohort)) : byTrack;
 
-  // 기수별 그룹핑
   const grouped = new Map<number, FeedItem[]>();
   for (const item of byTrack) {
     const key = item.member.cohort;
@@ -119,7 +88,6 @@ export function FeedClient({ allItems }: Props) {
     grouped.get(key)!.push(item);
   }
 
-  // 사이드바 — 8기 운영진 최신 글 (range 기준, track 무관)
   const staffPosts = byRange
     .filter((item) => {
       const roles = item.member.roles ?? [];
@@ -127,7 +95,6 @@ export function FeedClient({ allItems }: Props) {
     })
     .slice(0, 5);
 
-  // 플랫폼 통계 (현재 filtered 기준)
   const platformStats = Object.entries(
     filtered.reduce<Record<string, number>>((acc, item) => {
       const source = getBlogSource(item.url) ?? '기타';
@@ -137,149 +104,38 @@ export function FeedClient({ allItems }: Props) {
   )
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4);
-  const totalPlatformCount = platformStats.reduce((sum, [, c]) => sum + c, 0);
-
-  const tabClass = (active: boolean) =>
-    `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
-      active ? 'border-accent-dm text-accent-dm' : 'border-transparent text-text-muted hover:text-text'
-    }`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
       <section className="min-w-0">
-        {/* 기수 탭 */}
-        <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
-          <div className="flex min-w-max items-center gap-1 sm:gap-0">
-            <button onClick={() => setCohort(null)} className={tabClass(cohort === null)}>
-              전체
-            </button>
-            {cohorts.map((c) => (
-              <button key={c} onClick={() => setCohort(String(c))} className={tabClass(cohort === String(c))}>
-                {c}기
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 헤더 + 기간 필터 */}
-        <div className="mb-5 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">
-              {cohort ? `${cohort}기 피드` : '피드'}
-            </h1>
-            <p className="mt-1 text-[12px] text-text-secondary">
-              {cohort ? `${cohort}기 크루의 최신 블로그 글` : '모든 크루의 최신 블로그 글'}
-            </p>
-          </div>
-          <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-            {(['7d', '30d'] as const).map((r) => (
-              <button
-                key={r}
-                onClick={() => setRange(r)}
-                className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
-                  range === r ? 'bg-border text-text' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                {r === '7d' ? '최근 7일' : '30일'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 트랙 필터 */}
-        <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
-          <div className="flex items-center gap-0.5">
-            {([null, 'frontend', 'backend', 'android'] as (Track | null)[]).map((v) => (
-              <button
-                key={v ?? 'all'}
-                onClick={() => setTrack(v)}
-                className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                  track === v ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
-                }`}
-              >
-                {v === null ? '전체' : v === 'frontend' ? '프론트엔드' : v === 'backend' ? '백엔드' : '안드로이드'}
-              </button>
-            ))}
-          </div>
-          <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
-            <span className="font-mono text-text">{filtered.length}</span>개
-          </p>
-        </div>
-
-        {/* 콘텐츠 */}
-        {cohort ? (
-          <div className="flex flex-col gap-6">
-            {cohorts
-              .filter((c) => String(c) === cohort)
-              .map((c) => {
-                const items = grouped.get(c) ?? [];
-                if (items.length === 0) return null;
-                return (
-                  <div key={c}>
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
-                        {c}기
-                      </span>
-                      <div className="h-px flex-1 bg-border-dim" />
-                      <span className="text-[11px] text-text-dim">{items.length}개</span>
-                    </div>
-                    <FeedList items={items} />
+        {!hydrated ? (
+          <>
+            <FeedFilterBarSkeleton cohorts={cohorts} filteredCount={filtered.length} />
+            <div className="flex flex-col">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-start gap-3 border-b border-border-dim px-4 py-3.5 last:border-b-0">
+                  <div className="mt-0.5 h-[30px] w-[30px] flex-shrink-0 animate-pulse rounded-full bg-surface-alt" />
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-1.5 h-4 w-3/4 animate-pulse rounded bg-surface-alt" />
+                    <div className="h-3 w-1/2 animate-pulse rounded bg-surface-alt" />
                   </div>
-                );
-              })}
-          </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
-          <FeedList items={filtered} />
+          <>
+            <FeedFilterBar
+              filters={filters}
+              applyFilters={applyFilters}
+              cohorts={cohorts}
+              filteredCount={filtered.length}
+            />
+            <FeedListSection cohort={cohort} cohorts={cohorts} filtered={filtered} grouped={grouped} />
+          </>
         )}
       </section>
-
-      {/* 사이드바 */}
-      <aside className="hidden lg:block">
-        <div className="sticky top-24 space-y-7 border-l border-border pl-5">
-          <section>
-            <h2 className="mb-4 text-[12px] font-semibold text-text-secondary">8기 운영진 최신 글</h2>
-            <div className="space-y-4">
-              {staffPosts.length === 0 ? (
-                <p className="text-[12px] text-text-muted">데이터 없음</p>
-              ) : (
-                staffPosts.map((post) => (
-                  <a key={post.url} href={post.url} target="_blank" rel="noopener noreferrer" className="group block">
-                    <p className="line-clamp-2 text-[13px] font-medium leading-relaxed text-text group-hover:underline">
-                      {post.title}
-                    </p>
-                    <div className="mt-2 flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <Avatar src={post.member.avatarUrl} alt={post.member.nickname} size={16} />
-                        <span className="text-[11px] text-text-secondary">{post.member.nickname}</span>
-                      </div>
-                      <span className="text-[10px] text-text-muted">{formatRelativeDate(post.publishedAt)}</span>
-                    </div>
-                  </a>
-                ))
-              )}
-            </div>
-          </section>
-
-          <section className="border-t border-border pt-6">
-            <h2 className="mb-4 text-[12px] font-semibold text-text-secondary">플랫폼</h2>
-            <div className="space-y-2.5">
-              {platformStats.length === 0 ? (
-                <p className="text-[12px] text-text-muted">데이터 없음</p>
-              ) : (
-                platformStats.map(([platform, count]) => {
-                  const ratio = totalPlatformCount > 0 ? Math.round((count / totalPlatformCount) * 100) : 0;
-                  return (
-                    <div key={platform} className="flex items-center justify-between gap-3 text-[13px]">
-                      <span className="text-text-secondary">{platform}</span>
-                      <span className="text-text-muted">{ratio}%</span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </section>
-        </div>
-      </aside>
+      <FeedSidebar staffPosts={staffPosts} platformStats={platformStats} />
     </div>
   );
 }

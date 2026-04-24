@@ -72,5 +72,21 @@ export const api = {
         title: decodeHtml(item.title),
       }));
     },
+    refresh: async (githubId: string) => {
+      const res = await fetch(`${BASE_URL}/members/${githubId}/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (res.status === 429) {
+        const body = await res.json();
+        throw { rateLimited: true, remainingSeconds: body.remainingSeconds, message: body.message };
+      }
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`API error: ${res.status} ${text}`);
+      }
+      const raw = await res.json();
+      return normalizeDetail(raw);
+    },
   },
 };

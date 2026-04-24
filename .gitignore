@@ -4,3 +4,6 @@ node_modules/
 *.tsbuildinfo
 .mcp.json
 .vercel
+
+# OMC
+.omc/
