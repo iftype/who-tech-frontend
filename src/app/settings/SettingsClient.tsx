@@ -274,12 +274,12 @@ function ThemeTab() {
 }
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'guide', label: '가이드' },
   { id: 'theme', label: '테마' },
+  { id: 'guide', label: '가이드' },
 ];
 
 export function SettingsClient() {
-  const [activeTab, setActiveTab] = useState<Tab>('guide');
+  const [activeTab, setActiveTab] = useState<Tab>('theme');
 
   return (
     <div className="mx-auto px-4 sm:px-6 py-8 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>

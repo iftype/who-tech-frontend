@@ -33,6 +33,7 @@ export function SearchDropdown({
 }: SearchDropdownProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const debouncedQuery = useDebounce(query, 300);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,6 +44,11 @@ export function SearchDropdown({
     queryFn: () => api.members.search({ q: debouncedQuery }),
     enabled: debouncedQuery.length >= 1,
   });
+
+  // 쿼리 바뀔 때 activeIndex 초기화
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [debouncedQuery]);
 
   // ⌘K / Ctrl+K shortcut
   useEffect(() => {
@@ -116,6 +122,19 @@ export function SearchDropdown({
               setQuery(e.target.value);
               setOpen(true);
             }}
+            onKeyDown={(e) => {
+              if (!showDropdown || results.length === 0) return;
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setActiveIndex((i) => (i + 1) % results.length);
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setActiveIndex((i) => (i <= 0 ? results.length - 1 : i - 1));
+              } else if (e.key === 'Enter' && activeIndex >= 0) {
+                e.preventDefault();
+                handleSelect(results[activeIndex]!);
+              }
+            }}
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
             className={cn(
@@ -155,11 +174,14 @@ export function SearchDropdown({
             <div className="px-4 py-6 text-center text-[13px] text-text-muted">검색 결과가 없습니다</div>
           ) : (
             <ul>
-              {results.map((member) => (
+              {results.map((member, idx) => (
                 <li key={member.githubId}>
                   <button
                     onClick={() => handleSelect(member)}
-                    className="flex w-full cursor-pointer items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors hover:bg-surface-alt last:border-0"
+                    className={cn(
+                      'flex w-full cursor-pointer items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors last:border-0',
+                      idx === activeIndex ? 'bg-surface-alt' : 'hover:bg-surface-alt',
+                    )}
                   >
                     <Avatar src={member.avatarUrl} alt={member.nickname} size={32} />
                     <div className="flex-1 min-w-0">

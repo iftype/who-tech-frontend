@@ -125,6 +125,9 @@ export function Navbar() {
                 {label}
               </button>
             ))}
+            <div className="px-6 py-3 border-t border-border-dim">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       )}

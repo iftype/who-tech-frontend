@@ -4,27 +4,12 @@ import { useState } from 'react';
 import type { CohortArchive } from '@/types';
 import { useFilterState } from '@/hooks/useFilterState';
 
-type Tab = 'mission' | 'pending' | 'precourse';
+type Tab = 'mission' | 'common' | 'pending';
 
-const TAB_LABELS: Record<Tab, string> = { mission: '미션', pending: '확인전', precourse: '프리코스' };
+const TAB_LABELS: Record<Tab, string> = { mission: '미션', common: '공통', pending: '확인전' };
 
 function getForkUrl(githubId: string, repoName: string) {
   return `https://github.com/${githubId}/${repoName}`;
-}
-
-function isMissionRepo(tabCategory: string) {
-  return tabCategory === 'base' || tabCategory === 'common';
-}
-
-function isPendingRepo(cohort: number, tabCategory: string) {
-  if (cohort === 0) return true;
-  return !isMissionRepo(tabCategory) && tabCategory !== 'precourse';
-}
-
-function matchesTab(tabCategory: string, tab: Tab) {
-  if (tab === 'mission') return isMissionRepo(tabCategory);
-  if (tab === 'pending') return isPendingRepo(1, tabCategory);
-  return tabCategory === 'precourse';
 }
 
 function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): string {
@@ -41,16 +26,16 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): s
           ...repo,
           submissions:
             repo.submissions?.filter((submission) => {
-              if (tab === 'mission') return submission.status !== 'closed';
-              return true;
+              if (tab === 'pending') return submission.status === 'closed' || archive.cohort === 0;
+              return submission.status !== 'closed';
             }) ?? null,
         }))
         .filter((r) => {
-          if (tab === 'pending') {
-            return isPendingRepo(archive.cohort, r.tabCategory) && Boolean(r.submissions && r.submissions.length > 0);
-          }
+          if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
           if (archive.cohort === 0) return false;
-          return matchesTab(r.tabCategory, tab) && Boolean(r.submissions && r.submissions.length > 0);
+          if (tab === 'mission') return r.tabCategory === 'base' && Boolean(r.submissions && r.submissions.length > 0);
+          if (tab === 'common') return r.tabCategory === 'common' && Boolean(r.submissions && r.submissions.length > 0);
+          return Boolean(r.submissions && r.submissions.length > 0);
         });
 
       if (filtered.length === 0) continue;
@@ -86,13 +71,10 @@ interface Props {
 }
 
 export function MissionArchive({ archive = [], memberTracks, githubId }: Props) {
-  const allLevels = archive.flatMap((a) => a.levels);
-  const hasPrecourse = allLevels.some((lvl) => lvl.repos.some((r) => r.tabCategory === 'precourse'));
   const [filters, applyFilters, , hydrated] = useFilterState('mission', { tab: 'mission' as Tab });
   const tab = filters.tab;
   const [copied, setCopied] = useState(false);
-
-  const tabs: Tab[] = ['mission', 'pending', ...(hasPrecourse ? (['precourse'] as Tab[]) : [])];
+  const tabs: Tab[] = ['mission', 'common', 'pending'];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId));
@@ -111,20 +93,30 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
               ...repo,
               submissions:
                 repo.submissions?.filter((submission) => {
-                  if (tab === 'mission') return submission.status !== 'closed';
-                  return true;
+                  if (tab === 'pending') return submission.status === 'closed' || ca.cohort === 0;
+                  return submission.status !== 'closed';
                 }) ?? null,
             }))
             .filter((r) => {
-              if (tab === 'pending') {
-                return isPendingRepo(ca.cohort, r.tabCategory) && Boolean(r.submissions && r.submissions.length > 0);
-              }
+              if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
               if (ca.cohort === 0) return false;
-              if (!matchesTab(r.tabCategory, tab)) return false;
-              if (tab === 'mission' && memberTracks.length > 0) {
-                return r.track === null || memberTracks.includes(r.track);
+              if (tab === 'mission') {
+                if (r.tabCategory !== 'base') return false;
+                if (memberTracks.length > 0) {
+                  return r.track === null || memberTracks.includes(r.track);
+                }
               }
+              if (tab === 'common')
+                return r.tabCategory === 'common' && Boolean(r.submissions && r.submissions.length > 0);
               return Boolean(r.submissions && r.submissions.length > 0);
+            })
+            .sort((a, b) => {
+              if (tab !== 'pending') return 0;
+              const aDate = a.submissions?.[0]?.submittedAt;
+              const bDate = b.submissions?.[0]?.submittedAt;
+              if (!aDate) return 1;
+              if (!bDate) return -1;
+              return new Date(String(bDate)).getTime() - new Date(String(aDate)).getTime();
             }),
         }))
         .filter((lvl) => lvl.repos.length > 0),
@@ -150,7 +142,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                 <button
                   key={t}
                   onClick={() => applyFilters({ tab: t })}
-                  className={`cursor-pointer px-3 py-1.5 text-[11px] transition-colors ${
+                  className={`cursor-pointer px-3 py-1.5 text-[11px] ${
                     tab === t ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
                   }`}
                 >
@@ -161,7 +153,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
           )}
           <button
             onClick={handleCopy}
-            className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted transition-colors hover:text-text"
+            className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted hover:text-text"
           >
             <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -221,7 +213,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                       {repos.map((repo, idx) => (
                         <div
                           key={repo.name}
-                          className="flex flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm transition-shadow duration-300 hover:shadow-md"
+                          className="flex flex-col overflow-hidden rounded-md border border-border bg-surface shadow-sm hover:shadow-md"
                         >
                           <div className="flex items-center gap-3 border-b border-border-dim bg-surface-alt/30 px-3 py-2">
                             <span className="w-5 flex-shrink-0 font-mono text-[11px] text-text-dim">
@@ -232,7 +224,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                                 href={getForkUrl(githubId, repo.name)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1 text-[13px] font-medium text-text transition-colors hover:text-accent-dm hover:underline"
+                                className="flex-1 text-[13px] font-medium text-text hover:text-accent-dm hover:underline"
                               >
                                 {repo.name}
                               </a>
@@ -250,7 +242,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                             repo.submissions.map((step, si) => (
                               <div
                                 key={step.prNumber}
-                                className="flex items-center border-b border-border-dim py-1.5 pl-11 pr-3 last:border-0 hover:bg-surface-alt/50 transition-colors"
+                                className="flex items-center border-b border-border-dim py-1.5 pl-11 pr-3 last:border-0 hover:bg-surface-alt/50"
                               >
                                 <span className="w-9 flex-shrink-0 font-mono text-[10px] text-text-dim">
                                   step{si + 1}
@@ -259,7 +251,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                                   href={step.prUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="min-w-0 flex-1 truncate text-[12px] font-medium text-text transition-colors hover:text-accent-dm hover:underline"
+                                  className="min-w-0 flex-1 truncate text-[12px] font-medium text-text hover:text-accent-dm hover:underline"
                                 >
                                   {step.title}
                                   {step.status === 'closed' && (
@@ -272,7 +264,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                                   href={step.prUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`ml-3 flex-shrink-0 font-mono text-[11px] font-medium transition-opacity hover:opacity-80 ${
+                                  className={`ml-3 flex-shrink-0 font-mono text-[11px] font-medium hover:opacity-80 ${
                                     step.status === 'closed' ? 'text-red-400' : 'text-accent-dm'
                                   }`}
                                 >
