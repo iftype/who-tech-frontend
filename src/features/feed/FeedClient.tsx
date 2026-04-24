@@ -20,10 +20,9 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
     <>
       <div className="pointer-events-none mb-5 overflow-x-auto border-b border-border">
         <div className="flex min-w-max items-center gap-1 sm:gap-0">
-          <div className={`${tabCls} border-accent-dm text-accent-dm`}>전체</div>
-          {cohorts.map((c) => (
-            <div key={c} className={`${tabCls} border-transparent text-text-muted`}>
-              {c}기
+          {['전체', ...cohorts.map((c) => `${c}기`)].map((label) => (
+            <div key={label} className={`${tabCls} border-transparent text-text-muted`}>
+              {label}
             </div>
           ))}
         </div>
@@ -34,17 +33,14 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
           <p className="mt-1 text-[12px] text-text-secondary">모든 크루의 최신 블로그 글</p>
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-          <div className="rounded bg-border px-2.5 py-1.5 text-[11px] text-text">최근 7일</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">최근 7일</div>
           <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">30일</div>
         </div>
       </div>
       <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
-          {(['전체', '프론트엔드', '백엔드', '안드로이드'] as const).map((label, i) => (
-            <div
-              key={label}
-              className={`rounded-md px-2.5 py-1 text-[12px] font-medium ${i === 0 ? 'bg-accent-bg text-accent-dm' : 'text-text-muted'}`}
-            >
+          {(['전체', '프론트엔드', '백엔드', '안드로이드'] as const).map((label) => (
+            <div key={label} className="rounded-md px-2.5 py-1 text-[12px] font-medium text-text-muted">
               {label}
             </div>
           ))}

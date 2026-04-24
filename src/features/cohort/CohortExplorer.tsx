@@ -32,17 +32,14 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
           </p>
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-          <div className="rounded bg-border px-2.5 py-1.5 text-[11px] text-text">크루 {counts.crew}</div>
+          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">크루 {counts.crew}</div>
           <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">운영진 {counts.staff}</div>
         </div>
       </div>
       <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
           {visibleTrackOptions.map(({ label, value }) => (
-            <div
-              key={value}
-              className={`rounded-md px-2.5 py-1 text-[12px] font-medium ${value === 'all' ? 'bg-accent-bg text-accent-dm' : 'text-text-dim'}`}
-            >
+            <div key={value} className="rounded-md px-2.5 py-1 text-[12px] font-medium text-text-muted">
               {label}
             </div>
           ))}
