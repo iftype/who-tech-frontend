@@ -24,14 +24,14 @@ export function FeedRow({ item }: { item: FeedItem }) {
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="break-all text-[14px] font-medium text-text hover:underline after:absolute after:inset-0 after:content-['']"
+            className="break-all text-[14px] text-text hover:underline after:absolute after:inset-0 after:content-['']"
           >
             {item.title}
           </a>
         </div>
         <div className="mt-1 flex items-center gap-1.5 text-[12px]">
           <div className="flex flex-wrap items-center gap-1.5">
-            <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text hover:underline">
+            <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text-secondary hover:underline">
               {item.member.nickname}
             </Link>
             <div className="flex flex-wrap items-center gap-1">

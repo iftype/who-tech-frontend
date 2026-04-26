@@ -146,8 +146,8 @@ html.apple {
   --ls-hero: -0.28px;
 }
 
-/* h1만 전역 오버라이드 — 반응형 유지 */
-html.apple h1 {
+/* h1만 전역 오버라이드 — 반응형 유지 (피드 페이지 제외) */
+html.apple h1:not([class*="text-"]) {
   font-size: var(--fs-hero);
   font-weight: 600;
   line-height: var(--lh-hero);
@@ -155,7 +155,7 @@ html.apple h1 {
 }
 
 @media (min-width: 640px) {
-  html.apple h1 {
+  html.apple h1:not([class*="text-"]) {
     font-size: var(--fs-hero-sm);
   }
 }
