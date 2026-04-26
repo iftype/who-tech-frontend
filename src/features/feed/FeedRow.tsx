@@ -63,12 +63,11 @@ export function FeedRow({ item }: { item: FeedItem }) {
   );
 }
 
-export function FeedList({ items, hasFilters }: { items: FeedItem[]; hasFilters?: boolean }) {
+export function FeedList({ items }: { items: FeedItem[] }) {
   if (items.length === 0) {
-    const message = hasFilters ? '조건에 맞는 블로그 글이 없습니다' : '등록된 블로그 글이 없습니다';
     return (
       <div className="rounded-xl border border-border bg-surface py-16 text-center text-[14px] text-text-muted">
-        {message}
+        등록된 블로그 글이 없습니다
       </div>
     );
   }

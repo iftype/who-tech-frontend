@@ -131,13 +131,7 @@ export function FeedClient({ allItems }: Props) {
               cohorts={cohorts}
               filteredCount={filtered.length}
             />
-            <FeedListSection
-              cohort={cohort}
-              cohorts={cohorts}
-              filtered={filtered}
-              grouped={grouped}
-              hasFilters={cohort !== null || track !== null || range !== '7d'}
-            />
+            <FeedListSection cohort={cohort} cohorts={cohorts} filtered={filtered} grouped={grouped} />
           </>
         )}
       </section>
