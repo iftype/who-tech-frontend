@@ -29,7 +29,7 @@ export function FeedRow({ item }: { item: FeedItem }) {
             {item.title}
           </a>
         </div>
-        <div className="mt-1 flex items-center justify-between gap-1.5 text-[12px]">
+        <div className="mt-1 flex items-center gap-1.5 text-[12px]">
           <div className="flex flex-wrap items-center gap-1.5">
             <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text hover:underline">
               {item.member.nickname}
@@ -46,7 +46,7 @@ export function FeedRow({ item }: { item: FeedItem }) {
                 ))}
             </div>
           </div>
-          <span className="flex-shrink-0 text-text-muted">{formatRelativeDate(item.publishedAt)}</span>
+          <span className="ml-auto flex-shrink-0 text-text-muted sm:ml-0">{formatRelativeDate(item.publishedAt)}</span>
         </div>
       </div>
       {source && (

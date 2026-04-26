@@ -136,7 +136,7 @@ export function FeedClient({ allItems }: Props) {
               cohorts={cohorts}
               filtered={filtered}
               grouped={grouped}
-              hasFilters={cohort !== null || track !== null}
+              hasFilters={cohort !== null || track !== null || range !== '7d'}
             />
           </>
         )}
