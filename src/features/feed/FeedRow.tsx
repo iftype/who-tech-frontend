@@ -19,7 +19,7 @@ export function FeedRow({ item }: { item: FeedItem }) {
         <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} />
       </a>
       <div className="min-w-0 flex-1">
-        <div className="mb-1.5 flex flex-wrap items-center gap-1">
+        <div className="mb-1.5">
           <a
             href={item.url}
             target="_blank"
@@ -28,23 +28,25 @@ export function FeedRow({ item }: { item: FeedItem }) {
           >
             {item.title}
           </a>
-          <span className="text-[12px] text-text-muted">- {formatRelativeDate(item.publishedAt)}</span>
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]">
-          <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text hover:underline">
-            {item.member.nickname}
-          </Link>
-          <div className="flex flex-wrap items-center gap-1">
-            {(item.member.tracks ?? []).map((t) => (
-              <TrackBadge key={t} track={t} />
-            ))}
-            {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
-            {(item.member.roles ?? [])
-              .filter((r) => r !== 'crew')
-              .map((r) => (
-                <RoleBadge key={r} role={r} />
+        <div className="mt-1 flex items-center justify-between gap-1.5 text-[12px]">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Link href={`/${item.member.githubId}`} className="relative z-10 text-[13px] text-text hover:underline">
+              {item.member.nickname}
+            </Link>
+            <div className="flex flex-wrap items-center gap-1">
+              {(item.member.tracks ?? []).map((t) => (
+                <TrackBadge key={t} track={t} />
               ))}
+              {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
+              {(item.member.roles ?? [])
+                .filter((r) => r !== 'crew')
+                .map((r) => (
+                  <RoleBadge key={r} role={r} />
+                ))}
+            </div>
           </div>
+          <span className="flex-shrink-0 text-text-muted">{formatRelativeDate(item.publishedAt)}</span>
         </div>
       </div>
       {source && (
@@ -52,7 +54,7 @@ export function FeedRow({ item }: { item: FeedItem }) {
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative z-10 mt-0.5 flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] text-text-muted hover:bg-surface-alt"
+          className="relative z-10 mt-0.5 hidden flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] text-text-muted hover:bg-surface-alt sm:inline-flex"
         >
           {source}
         </a>
@@ -61,13 +63,15 @@ export function FeedRow({ item }: { item: FeedItem }) {
   );
 }
 
-export function FeedList({ items }: { items: FeedItem[] }) {
-  if (items.length === 0)
+export function FeedList({ items, hasFilters }: { items: FeedItem[]; hasFilters?: boolean }) {
+  if (items.length === 0) {
+    const message = hasFilters ? '조건에 맞는 블로그 글이 없습니다' : '등록된 블로그 글이 없습니다';
     return (
       <div className="rounded-xl border border-border bg-surface py-16 text-center text-[14px] text-text-muted">
-        조건에 맞는 블로그 글이 없습니다
+        {message}
       </div>
     );
+  }
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-surface">
       {items.map((item) => (

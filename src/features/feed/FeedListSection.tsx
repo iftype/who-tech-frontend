@@ -6,9 +6,10 @@ interface Props {
   cohorts: number[];
   filtered: FeedItem[];
   grouped: Map<number, FeedItem[]>;
+  hasFilters: boolean;
 }
 
-export function FeedListSection({ cohort, cohorts, filtered, grouped }: Props) {
+export function FeedListSection({ cohort, cohorts, filtered, grouped, hasFilters }: Props) {
   if (cohort) {
     return (
       <div className="flex flex-col gap-6">
@@ -34,5 +35,5 @@ export function FeedListSection({ cohort, cohorts, filtered, grouped }: Props) {
     );
   }
 
-  return <FeedList items={filtered} />;
+  return <FeedList items={filtered} hasFilters={hasFilters} />;
 }
