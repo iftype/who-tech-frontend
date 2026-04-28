@@ -33,9 +33,9 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): s
         .filter((r) => {
           if (tab === 'pending') return Boolean(r.submissions && r.submissions.length > 0);
           if (archive.cohort === 0) return false;
-          if (tab === 'mission') return r.tabCategory === 'base' && Boolean(r.submissions && r.submissions.length > 0);
-          if (tab === 'common') return r.tabCategory === 'common' && Boolean(r.submissions && r.submissions.length > 0);
-          return Boolean(r.submissions && r.submissions.length > 0);
+          if (tab === 'mission') return r.tabCategory === 'base';
+          if (tab === 'common') return r.tabCategory === 'common';
+          return true;
         });
 
       if (filtered.length === 0) continue;
@@ -47,7 +47,13 @@ function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): s
       lines.push('| :-: | :---: | :---: | :---: | :---: |');
 
       filtered.forEach((repo, i) => {
-        if (!repo.submissions || repo.submissions.length === 0) return;
+        if (!repo.submissions || repo.submissions.length === 0) {
+          const no = String(i + 1);
+          const projectName = repo.name;
+          const repoLink = `[${repo.name}](${getForkUrl(githubId, repo.name)})`;
+          lines.push(`| ${no} | ${projectName} | ${repoLink} | - | - |`);
+          return;
+        }
 
         repo.submissions.forEach((s, si) => {
           const no = si === 0 ? String(i + 1) : ' ';
@@ -105,10 +111,10 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                 if (memberTracks.length > 0) {
                   return r.track === null || memberTracks.includes(r.track);
                 }
+                return true;
               }
-              if (tab === 'common')
-                return r.tabCategory === 'common' && Boolean(r.submissions && r.submissions.length > 0);
-              return Boolean(r.submissions && r.submissions.length > 0);
+              if (tab === 'common') return r.tabCategory === 'common';
+              return true;
             })
             .sort((a, b) => {
               if (tab !== 'pending') return 0;
@@ -219,18 +225,14 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
                             <span className="w-5 flex-shrink-0 font-mono text-[11px] text-text-dim">
                               {String(idx + 1).padStart(2, '0')}
                             </span>
-                            {repo.submissions && repo.submissions.length > 0 ? (
-                              <a
-                                href={getForkUrl(githubId, repo.name)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 text-[13px] font-medium text-text hover:text-accent-dm hover:underline"
-                              >
-                                {repo.name}
-                              </a>
-                            ) : (
-                              <span className="flex-1 text-[13px] font-medium text-text">{repo.name}</span>
-                            )}
+                            <a
+                              href={getForkUrl(githubId, repo.name)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 text-[13px] font-medium text-text hover:text-accent-dm hover:underline"
+                            >
+                              {repo.name}
+                            </a>
                           </div>
 
                           {repo.submissions === null ? (
