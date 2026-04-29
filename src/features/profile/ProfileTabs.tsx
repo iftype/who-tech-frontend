@@ -38,13 +38,13 @@ export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPo
         </div>
       </div>
 
-      {tab === 'mission' ? (
-        <div className="w-full">
+      <div className="md:max-w-[800px] md:mx-auto">
+        {tab === 'mission' ? (
           <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
-        </div>
-      ) : (
-        <BlogSection archivePosts={archivePosts} lastPostedAt={lastPostedAt} />
-      )}
+        ) : (
+          <BlogSection archivePosts={archivePosts} lastPostedAt={lastPostedAt} />
+        )}
+      </div>
     </>
   );
 }
