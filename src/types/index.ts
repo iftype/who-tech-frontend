@@ -50,12 +50,19 @@ export interface BlogPost {
   publishedAt: string;
 }
 
+export interface BlogPostDetail {
+  latest: BlogPost[];
+  archive: BlogPost[];
+  page: number;
+  totalPages: number;
+}
+
 export interface MemberDetail extends Omit<Member, 'cohort' | 'roles'> {
   cohorts: MemberCohort[];
   blog: string | null;
   lastPostedAt: string | null;
   archive: CohortArchive[];
-  blogPosts: BlogPost[];
+  blogPosts: BlogPostDetail;
 }
 
 export interface FeedItem {

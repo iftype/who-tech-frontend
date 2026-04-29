@@ -3,18 +3,22 @@
 import { useState } from 'react';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
-import type { CohortArchive, BlogPost } from '@/types';
+import type { CohortArchive, BlogPost, BlogPostDetail } from '@/types';
 
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
   githubId: string;
-  blogPosts: BlogPost[];
+  blogPosts: BlogPostDetail;
   lastPostedAt: string | null;
+  onBlogPageChange?: (page: number) => void;
 }
 
-export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt }: Props) {
+export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt, onBlogPageChange }: Props) {
   const [tab, setTab] = useState<'mission' | 'blog'>('mission');
+  const [blogSubTab, setBlogSubTab] = useState<'latest' | 'archive'>('latest');
+
+  const { latest, archive: archivePosts, page, totalPages } = blogPosts;
 
   return (
     <>
@@ -42,7 +46,16 @@ export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPo
         {tab === 'mission' ? (
           <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         ) : (
-          <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
+          <BlogSection
+            latest={latest}
+            archivePosts={archivePosts}
+            page={page}
+            totalPages={totalPages}
+            lastPostedAt={lastPostedAt}
+            blogSubTab={blogSubTab}
+            setBlogSubTab={setBlogSubTab}
+            onPageChange={onBlogPageChange}
+          />
         )}
       </div>
 
@@ -52,23 +65,68 @@ export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPo
           <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         </div>
         <aside className="w-[360px] flex-shrink-0">
-          <BlogSection blogPosts={blogPosts} lastPostedAt={lastPostedAt} />
+          <BlogSection
+            latest={latest}
+            archivePosts={archivePosts}
+            page={page}
+            totalPages={totalPages}
+            lastPostedAt={lastPostedAt}
+            blogSubTab={blogSubTab}
+            setBlogSubTab={setBlogSubTab}
+            onPageChange={onBlogPageChange}
+          />
         </aside>
       </div>
     </>
   );
 }
 
-function BlogSection({ blogPosts, lastPostedAt }: { blogPosts: BlogPost[]; lastPostedAt: string | null }) {
+function BlogSection({
+  latest,
+  archivePosts,
+  page,
+  totalPages,
+  lastPostedAt,
+  blogSubTab,
+  setBlogSubTab,
+  onPageChange,
+}: {
+  latest: BlogPost[];
+  archivePosts: BlogPost[];
+  page: number;
+  totalPages: number;
+  lastPostedAt: string | null;
+  blogSubTab: 'latest' | 'archive';
+  setBlogSubTab: (tab: 'latest' | 'archive') => void;
+  onPageChange?: (page: number) => void;
+}) {
+  const posts = blogSubTab === 'latest' ? latest : archivePosts;
+
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-[13px] font-semibold text-text hidden sm:block">블로그 글</h2>
-      {blogPosts.length === 0 ? (
+      <div className="flex items-center justify-between">
+        <h2 className="text-[13px] font-semibold text-text hidden sm:block">블로그 글</h2>
+        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-0.5">
+          {(['latest', 'archive'] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setBlogSubTab(t)}
+              className={`rounded px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer ${
+                blogSubTab === t ? 'bg-surface-alt text-text' : 'text-text-muted hover:text-text-secondary'
+              }`}
+            >
+              {t === 'latest' ? '최신' : '아카이브'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {posts.length === 0 ? (
         <p className="text-[13px] text-text-muted">등록된 블로그 글이 없습니다</p>
       ) : (
         <>
           <div className="flex flex-col divide-y divide-border-dim border border-border rounded-lg overflow-hidden bg-surface">
-            {blogPosts.map((post) => (
+            {posts.map((post) => (
               <a
                 key={post.url}
                 href={post.url}
@@ -81,6 +139,25 @@ function BlogSection({ blogPosts, lastPostedAt }: { blogPosts: BlogPost[]; lastP
               </a>
             ))}
           </div>
+
+          {blogSubTab === 'archive' && totalPages > 1 && onPageChange && (
+            <div className="flex items-center justify-center gap-1">
+              {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => onPageChange(p)}
+                  className={`h-7 w-7 rounded text-[11px] font-medium transition-colors cursor-pointer ${
+                    p === page
+                      ? 'bg-accent-dm text-white'
+                      : 'border border-border bg-surface text-text-muted hover:bg-surface-alt hover:text-text'
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          )}
+
           {lastPostedAt && (
             <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-border-dim bg-surface text-[11px] text-text-muted">
               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

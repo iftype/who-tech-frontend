@@ -21,6 +21,8 @@ API 클라이언트, 유틸 함수. React 의존성 없이 서버/클라이언�
 **응답 정규화**:
 
 - `normalizeDetail()`: `submission`(단수) / `submissions`(배열) 구버전/신버전 모두 처리
+- `feed()`: `{ posts: FeedItem[], nextCursor: string | null }` 구조로 반환. cursor 기반 무한스크롤 지원
+- `detail()`: `blogPage` 선택적 파라미터 지원. 블로그 아카이브 페이지네이션용
 - 새 API 엔드포인트 추가 시 이 파일에 메서드 추가
 
 ## utils.ts 주요 함수

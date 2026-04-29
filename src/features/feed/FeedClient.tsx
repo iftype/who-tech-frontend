@@ -77,6 +77,7 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
         days,
         track: track ?? undefined,
         cursor: pageParam,
+        limit: 10,
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -151,7 +152,7 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
                 <button
                   onClick={() => fetchNextPage()}
                   disabled={isFetchingNextPage}
-                  className="rounded-md border border-border bg-surface px-4 py-2 text-[13px] font-medium text-text hover:bg-surface-alt disabled:opacity-50"
+                  className="cursor-pointer rounded-md border border-border bg-surface px-4 py-2 text-[13px] font-medium text-text hover:bg-surface-alt disabled:opacity-50"
                 >
                   {isFetchingNextPage ? '로딩 중...' : '더 보기'}
                 </button>

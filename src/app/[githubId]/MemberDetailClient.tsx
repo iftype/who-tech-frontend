@@ -5,6 +5,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { ProfileTabs } from '@/features/profile/ProfileTabs';
 import { RefreshButton } from '@/components/ui/RefreshButton';
+import { api } from '@/lib/api';
 import type { MemberDetail } from '@/types';
 
 interface Props {
@@ -22,6 +23,16 @@ export function MemberDetailClient({ initialMember }: Props) {
       return newMember;
     });
   }, []);
+
+  const handleBlogPageChange = useCallback(
+    async (page: number) => {
+      const updated = await api.members.detail(member.githubId, page);
+      if (updated) {
+        setMember((prev) => ({ ...prev, blogPosts: updated.blogPosts }));
+      }
+    },
+    [member.githubId],
+  );
 
   return (
     <div className="mx-auto px-4 sm:px-6 py-8 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
@@ -98,6 +109,7 @@ export function MemberDetailClient({ initialMember }: Props) {
           githubId={member.githubId}
           blogPosts={member.blogPosts}
           lastPostedAt={member.lastPostedAt}
+          onBlogPageChange={handleBlogPageChange}
         />
       </div>
     </div>
