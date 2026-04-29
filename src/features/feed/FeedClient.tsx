@@ -57,9 +57,10 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
 
 interface Props {
   initialItems: FeedItem[];
+  initialCohorts: number[];
 }
 
-export function FeedClient({ initialItems }: Props) {
+export function FeedClient({ initialItems, initialCohorts }: Props) {
   const [filters, applyFilters, , hydrated] = useFilterState('feed', {
     range: '7d' as Range,
     cohort: null as string | null,
@@ -98,9 +99,7 @@ export function FeedClient({ initialItems }: Props) {
 
   const filtered = cohort ? items.filter((item) => item.member.cohort === Number(cohort)) : items;
 
-  const cohorts = [...new Set(items.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
-    (a, b) => b - a,
-  );
+  const cohorts = initialCohorts;
 
   const grouped = new Map<number, FeedItem[]>();
   for (const item of items) {
