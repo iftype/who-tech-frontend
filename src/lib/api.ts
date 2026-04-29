@@ -54,13 +54,8 @@ export const api = {
       ).toString();
       return fetchApi<Member[]>(`/members${qs ? `?${qs}` : ''}`, init);
     },
-    detail: async (githubId: string, blogPage?: number) => {
-      const qs = new URLSearchParams();
-      if (blogPage) qs.set('blogPage', String(blogPage));
-      const query = qs.toString();
-      const raw = await fetchApi<RawDetail>(`/members/${githubId}${query ? `?${query}` : ''}`, {
-        next: { revalidate: 300 },
-      }); //dev
+    detail: async (githubId: string) => {
+      const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
       return normalizeDetail(raw);
     },
     feed: async (params: { cohort?: number; track?: string; days?: number; cursor?: string; limit?: number } = {}) => {

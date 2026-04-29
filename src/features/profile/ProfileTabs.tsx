@@ -11,13 +11,12 @@ interface Props {
   githubId: string;
   blogPosts: BlogPostDetail;
   lastPostedAt: string | null;
-  onBlogPageChange?: (page: number) => void;
 }
 
-export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt, onBlogPageChange }: Props) {
+export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt }: Props) {
   const [tab, setTab] = useState<'mission' | 'blog'>('mission');
 
-  const { archive: archivePosts, page, totalPages } = blogPosts;
+  const { archive: archivePosts } = blogPosts;
 
   return (
     <>
@@ -40,33 +39,17 @@ export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPo
       </div>
 
       {tab === 'mission' ? (
-        <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
+        <div className="w-full">
+          <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
+        </div>
       ) : (
-        <BlogSection
-          archivePosts={archivePosts}
-          page={page}
-          totalPages={totalPages}
-          lastPostedAt={lastPostedAt}
-          onPageChange={onBlogPageChange}
-        />
+        <BlogSection archivePosts={archivePosts} lastPostedAt={lastPostedAt} />
       )}
     </>
   );
 }
 
-function BlogSection({
-  archivePosts,
-  page,
-  totalPages,
-  lastPostedAt,
-  onPageChange,
-}: {
-  archivePosts: BlogPost[];
-  page: number;
-  totalPages: number;
-  lastPostedAt: string | null;
-  onPageChange?: (page: number) => void;
-}) {
+function BlogSection({ archivePosts, lastPostedAt }: { archivePosts: BlogPost[]; lastPostedAt: string | null }) {
   return (
     <div className="flex flex-col gap-4">
       {archivePosts.length === 0 ? (
@@ -80,31 +63,13 @@ function BlogSection({
                 href={post.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col gap-1 px-4 py-3 hover:bg-surface-alt transition-colors"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 px-4 py-3 hover:bg-surface-alt transition-colors"
               >
                 <p className="text-[13px] font-medium text-text line-clamp-2">{decodeHtml(post.title)}</p>
-                <p className="text-[11px] text-text-dim">{formatDate(post.publishedAt)}</p>
+                <p className="text-[11px] text-text-dim sm:shrink-0">{formatDate(post.publishedAt)}</p>
               </a>
             ))}
           </div>
-
-          {totalPages > 1 && onPageChange && (
-            <div className="flex items-center justify-center gap-1">
-              {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => onPageChange(p)}
-                  className={`h-7 w-7 rounded text-[11px] font-medium transition-colors cursor-pointer ${
-                    p === page
-                      ? 'bg-accent-dm text-white'
-                      : 'border border-border bg-surface text-text-muted hover:bg-surface-alt hover:text-text'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          )}
 
           {lastPostedAt && (
             <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-border-dim bg-surface text-[11px] text-text-muted">
