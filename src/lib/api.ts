@@ -1,4 +1,4 @@
-import type { Member, MemberDetail, FeedItem, CohortArchive, ArchiveStep, TabCategory } from '@/types';
+import type { Member, MemberDetail, FeedResponse, CohortArchive, ArchiveStep, TabCategory } from '@/types';
 import { decodeHtml } from './utils';
 
 const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
@@ -58,7 +58,7 @@ export const api = {
       const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
       return normalizeDetail(raw);
     },
-    feed: async (params: { cohort?: number; track?: string; days?: number } = {}) => {
+    feed: async (params: { cohort?: number; track?: string; days?: number; cursor?: string } = {}) => {
       const qs = new URLSearchParams(
         Object.fromEntries(
           Object.entries(params)
@@ -66,11 +66,14 @@ export const api = {
             .map(([k, v]) => [k, String(v)]),
         ),
       ).toString();
-      const items = await fetchApi<FeedItem[]>(`/members/feed${qs ? `?${qs}` : ''}`, { next: { revalidate: 300 } });
-      return items.map((item) => ({
-        ...item,
-        title: decodeHtml(item.title),
-      }));
+      const res = await fetchApi<FeedResponse>(`/members/feed${qs ? `?${qs}` : ''}`, { next: { revalidate: 300 } });
+      return {
+        posts: res.posts.map((item) => ({
+          ...item,
+          title: decodeHtml(item.title),
+        })),
+        nextCursor: res.nextCursor,
+      };
     },
     refresh: async (githubId: string) => {
       const res = await fetch(`${BASE_URL}/members/${githubId}/refresh`, {

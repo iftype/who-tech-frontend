@@ -64,3 +64,8 @@ export interface FeedItem {
   publishedAt: string;
   member: Member;
 }
+
+export interface FeedResponse {
+  posts: FeedItem[];
+  nextCursor: string | null;
+}

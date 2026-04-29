@@ -1,9 +1,11 @@
 'use client';
 
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useFilterState } from '@/hooks/useFilterState';
 import { FeedFilterBar } from '@/features/feed/FeedFilterBar';
 import { FeedListSection } from '@/features/feed/FeedListSection';
 import { FeedSidebar } from '@/features/feed/FeedSidebar';
+import { api } from '@/lib/api';
 import { getBlogSource } from '@/lib/utils';
 import type { FeedItem, Track } from '@/types';
 
@@ -54,10 +56,10 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
 }
 
 interface Props {
-  allItems: FeedItem[];
+  initialItems: FeedItem[];
 }
 
-export function FeedClient({ allItems }: Props) {
+export function FeedClient({ initialItems }: Props) {
   const [filters, applyFilters, , hydrated] = useFilterState('feed', {
     range: '7d' as Range,
     cohort: null as string | null,
@@ -65,35 +67,48 @@ export function FeedClient({ allItems }: Props) {
   });
 
   const { range, cohort, track } = filters;
-  const now = Date.now();
+  const days = range === '30d' ? 30 : 7;
 
-  const byRange = allItems.filter((item) => {
-    const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
-    return diffDays <= (range === '30d' ? 30 : 7);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['feed', days, track],
+    queryFn: ({ pageParam }) =>
+      api.members.feed({
+        days,
+        track: track ?? undefined,
+        cursor: pageParam,
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    staleTime: 5 * 60 * 1000,
   });
 
-  const byTrack = track ? byRange.filter((item) => (item.member.tracks ?? []).includes(track)) : byRange;
+  const items = data?.pages.flatMap((page) => page.posts) ?? initialItems;
+  const now = Date.now();
 
-  const cohorts = [...new Set(allItems.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
-    (a, b) => b - a,
-  );
-
-  const filtered = cohort ? byTrack.filter((item) => item.member.cohort === Number(cohort)) : byTrack;
-
-  const grouped = new Map<number, FeedItem[]>();
-  for (const item of byTrack) {
-    const key = item.member.cohort;
-    if (key == null) continue;
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key)!.push(item);
-  }
-
-  const staffPosts = byRange
+  const staffPosts = initialItems
+    .filter((item) => {
+      const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
+      return diffDays <= 7;
+    })
     .filter((item) => {
       const roles = item.member.roles ?? [];
       return (roles.includes('coach') || roles.includes('reviewer')) && item.member.cohort === 8;
     })
     .slice(0, 5);
+
+  const filtered = cohort ? items.filter((item) => item.member.cohort === Number(cohort)) : items;
+
+  const cohorts = [...new Set(items.map((item) => item.member.cohort).filter((c): c is number => c !== null))].sort(
+    (a, b) => b - a,
+  );
+
+  const grouped = new Map<number, FeedItem[]>();
+  for (const item of items) {
+    const key = item.member.cohort;
+    if (key == null) continue;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key)!.push(item);
+  }
 
   const platformStats = Object.entries(
     filtered.reduce<Record<string, number>>((acc, item) => {
@@ -132,6 +147,17 @@ export function FeedClient({ allItems }: Props) {
               filteredCount={filtered.length}
             />
             <FeedListSection cohort={cohort} cohorts={cohorts} filtered={filtered} grouped={grouped} />
+            {hasNextPage && (
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="rounded-md border border-border bg-surface px-4 py-2 text-[13px] font-medium text-text hover:bg-surface-alt disabled:opacity-50"
+                >
+                  {isFetchingNextPage ? '로딩 중...' : '더 보기'}
+                </button>
+              </div>
+            )}
           </>
         )}
       </section>
