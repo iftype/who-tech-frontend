@@ -38,7 +38,7 @@ export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPo
         </div>
       </div>
 
-      <div className="md:max-w-[800px] md:mx-auto">
+      <div className="md:max-w-[800px]">
         {tab === 'mission' ? (
           <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         ) : (

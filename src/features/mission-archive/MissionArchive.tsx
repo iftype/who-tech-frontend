@@ -190,7 +190,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
           ))}
         </div>
       ) : filteredArchives.length === 0 ? (
-        <p className="py-8 text-center text-[13px] text-text-muted">미션 제출 기록이 없습니다</p>
+        <p className="py-8 text-left text-[13px] text-text-muted">미션 제출 기록이 없습니다</p>
       ) : (
         <div className="flex flex-col gap-10">
           {filteredArchives.map((ca) => (
