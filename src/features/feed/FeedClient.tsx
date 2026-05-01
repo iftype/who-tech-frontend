@@ -58,24 +58,28 @@ function FeedFilterBarSkeleton({ cohorts, filteredCount }: FeedSkeletonProps) {
 interface Props {
   initialItems: FeedItem[];
   initialCohorts: number[];
+  initialCohort: string | null;
+  initialTrack: Track | null;
+  initialRange: Range;
 }
 
-export function FeedClient({ initialItems, initialCohorts }: Props) {
+export function FeedClient({ initialItems, initialCohorts, initialCohort, initialTrack, initialRange }: Props) {
   const [filters, applyFilters, , hydrated] = useFilterState('feed', {
-    range: '7d' as Range,
-    cohort: null as string | null,
-    track: null as Track | null,
+    range: initialRange,
+    cohort: initialCohort,
+    track: initialTrack,
   });
 
   const { range, cohort, track } = filters;
   const days = range === '30d' ? 30 : 7;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['feed', days, track],
+    queryKey: ['feed', days, track, cohort],
     queryFn: ({ pageParam }) =>
       api.members.feed({
         days,
         track: track ?? undefined,
+        cohort: cohort ? Number(cohort) : undefined,
         cursor: pageParam,
         limit: 10,
       }),
@@ -87,7 +91,7 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
   const items = data?.pages.flatMap((page) => page.posts) ?? initialItems;
   const now = Date.now();
 
-  const staffPosts = initialItems
+  const staffPosts = items
     .filter((item) => {
       const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
       return diffDays <= 7;
@@ -97,8 +101,6 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
       return (roles.includes('coach') || roles.includes('reviewer')) && item.member.cohort === 8;
     })
     .slice(0, 5);
-
-  const filtered = cohort ? items.filter((item) => item.member.cohort === Number(cohort)) : items;
 
   const cohorts = initialCohorts;
 
@@ -111,7 +113,7 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
   }
 
   const platformStats = Object.entries(
-    filtered.reduce<Record<string, number>>((acc, item) => {
+    items.reduce<Record<string, number>>((acc, item) => {
       const source = getBlogSource(item.url) ?? '기타';
       acc[source] = (acc[source] ?? 0) + 1;
       return acc;
@@ -125,7 +127,7 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
       <section className="min-w-0">
         {!hydrated ? (
           <>
-            <FeedFilterBarSkeleton cohorts={cohorts} filteredCount={filtered.length} />
+            <FeedFilterBarSkeleton cohorts={cohorts} filteredCount={items.length} />
             <div className="flex flex-col">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="flex items-start gap-3 border-b border-border-dim px-4 py-3.5 last:border-b-0">
@@ -144,9 +146,9 @@ export function FeedClient({ initialItems, initialCohorts }: Props) {
               filters={filters}
               applyFilters={applyFilters}
               cohorts={cohorts}
-              filteredCount={filtered.length}
+              filteredCount={items.length}
             />
-            <FeedListSection cohort={cohort} cohorts={cohorts} filtered={filtered} grouped={grouped} />
+            <FeedListSection cohort={cohort} cohorts={cohorts} filtered={items} grouped={grouped} />
             {hasNextPage && (
               <div className="mt-4 flex justify-center">
                 <button
