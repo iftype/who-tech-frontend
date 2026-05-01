@@ -62,7 +62,6 @@ export interface MemberDetail extends Omit<Member, 'cohort' | 'roles'> {
   blog: string | null;
   lastPostedAt: string | null;
   archive: CohortArchive[];
-  blogPosts: BlogPostDetail;
 }
 
 export interface FeedItem {

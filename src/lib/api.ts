@@ -1,4 +1,12 @@
-import type { Member, MemberDetail, FeedResponse, CohortArchive, ArchiveStep, TabCategory } from '@/types';
+import type {
+  Member,
+  MemberDetail,
+  FeedResponse,
+  CohortArchive,
+  ArchiveStep,
+  TabCategory,
+  BlogPostDetail,
+} from '@/types';
 import { decodeHtml } from './utils';
 
 const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
@@ -58,6 +66,7 @@ export const api = {
       const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
       return normalizeDetail(raw);
     },
+    blogPosts: (githubId: string) => fetchApi<BlogPostDetail>(`/members/${githubId}/blog-posts`),
     feed: async (params: { cohort?: number; track?: string; days?: number; cursor?: string; limit?: number } = {}) => {
       const qs = new URLSearchParams(
         Object.fromEntries(

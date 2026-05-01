@@ -96,7 +96,6 @@ export function MemberDetailClient({ initialMember }: Props) {
           )}
           memberTracks={member.tracks}
           githubId={member.githubId}
-          blogPosts={member.blogPosts}
           lastPostedAt={member.lastPostedAt}
         />
       </div>

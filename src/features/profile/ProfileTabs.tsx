@@ -1,22 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
-import type { CohortArchive, BlogPost, BlogPostDetail } from '@/types';
+import { api } from '@/lib/api';
+import type { CohortArchive, BlogPostDetail } from '@/types';
 
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
   githubId: string;
-  blogPosts: BlogPostDetail;
   lastPostedAt: string | null;
 }
 
-export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPostedAt }: Props) {
+export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt }: Props) {
   const [tab, setTab] = useState<'mission' | 'blog'>('mission');
-
-  const { archive: archivePosts } = blogPosts;
 
   return (
     <>
@@ -42,14 +40,35 @@ export function ProfileTabs({ archive, memberTracks, githubId, blogPosts, lastPo
         {tab === 'mission' ? (
           <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
         ) : (
-          <BlogSection archivePosts={archivePosts} lastPostedAt={lastPostedAt} />
+          <BlogSection githubId={githubId} lastPostedAt={lastPostedAt} />
         )}
       </div>
     </>
   );
 }
 
-function BlogSection({ archivePosts, lastPostedAt }: { archivePosts: BlogPost[]; lastPostedAt: string | null }) {
+function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedAt: string | null }) {
+  const [blogPosts, setBlogPosts] = useState<BlogPostDetail | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    api.members
+      .blogPosts(githubId)
+      .then(setBlogPosts)
+      .finally(() => setLoading(false));
+  }, [githubId]);
+
+  if (loading) {
+    return <p className="py-8 text-[13px] text-text-muted">블로그 글을 불러오는 중...</p>;
+  }
+
+  if (!blogPosts) {
+    return <p className="py-8 text-[13px] text-text-muted">등록된 블로그 글이 없습니다</p>;
+  }
+
+  const { archive: archivePosts } = blogPosts;
+
   return (
     <div className="flex flex-col gap-4">
       {archivePosts.length === 0 ? (
