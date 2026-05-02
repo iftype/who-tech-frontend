@@ -5,6 +5,7 @@ import { MemberDetailClient } from './MemberDetailClient';
 
 interface Props {
   params: Promise<{ githubId: string }>;
+  searchParams?: Promise<{ tab?: string; missionTab?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -21,10 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function DetailPage({ params }: Props) {
+export default async function DetailPage({ params, searchParams }: Props) {
   const { githubId } = await params;
   const member = await api.members.detail(githubId).catch(() => null);
   if (!member) notFound();
 
-  return <MemberDetailClient initialMember={member} />;
+  const sp = await searchParams;
+  const tab = sp?.tab === 'blog' ? 'blog' : 'mission';
+  const missionTab = sp?.missionTab === 'common' || sp?.missionTab === 'pending' ? sp.missionTab : 'mission';
+
+  return <MemberDetailClient initialMember={member} initialTab={tab} initialMissionTab={missionTab} />;
 }

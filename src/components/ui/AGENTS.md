@@ -8,7 +8,7 @@
 
 - ✅ 순수 프리미티브 props만 받음 (`string`, `number`, `boolean`, `ReactNode`)
 - ❌ `@/types`의 `Member`, `Track`, `Role` 등 도메인 타입 import 금지
-- ❌ `useFilterState`, API 호출 등 사이드이펙트 금지
+- ❌ API 호출 등 사이드이펙트 금지
 - ❌ 비즈니스 로직 금지 (cohort === 8이면 특별 처리 같은 것)
 
 ## 컨벤션

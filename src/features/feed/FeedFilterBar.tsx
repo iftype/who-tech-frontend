@@ -5,7 +5,7 @@ import type { Track } from '@/types';
 type Range = '30d' | 'all';
 
 const tabClass = (active: boolean) =>
-  `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
+  `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap sm:rounded-none sm:px-4 sm:py-2 ${
     active ? 'border-accent-dm text-accent-dm' : 'border-transparent text-text-muted hover:text-text'
   }`;
 
@@ -14,9 +14,10 @@ interface Props {
   applyFilters: (patch: Partial<{ range: Range; cohort: string | null; track: Track | null }>) => void;
   cohorts: number[];
   filteredCount: number;
+  totalCount?: number;
 }
 
-export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount }: Props) {
+export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, totalCount }: Props) {
   const { range, cohort, track } = filters;
 
   return (
@@ -52,7 +53,7 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount }:
             <button
               key={r}
               onClick={() => applyFilters({ range: r })}
-              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] transition-colors ${
+              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] ${
                 range === r ? 'bg-border text-text' : 'text-text-muted hover:text-text'
               }`}
             >
@@ -68,7 +69,7 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount }:
             <button
               key={v ?? 'all'}
               onClick={() => applyFilters({ track: v })}
-              className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium ${
                 track === v ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
               }`}
             >
@@ -78,6 +79,9 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount }:
         </div>
         <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
           <span className="font-mono text-text">{filteredCount}</span>개
+          {totalCount != null && totalCount > 0 && (
+            <span className="ml-1 text-text-secondary">/ 전체 {totalCount}개</span>
+          )}
         </p>
       </div>
     </>

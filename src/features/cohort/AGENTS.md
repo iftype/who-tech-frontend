@@ -16,15 +16,14 @@ CohortExplorer (컨테이너)
 
 ## 경계
 
-- ✅ `CohortExplorer`가 유일한 상태 owner (`useFilterState('crew', ...)`)
+- ✅ `CohortExplorer`가 유일한 상태 owner (URL params 기반)
 - ✅ `CohortFilterBar`, `CohortMemberList`, `CohortMemberGrid`는 props-only
-- ❌ `CohortFilterBar`/`MemberList`/`MemberGrid`에서 `useFilterState` 직접 호출 금지
+- ❌ `CohortFilterBar`/`MemberList`/`MemberGrid`에서 상태 훅 직접 호출 금지
 - ❌ `CohortExplorer` 외 컴포넌트에서 localStorage 접근 금지
 - ❌ `CohortFilterBar`를 `dynamic ssr:false` 없이 직접 import 금지
 
 ## 컨벤션
 
-- `pageKey`: `'crew'` 고정
 - `CohortFilterBar`는 `CohortExplorer`에서 `next/dynamic`으로만 import
 - 운영진 판단: `m.roles.some(r => r === 'coach' || r === 'reviewer')`
 - `isStaff` 헬퍼는 `CohortExplorer` 모듈 레벨에 정의

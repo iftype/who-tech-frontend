@@ -16,14 +16,13 @@ FeedClient (컨테이너)
 
 ## 경계
 
-- ✅ `FeedClient`가 유일한 상태 owner (`useFilterState('feed', ...)`)
-- ✅ `FeedSidebar`는 `staffPosts`, `platformStats`를 props로만 받음 — 내부 계산 금지
-- ❌ `FeedFilterBar`/`FeedListSection`에서 `useFilterState` 직접 호출 금지
+- ✅ `FeedClient`가 유일한 상태 owner (URL params 기반)
+- ✅ `FeedSidebar`는 `staffPosts`, `platformStats`를 props로만 받음 — 낵부 계산 금지
+- ❌ `FeedFilterBar`/`FeedListSection`에서 상태 훅 직접 호출 금지
 - ❌ `FeedFilterBar`를 `dynamic ssr:false` 없이 직접 import 금지
 
 ## 컨벤션
 
-- `pageKey`: `'feed'` 고정
 - `FeedFilterBar`는 `FeedClient`에서 `next/dynamic`으로만 import
 - `staffPosts`: 8기 운영진(coach/reviewer) 최신 글 상위 5개
 - `platformStats`: `filtered` 기준 상위 4개 플랫폼

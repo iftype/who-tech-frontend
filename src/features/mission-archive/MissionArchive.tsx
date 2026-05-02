@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import type { CohortArchive } from '@/types';
-import { useFilterState } from '@/hooks/useFilterState';
 
 type Tab = 'mission' | 'common' | 'pending';
 
@@ -74,13 +73,23 @@ interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
   githubId: string;
+  initialMissionTab: Tab;
 }
 
-export function MissionArchive({ archive = [], memberTracks, githubId }: Props) {
-  const [filters, applyFilters, , hydrated] = useFilterState('mission', { tab: 'mission' as Tab });
-  const tab = filters.tab;
+export function MissionArchive({ archive = [], memberTracks, githubId, initialMissionTab }: Props) {
+  const [tab, setTab] = useState<Tab>(initialMissionTab);
   const [copied, setCopied] = useState(false);
   const tabs: Tab[] = ['mission', 'common', 'pending'];
+
+  const applyFilters = (patch: Partial<{ tab: Tab }>) => {
+    setTab((prev) => {
+      const next = patch.tab ?? prev;
+      const params = new URLSearchParams(window.location.search);
+      params.set('missionTab', next);
+      window.history.replaceState(null, '', `${window.location.pathname}?${params}`);
+      return next;
+    });
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId));
@@ -138,29 +147,19 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-[13px] font-semibold text-text">미션 PR 아카이브</h2>
         <div className="flex items-center gap-2">
-          {!hydrated ? (
-            <div className="flex overflow-hidden rounded-md border border-border bg-surface">
-              {tabs.map((t) => (
-                <div key={t} className="px-3 py-1.5 text-[11px] text-text-muted">
-                  {TAB_LABELS[t]}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex overflow-hidden rounded-md border border-border bg-surface">
-              {tabs.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => applyFilters({ tab: t })}
-                  className={`cursor-pointer px-3 py-1.5 text-[11px] ${
-                    tab === t ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
-                  }`}
-                >
-                  {TAB_LABELS[t]}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="flex overflow-hidden rounded-md border border-border bg-surface">
+            {tabs.map((t) => (
+              <button
+                key={t}
+                onClick={() => applyFilters({ tab: t })}
+                className={`cursor-pointer px-3 py-1.5 text-[11px] ${
+                  tab === t ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
+                }`}
+              >
+                {TAB_LABELS[t]}
+              </button>
+            ))}
+          </div>
           <button
             onClick={handleCopy}
             className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted hover:text-text"
@@ -175,25 +174,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId }: Props) 
         </div>
       </div>
 
-      {!hydrated ? (
-        <div className="flex flex-col gap-1">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="overflow-hidden rounded-md border border-border bg-surface shadow-sm">
-              <div className="flex items-center gap-3 border-b border-border-dim bg-surface-alt/30 px-3 py-2">
-                <div className="h-3.5 w-4 animate-pulse rounded bg-surface-alt" />
-                <div
-                  className="h-3.5 flex-1 animate-pulse rounded bg-surface-alt"
-                  style={{ maxWidth: `${60 + i * 20}px` }}
-                />
-              </div>
-              <div className="flex items-center py-1.5 pl-11 pr-3">
-                <div className="h-3 w-8 animate-pulse rounded bg-surface-alt" />
-                <div className="ml-auto h-3 w-16 animate-pulse rounded bg-surface-alt" />
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : filteredArchives.length === 0 ? (
+      {filteredArchives.length === 0 ? (
         <p className="py-8 text-left text-[13px] text-text-muted">미션 제출 기록이 없습니다</p>
       ) : (
         <div className="flex flex-col gap-10">

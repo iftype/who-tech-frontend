@@ -1,11 +1,10 @@
 'use client';
 
-import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import type { Member, Track } from '@/types';
 import { api } from '@/lib/api';
-import { useFilterState } from '@/hooks/useFilterState';
 import { TRACK_OPTIONS } from './CohortFilterBar';
 
 const CohortFilterBar = dynamic(() => import('./CohortFilterBar').then((mod) => ({ default: mod.CohortFilterBar })), {
@@ -65,7 +64,10 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
 
 interface Props {
   members: Member[];
+  allCohorts: number[];
   initialCohort: number | null;
+  initialRoleGroup: RoleGroup;
+  initialTrack: Track | 'all';
 }
 
 function getCohortFromPath(pathname: string): number | null {
@@ -75,33 +77,28 @@ function getCohortFromPath(pathname: string): number | null {
 
 const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
 
-export function CohortExplorer({ members, initialCohort }: Props) {
+export function CohortExplorer({ members, allCohorts, initialCohort, initialRoleGroup, initialTrack }: Props) {
   const [activeCohort, setActiveCohort] = useState<number | null>(initialCohort);
   const deferredActiveCohort = useDeferredValue(activeCohort);
+  const [hydrated, setHydrated] = useState(false);
 
-  const [filters, applyFilters, , hydrated] = useFilterState('crew', {
-    roleGroup: 'crew' as RoleGroup,
-    track: 'all' as Track | 'all',
-  });
+  useLayoutEffect(() => {
+    setHydrated(true);
+  }, []);
 
-  const { roleGroup, track } = filters;
-
-  const { data: allMembers = members } = useQuery({
-    queryKey: ['members', 'search', activeCohort, roleGroup, track],
-    queryFn: () =>
-      api.members.search({
-        ...(activeCohort !== null ? { cohort: activeCohort } : {}),
-        role: roleGroup,
-        ...(track !== 'all' ? { track } : {}),
-      }),
-    initialData: members,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  const [roleGroup, setRoleGroup] = useState<RoleGroup>(initialRoleGroup);
+  const [track, setTrack] = useState<Track | 'all'>(initialTrack);
 
   useEffect(() => {
-    setActiveCohort(initialCohort);
+    setRoleGroup((prev) => (prev === initialRoleGroup ? prev : initialRoleGroup));
+  }, [initialRoleGroup]);
+
+  useEffect(() => {
+    setTrack((prev) => (prev === initialTrack ? prev : initialTrack));
+  }, [initialTrack]);
+
+  useEffect(() => {
+    setActiveCohort((prev) => (prev === initialCohort ? prev : initialCohort));
   }, [initialCohort]);
 
   useEffect(() => {
@@ -112,14 +109,44 @@ export function CohortExplorer({ members, initialCohort }: Props) {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const cohorts = useMemo(
-    () => [...new Set(allMembers.map((m) => m.cohort).filter((c): c is number => c !== null))].sort((a, b) => b - a),
-    [allMembers],
-  );
+  const applyFilters = useCallback((patch: Partial<{ roleGroup: RoleGroup; track: Track | 'all' }>) => {
+    setRoleGroup((prev) => (patch.roleGroup === undefined ? prev : patch.roleGroup));
+    setTrack((prev) => (patch.track === undefined ? prev : patch.track));
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (roleGroup !== 'crew') params.set('roleGroup', roleGroup);
+    else params.delete('roleGroup');
+    if (track !== 'all') params.set('track', track);
+    else params.delete('track');
+    const query = params.toString();
+    const url = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+    window.history.replaceState(null, '', url);
+  }, [roleGroup, track]);
+
+  const { data: fetchedCohorts } = useQuery({
+    queryKey: ['cohorts'],
+    queryFn: () => api.members.cohorts(),
+    initialData: allCohorts.length > 0 ? allCohorts : undefined,
+    staleTime: 60_000,
+  });
+
+  const cohorts = fetchedCohorts?.length ? fetchedCohorts : allCohorts;
+
+  const { data: fetchedMembers } = useQuery({
+    queryKey: ['members', 'cohort', deferredActiveCohort],
+    queryFn: () => api.members.search(deferredActiveCohort != null ? { cohort: deferredActiveCohort } : {}),
+    initialData: deferredActiveCohort === initialCohort ? members : undefined,
+    staleTime: 60_000,
+  });
+
+  const activeMembers = fetchedMembers ?? members;
 
   const cohortMembers = useMemo(
-    () => (deferredActiveCohort === null ? allMembers : allMembers.filter((m) => m.cohort === deferredActiveCohort)),
-    [deferredActiveCohort, allMembers],
+    () =>
+      deferredActiveCohort === null ? activeMembers : activeMembers.filter((m) => m.cohort === deferredActiveCohort),
+    [deferredActiveCohort, activeMembers],
   );
 
   const crewCount = useMemo(
@@ -157,7 +184,13 @@ export function CohortExplorer({ members, initialCohort }: Props) {
       setActiveCohort(cohort);
     });
     const nextPath = cohort === null ? '/cohort' : `/cohort/${cohort}`;
-    window.history.pushState(null, '', nextPath);
+    const params = new URLSearchParams(window.location.search);
+    if (roleGroup !== 'crew') params.set('roleGroup', roleGroup);
+    else params.delete('roleGroup');
+    if (track !== 'all') params.set('track', track);
+    else params.delete('track');
+    const query = params.toString();
+    window.history.pushState(null, '', query ? `${nextPath}?${query}` : nextPath);
   };
 
   return (
@@ -205,7 +238,7 @@ export function CohortExplorer({ members, initialCohort }: Props) {
         <>
           <CohortFilterBar
             cohort={activeCohort ?? 0}
-            filters={filters}
+            filters={{ roleGroup, track }}
             applyFilters={applyFilters}
             counts={{ crew: crewCount, staff: staffCount }}
             visibleTrackOptions={visibleTrackOptions}

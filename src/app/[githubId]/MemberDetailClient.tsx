@@ -9,9 +9,11 @@ import type { MemberDetail } from '@/types';
 
 interface Props {
   initialMember: MemberDetail;
+  initialTab: 'mission' | 'blog';
+  initialMissionTab: 'mission' | 'common' | 'pending';
 }
 
-export function MemberDetailClient({ initialMember }: Props) {
+export function MemberDetailClient({ initialMember, initialTab, initialMissionTab }: Props) {
   const [member, setMember] = useState(initialMember);
 
   const handleRefreshed = useCallback((newMember: MemberDetail) => {
@@ -97,6 +99,8 @@ export function MemberDetailClient({ initialMember }: Props) {
           memberTracks={member.tracks}
           githubId={member.githubId}
           lastPostedAt={member.lastPostedAt}
+          initialTab={initialTab}
+          initialMissionTab={initialMissionTab}
         />
       </div>
     </div>

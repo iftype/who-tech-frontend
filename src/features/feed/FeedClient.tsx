@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useCallback, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useFilterState } from '@/hooks/useFilterState';
 import { FeedFilterBar } from '@/features/feed/FeedFilterBar';
 import { FeedListSection } from '@/features/feed/FeedListSection';
 import { FeedSidebar } from '@/features/feed/FeedSidebar';
@@ -14,21 +13,55 @@ type Range = '30d' | 'all';
 
 interface Props {
   initialItems: FeedItem[];
+  initialNextCursor: string | null;
+  initialTotalCount?: number;
   initialCohorts: number[];
   initialCohort: string | null;
   initialTrack: Track | null;
   initialRange: Range;
 }
 
-export function FeedClient({ initialItems, initialCohorts, initialCohort, initialTrack, initialRange }: Props) {
-  const [filters, applyFilters] = useFilterState('feed', {
+export function FeedClient({
+  initialItems,
+  initialNextCursor,
+  initialTotalCount,
+  initialCohorts,
+  initialCohort,
+  initialTrack,
+  initialRange,
+}: Props) {
+  const [filters, setFilters] = useState({
     range: initialRange,
     cohort: initialCohort,
     track: initialTrack,
   });
 
+  useEffect(() => {
+    setFilters((prev) => {
+      const next = { range: initialRange, cohort: initialCohort, track: initialTrack };
+      if (prev.range === next.range && prev.cohort === next.cohort && prev.track === next.track) return prev;
+      return next;
+    });
+  }, [initialRange, initialCohort, initialTrack]);
+
   const { range, cohort, track } = filters;
   const days = range === '30d' ? 30 : undefined;
+
+  const applyFilters = useCallback((patch: Partial<{ range: Range; cohort: string | null; track: Track | null }>) => {
+    setFilters((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.cohort) params.set('cohort', filters.cohort);
+    if (filters.track) params.set('track', filters.track);
+    if (filters.range !== '30d') params.set('range', filters.range);
+    const query = params.toString();
+    const url = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+    window.history.replaceState(null, '', url);
+  }, [filters]);
+
+  const filtersMatchSSR = range === initialRange && cohort === initialCohort && track === initialTrack;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['feed', days, track, cohort],
@@ -42,7 +75,14 @@ export function FeedClient({ initialItems, initialCohorts, initialCohort, initia
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    staleTime: 5 * 60 * 1000,
+    initialData:
+      filtersMatchSSR && initialItems.length > 0
+        ? {
+            pages: [{ posts: initialItems, nextCursor: initialNextCursor, totalCount: initialTotalCount }],
+            pageParams: [undefined],
+          }
+        : undefined,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 
@@ -66,15 +106,22 @@ export function FeedClient({ initialItems, initialCohorts, initialCohort, initia
     return () => observer.disconnect();
   }, [handleObserver]);
 
-  const filtersMatchSSR = range === initialRange && cohort === initialCohort && track === initialTrack;
+  const totalCount = useMemo(() => {
+    if (data?.pages?.[0]?.totalCount != null) return data.pages[0].totalCount;
+    return initialTotalCount ?? 0;
+  }, [data, initialTotalCount]);
 
   const items = useMemo(() => {
-    if (data?.pages) return data.pages.flatMap((page) => page.posts);
-    if (isFetching && !filtersMatchSSR) return [];
-    return initialItems;
-  }, [data, isFetching, initialItems, filtersMatchSSR]);
-
-  const totalCount = data?.pages[0]?.totalCount;
+    let posts = data?.pages ? data.pages.flatMap((page) => page.posts) : [];
+    if (!data?.pages) {
+      if (isFetching && !filtersMatchSSR) return [];
+      posts = initialItems;
+    }
+    if (track) {
+      posts = posts.filter((item) => item.member.tracks.includes(track));
+    }
+    return posts;
+  }, [data, isFetching, initialItems, filtersMatchSSR, track]);
 
   const staffPosts = useMemo(() => {
     const now = Date.now();
@@ -124,7 +171,8 @@ export function FeedClient({ initialItems, initialCohorts, initialCohort, initia
           filters={filters}
           applyFilters={applyFilters}
           cohorts={cohorts}
-          filteredCount={totalCount ?? items.length}
+          filteredCount={items.length}
+          totalCount={totalCount}
         />
         {items.length > 0 ? (
           <>

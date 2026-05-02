@@ -1,20 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
 import { api } from '@/lib/api';
-import type { CohortArchive, BlogPostDetail } from '@/types';
+import type { CohortArchive } from '@/types';
 
 interface Props {
   archive: CohortArchive[];
   memberTracks: string[];
   githubId: string;
   lastPostedAt: string | null;
+  initialTab: 'mission' | 'blog';
+  initialMissionTab: 'mission' | 'common' | 'pending';
 }
 
-export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt }: Props) {
-  const [tab, setTab] = useState<'mission' | 'blog'>('mission');
+export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt, initialTab, initialMissionTab }: Props) {
+  const [tab, setTab] = useState<'mission' | 'blog'>(initialTab);
+
+  const handleTabChange = (t: 'mission' | 'blog') => {
+    setTab(t);
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', t);
+    window.history.replaceState(null, '', `${window.location.pathname}?${params}`);
+  };
 
   return (
     <>
@@ -23,8 +33,8 @@ export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt }: P
           {(['mission', 'blog'] as const).map((t) => (
             <button
               key={t}
-              onClick={() => setTab(t)}
-              className={`px-4 py-3 text-[14px] font-medium border-b-2 -mb-px transition-colors cursor-pointer ${
+              onClick={() => handleTabChange(t)}
+              className={`px-4 py-3 text-[14px] font-medium border-b-2 -mb-px cursor-pointer ${
                 tab === t
                   ? 'border-accent-dm text-text'
                   : 'border-transparent text-text-muted hover:text-text-secondary'
@@ -38,7 +48,12 @@ export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt }: P
 
       <div className="md:max-w-[800px]">
         {tab === 'mission' ? (
-          <MissionArchive archive={archive} memberTracks={memberTracks} githubId={githubId} />
+          <MissionArchive
+            archive={archive}
+            memberTracks={memberTracks}
+            githubId={githubId}
+            initialMissionTab={initialMissionTab}
+          />
         ) : (
           <BlogSection githubId={githubId} lastPostedAt={lastPostedAt} />
         )}
@@ -48,18 +63,14 @@ export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt }: P
 }
 
 function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedAt: string | null }) {
-  const [blogPosts, setBlogPosts] = useState<BlogPostDetail | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { data: blogPosts, isLoading } = useQuery({
+    queryKey: ['blogPosts', githubId],
+    queryFn: () => api.members.blogPosts(githubId),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    setLoading(true);
-    api.members
-      .blogPosts(githubId)
-      .then(setBlogPosts)
-      .finally(() => setLoading(false));
-  }, [githubId]);
-
-  if (loading) {
+  if (isLoading) {
     return <p className="py-8 text-[13px] text-text-muted">블로그 글을 불러오는 중...</p>;
   }
 
