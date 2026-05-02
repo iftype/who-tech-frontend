@@ -106,11 +106,6 @@ export function FeedClient({
     return () => observer.disconnect();
   }, [handleObserver]);
 
-  const totalCount = useMemo(() => {
-    if (data?.pages?.[0]?.totalCount != null) return data.pages[0].totalCount;
-    return initialTotalCount ?? 0;
-  }, [data, initialTotalCount]);
-
   const items = useMemo(() => {
     let posts = data?.pages ? data.pages.flatMap((page) => page.posts) : [];
     if (!data?.pages) {
@@ -120,8 +115,22 @@ export function FeedClient({
     if (track) {
       posts = posts.filter((item) => item.member.tracks.includes(track));
     }
-    return posts;
+
+    const perDayLimit = 3;
+    const memberDayCount = new Map<string, number>();
+    const filtered: typeof posts = [];
+    for (const post of posts) {
+      const day = post.publishedAt.split('T')[0] ?? '';
+      const key = `${post.member.githubId}|${day}`;
+      const count = memberDayCount.get(key) ?? 0;
+      if (count >= perDayLimit) continue;
+      memberDayCount.set(key, count + 1);
+      filtered.push(post);
+    }
+    return filtered;
   }, [data, isFetching, initialItems, filtersMatchSSR, track]);
+
+  const totalCount = items.length;
 
   const staffPosts = useMemo(() => {
     const now = Date.now();
