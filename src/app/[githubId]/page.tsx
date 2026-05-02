@@ -13,10 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const member = await api.members.detail(githubId).catch(() => null);
   if (!member) return {};
   return {
-    title: member.nickname,
+    title: 'who.tech',
     description: `${member.nickname}(@${member.githubId}) 크루의 미션 아카이브와 블로그`,
     openGraph: {
-      title: `${member.nickname} | who.tech`,
+      title: 'who.tech',
       images: member.avatarUrl ? [{ url: member.avatarUrl }] : [],
     },
   };

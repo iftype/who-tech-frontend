@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { SettingsClient } from './SettingsClient';
 
-export const metadata: Metadata = { title: '설정' };
+export const metadata: Metadata = { title: 'who.tech' };
 
 export default function SettingsPage() {
   return <SettingsClient />;

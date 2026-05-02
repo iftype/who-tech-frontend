@@ -9,9 +9,8 @@ interface Props {
   searchParams?: Promise<{ roleGroup?: string; track?: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { number } = await params;
-  return { title: `${number}기 크루 목록` };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: 'who.tech' };
 }
 
 export default async function CohortPage({ params, searchParams }: Props) {

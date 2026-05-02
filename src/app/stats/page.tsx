@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = { title: '통계' };
+export const metadata: Metadata = { title: 'who.tech' };
 
 export default function StatsPage() {
   return (

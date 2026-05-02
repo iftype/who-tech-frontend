@@ -12,10 +12,7 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider';
 const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 
 export const metadata: Metadata = {
-  title: {
-    default: 'who.tech',
-    template: '%s | who.tech',
-  },
+  title: 'who.tech',
   description: '우아한테크코스 크루 검색 서비스',
   openGraph: {
     type: 'website',

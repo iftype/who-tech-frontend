@@ -4,7 +4,7 @@ import { CohortExplorer } from '@/features/cohort/CohortExplorer';
 
 export const revalidate = 300;
 
-export const metadata: Metadata = { title: '전체 크루 목록' };
+export const metadata: Metadata = { title: 'who.tech' };
 
 export default async function CohortAllPage({
   searchParams,
