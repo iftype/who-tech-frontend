@@ -71,7 +71,7 @@ export function FeedClient({
         track: track ?? undefined,
         cohort: cohort ? Number(cohort) : undefined,
         cursor: pageParam,
-        limit: 10,
+        limit: 50,
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
