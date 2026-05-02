@@ -116,18 +116,7 @@ export function FeedClient({
       posts = posts.filter((item) => item.member.tracks.includes(track));
     }
 
-    const perDayLimit = 3;
-    const memberDayCount = new Map<string, number>();
-    const filtered: typeof posts = [];
-    for (const post of posts) {
-      const day = post.publishedAt.split('T')[0] ?? '';
-      const key = `${post.member.githubId}|${day}`;
-      const count = memberDayCount.get(key) ?? 0;
-      if (count >= perDayLimit) continue;
-      memberDayCount.set(key, count + 1);
-      filtered.push(post);
-    }
-    return filtered;
+    return posts;
   }, [data, isFetching, initialItems, filtersMatchSSR, track]);
 
   const totalCount = data?.pages?.[0]?.totalCount ?? items.length;
