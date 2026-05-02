@@ -130,7 +130,7 @@ export function FeedClient({
     return filtered;
   }, [data, isFetching, initialItems, filtersMatchSSR, track]);
 
-  const totalCount = items.length;
+  const totalCount = data?.pages?.[0]?.totalCount ?? items.length;
 
   const staffPosts = useMemo(() => {
     const now = Date.now();
