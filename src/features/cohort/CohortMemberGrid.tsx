@@ -13,11 +13,12 @@ interface Props {
 export function CohortMemberGrid({ members, emptyMessage }: Props) {
   return (
     <div className="hidden sm:grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
-      {members.map((member) => (
+      {members.map((member, i) => (
         <Link
           key={member.githubId}
           href={`/${member.githubId}`}
           className="group flex min-h-[148px] flex-col items-center justify-center gap-2.5 rounded-xl border border-border bg-surface p-4 hover:border-accent/30 hover:bg-surface-alt"
+          style={{ animation: `feedRowFadeIn 0.3s ease both`, animationDelay: `${i * 30}ms` }}
         >
           <Avatar src={member.avatarUrl} alt={member.nickname} size={48} />
           <div className="w-full text-center">

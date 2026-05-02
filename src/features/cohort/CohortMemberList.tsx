@@ -19,11 +19,12 @@ export function CohortMemberList({ members, emptyMessage }: Props) {
         </div>
       ) : (
         <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
-          {members.map((member) => (
+          {members.map((member, i) => (
             <Link
               key={member.githubId}
               href={`/${member.githubId}`}
               className="flex items-center gap-3 border-b border-border-dim px-4 py-3 hover:bg-surface-alt last:border-0"
+              style={{ animation: `feedRowFadeIn 0.3s ease both`, animationDelay: `${i * 30}ms` }}
             >
               <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />
               <div className="min-w-0 flex-1">
