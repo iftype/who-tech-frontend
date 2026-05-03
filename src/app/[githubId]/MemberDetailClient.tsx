@@ -27,7 +27,7 @@ export function MemberDetailClient({ initialMember, initialTab, initialMissionTa
 
   return (
     <div className="mx-auto px-4 sm:px-6 py-6 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 pb-5 sm:pb-8 border-b border-border-dim">
+      <div className="flex items-center gap-3 sm:gap-5 pb-5 sm:pb-8 border-b border-border-dim">
         <a
           href={`https://github.com/${member.githubId}`}
           target="_blank"
@@ -40,13 +40,13 @@ export function MemberDetailClient({ initialMember, initialTab, initialMissionTa
             alt={member.nickname}
             size={80}
             responsive
-            className="w-16 h-16 sm:w-20 sm:h-20"
+            className="w-12 h-12 sm:w-20 sm:h-20"
           />
         </a>
-        <div className="flex flex-col gap-1.5 sm:gap-2 min-w-0 flex-1">
+        <div className="flex flex-col gap-1 sm:gap-2 min-w-0 flex-1">
           <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
-            <h1 className="text-[22px] sm:text-[28px] font-bold text-text leading-tight">{member.nickname}</h1>
-            <span className="font-mono text-[12px] sm:text-[14px] text-text-muted truncate max-w-[200px] sm:max-w-none">
+            <h1 className="text-[18px] sm:text-[28px] font-bold text-text leading-tight">{member.nickname}</h1>
+            <span className="font-mono text-[11px] sm:text-[14px] text-text-muted truncate max-w-[140px] sm:max-w-none">
               @{member.githubId}
             </span>
             <RefreshButton githubId={member.githubId} onRefreshed={handleRefreshed} />
