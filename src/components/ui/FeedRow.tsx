@@ -36,7 +36,12 @@ export function FeedRow({ item }: Props) {
           <Link href={`/${item.member.githubId}`} className="text-[13px] text-text hover:underline">
             {item.member.nickname}
           </Link>
-          <MemberBadges tracks={item.member.tracks ?? []} cohort={item.member.cohort} roles={item.member.roles ?? []} />
+          <MemberBadges
+            tracks={item.member.tracks ?? []}
+            cohort={item.member.cohort}
+            roles={item.member.roles ?? []}
+            cohorts={item.member.cohorts}
+          />
         </div>
       </div>
       {source && (
