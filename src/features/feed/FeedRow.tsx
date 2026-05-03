@@ -49,38 +49,28 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
             </Link>
             <div className="flex flex-wrap items-center gap-1">
               <TrackBadge track={item.member.tracks[0]} compact />
-              <span className="hidden sm:inline-flex items-center gap-1">
-                {(item.member.cohorts ?? []).length > 0 ? (
-                  <>
-                    {item.member
-                      .cohorts!.sort((a, b) => {
-                        const aHasCrew = a.roles.includes('crew') ? 0 : 1;
-                        const bHasCrew = b.roles.includes('crew') ? 0 : 1;
-                        return aHasCrew - bHasCrew || a.cohort - b.cohort;
-                      })
-                      .map((c) => {
-                        const hasCrew = c.roles.includes('crew');
-                        const nonCrewRoles = c.roles.filter((r) => r !== 'crew');
-                        return (
-                          <span key={c.cohort} className="inline-flex items-center gap-1">
-                            <CohortBadge cohort={c.cohort} />
-                            {hasCrew && <RoleBadge role="crew" />}
-                            {!hasCrew && nonCrewRoles.map((r) => <RoleBadge key={r} role={r} />)}
-                          </span>
-                        );
-                      })}
-                  </>
-                ) : (
-                  <>
-                    {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
-                    {(item.member.roles ?? [])
-                      .filter((r) => r !== 'crew')
-                      .map((r) => (
-                        <RoleBadge key={r} role={r} />
-                      ))}
-                  </>
-                )}
-              </span>
+              {(item.member.cohorts ?? []).length > 0 ? (
+                item.member.cohorts!.map((c) => {
+                  const hasCrew = c.roles.includes('crew');
+                  const nonCrewRoles = c.roles.filter((r) => r !== 'crew');
+                  return (
+                    <span key={c.cohort} className="inline-flex items-center gap-1">
+                      <CohortBadge cohort={c.cohort} />
+                      {hasCrew && <RoleBadge role="crew" />}
+                      {!hasCrew && nonCrewRoles.map((r) => <RoleBadge key={r} role={r} />)}
+                    </span>
+                  );
+                })
+              ) : (
+                <>
+                  {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
+                  {(item.member.roles ?? [])
+                    .filter((r) => r !== 'crew')
+                    .map((r) => (
+                      <RoleBadge key={r} role={r} />
+                    ))}
+                </>
+              )}
             </div>
           </div>
           <span className="ml-auto flex-shrink-0 text-text-muted sm:ml-0">{formatRelativeDate(item.publishedAt)}</span>
