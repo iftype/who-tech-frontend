@@ -25,10 +25,12 @@ export function RoleBadge({ role }: RoleBadgeProps) {
 }
 
 const trackLabel: Record<Track, string> = { frontend: '프론트엔드', backend: '백엔드', android: '안드로이드' };
+const trackShortLabel: Record<Track, string> = { frontend: 'FE', backend: 'BE', android: 'AN' };
 interface TrackBadgeProps {
   track: Track;
+  compact?: boolean;
 }
-export function TrackBadge({ track }: TrackBadgeProps) {
+export function TrackBadge({ track, compact }: TrackBadgeProps) {
   return (
     <span
       className={cn(
@@ -38,7 +40,7 @@ export function TrackBadge({ track }: TrackBadgeProps) {
         track === 'android' && 'text-green-400 border-green-400/20 bg-green-400/10',
       )}
     >
-      {trackLabel[track]}
+      {compact ? trackShortLabel[track] : trackLabel[track]}
     </span>
   );
 }

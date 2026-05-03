@@ -48,9 +48,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
               {item.member.nickname}
             </Link>
             <div className="flex flex-wrap items-center gap-1">
-              {(item.member.tracks ?? []).map((t) => (
-                <TrackBadge key={t} track={t} />
-              ))}
+              <TrackBadge track={item.member.tracks[0]} compact />
               <span className="hidden sm:inline-flex items-center gap-1">
                 {(item.member.cohorts ?? []).length > 0 ? (
                   <>
