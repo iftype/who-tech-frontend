@@ -5,12 +5,6 @@ interface Props {
   tracks: Track[];
   cohort: number | null;
   roles: Role[];
-}
-
-interface Props {
-  tracks: Track[];
-  cohort: number | null;
-  roles: Role[];
   cohorts?: { cohort: number; roles: Role[] }[];
 }
 

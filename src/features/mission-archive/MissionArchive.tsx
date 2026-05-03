@@ -12,7 +12,7 @@ function getForkUrl(githubId: string, repoName: string) {
 }
 
 function buildMarkdown(archives: CohortArchive[], tab: Tab, githubId: string): string {
-  const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n` || '# woowacourse-archive\n'];
+  const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n`];
 
   for (const archive of archives) {
     if (archive.cohort > 0) {

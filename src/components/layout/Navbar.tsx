@@ -45,10 +45,10 @@ export function Navbar() {
   const linkClass = (href: string, mobile = false) => {
     const active = (optimisticPath ?? pathname) === href;
     return mobile
-      ? `px-6 py-3 text-[14px] transition-colors ${
+      ? `px-6 py-3 text-[14px] ${
           active ? 'bg-surface text-text' : 'text-text-secondary hover:bg-surface hover:text-text'
         }`
-      : `cursor-pointer whitespace-nowrap text-[13px] transition-colors ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
+      : `cursor-pointer whitespace-nowrap text-[13px] ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
   };
 
   const showHeaderSearch = true;

@@ -93,7 +93,7 @@ function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedA
                 href={post.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 px-4 py-3 hover:bg-surface-alt transition-colors"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 px-4 py-3 hover:bg-surface-alt"
               >
                 <p className="text-[13px] font-medium text-text line-clamp-2">{decodeHtml(post.title)}</p>
                 <p className="text-[11px] text-text-dim sm:shrink-0">{formatDate(post.publishedAt)}</p>
