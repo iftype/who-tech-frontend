@@ -67,7 +67,14 @@ export const api = {
       const raw = await fetchApi<RawDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }); //dev
       return normalizeDetail(raw);
     },
-    blogPosts: (githubId: string) => fetchApi<BlogPostDetail>(`/members/${githubId}/blog-posts`),
+    blogPosts: async (githubId: string) => {
+      const res = await fetchApi<BlogPostDetail>(`/members/${githubId}/blog-posts`);
+      return {
+        ...res,
+        latest: res.latest.map((post) => ({ ...post, title: decodeHtml(post.title) })),
+        archive: res.archive.map((post) => ({ ...post, title: decodeHtml(post.title) })),
+      };
+    },
     feed: async (params: { cohort?: number; track?: string; days?: number; cursor?: string; limit?: number } = {}) => {
       const qs = new URLSearchParams(
         Object.fromEntries(
