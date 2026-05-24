@@ -6,23 +6,30 @@
   "scripts": {
     "start": "expo start",
     "dev": "expo start",
+    "dev:ios": "expo start --ios",
+    "dev:android": "expo start --android",
     "ios": "expo run:ios",
     "android": "expo run:android",
     "ios:release": "expo run:ios --configuration Release",
     "android:release": "expo run:android --variant release",
-    "build": "expo export --platform all",
     "prebuild": "expo prebuild --clean",
     "lint": "tsc --noEmit",
     "lint:fix": "tsc --noEmit"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
+    "@react-navigation/bottom-tabs": "^7.16.1",
+    "@react-navigation/native": "^7.2.4",
     "expo": "~56.0.4",
     "expo-constants": "~18.0.9",
+    "expo-dev-client": "~56.0.15",
     "expo-linking": "~8.0.8",
+    "expo-splash-screen": "^56.0.10",
     "expo-status-bar": "~56.0.4",
     "react": "19.2.3",
     "react-native": "0.85.3",
     "react-native-safe-area-context": "^5.8.0",
+    "react-native-screens": "4.25.2",
     "react-native-webview": "^13.16.1"
   },
   "devDependencies": {

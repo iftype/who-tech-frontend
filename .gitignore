@@ -4,6 +4,7 @@ node_modules/
 dist/
 .next/
 .expo/
+.env
 .env*.local
 *.tsbuildinfo
 .mcp.json

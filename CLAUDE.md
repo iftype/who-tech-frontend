@@ -23,12 +23,14 @@ who-tech-frontend/
 
 ```bash
 pnpm install
-pnpm dev              # 모든 앱 dev 병렬 실행
-pnpm dev:web          # web만
-pnpm dev:mobile       # mobile만 (expo start)
-pnpm build            # 모든 앱 빌드
-pnpm build:web        # next build
-pnpm build:mobile     # expo export --platform all
+pnpm dev:web           # next dev
+pnpm dev:app           # expo start (Metro, 플랫폼 선택)
+pnpm dev:app-ios       # expo start --ios
+pnpm dev:app-android   # expo start --android
+pnpm build:web         # next build
+pnpm build:app         # iOS + Android dev 빌드 (expo run:ios && expo run:android)
+pnpm build:app-ios     # iOS dev 빌드 (시뮬레이터 실행)
+pnpm build:app-android # Android dev 빌드 (에뮬레이터 실행)
 pnpm lint
 pnpm format
 ```

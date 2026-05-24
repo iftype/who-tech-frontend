@@ -8,12 +8,14 @@ Expo + react-native-webview로 web (`https://who-tech.vercel.app`)을 감싼 모
 ## 주요 명령어 (루트에서)
 
 ```bash
-pnpm dev:mobile                                  # expo start (Metro 데브서버 + Expo Go)
-pnpm --filter @who-tech/mobile ios               # expo run:ios  (네이티브 빌드 + 시뮬레이터 실행)
-pnpm --filter @who-tech/mobile android           # expo run:android (네이티브 빌드 + 에뮬레이터 실행)
+pnpm dev:app                                     # expo start (Metro 데브서버 + Expo Go)
+pnpm dev:app-ios                                 # expo start --ios (Metro + iOS 시뮬레이터)
+pnpm dev:app-android                             # expo start --android (Metro + Android 에뮬레이터)
+pnpm build:app-ios                               # expo run:ios  (네이티브 dev 빌드 + 시뮬레이터 실행)
+pnpm build:app-android                           # expo run:android (네이티브 dev 빌드 + 에뮬레이터 실행)
+pnpm build:app                                   # iOS + Android 모두 dev 빌드 (순차 실행)
 pnpm --filter @who-tech/mobile ios:release       # Release 구성으로 iOS 빌드
 pnpm --filter @who-tech/mobile android:release   # release variant로 Android 빌드
-pnpm build:mobile                                # expo export --platform all (JS 번들만)
 pnpm --filter @who-tech/mobile lint              # tsc --noEmit
 ```
 

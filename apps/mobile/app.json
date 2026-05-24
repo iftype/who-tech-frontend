@@ -10,14 +10,19 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "store.iftype.whotech"
+      "bundleIdentifier": "store.iftype.whotech",
+      "icon": {
+        "light": "./assets/icon-light.png",
+        "dark": "./assets/icon-dark.png",
+        "tinted": "./assets/icon-tinted.png"
+      },
+      "appleTeamId": "3XD9F9256D"
     },
     "android": {
       "package": "store.iftype.whotech",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0d0d0d",
         "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false
@@ -25,6 +30,20 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon-light.png",
+          "backgroundColor": "#ffffff",
+          "imageWidth": 200,
+          "dark": {
+            "image": "./assets/splash-icon-dark.png",
+            "backgroundColor": "#0d0d0d"
+          }
+        }
+      ]
+    ],
     "extra": {
       "webUrl": "https://who-tech.vercel.app"
     }
