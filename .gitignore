@@ -1,9 +1,14 @@
-.next/
 node_modules/
+.pnpm-store/
+.turbo/
+dist/
+.next/
+.expo/
 .env*.local
 *.tsbuildinfo
 .mcp.json
 .vercel
+.DS_Store
 
 # OMC
 .omc/

@@ -1,53 +1,43 @@
 {
-  "name": "frontend",
+  "name": "who-tech-frontend",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@who-tech/web",
+    "dev:mobile": "turbo run dev --filter=@who-tech/mobile",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@who-tech/web",
+    "build:mobile": "turbo run build --filter=@who-tech/mobile",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"
   },
-  "dependencies": {
-    "@tanstack/react-query": "^5.62.0",
-    "@tanstack/react-query-devtools": "^5.62.0",
-    "@vercel/analytics": "^2.0.1",
-    "geist": "^1.3.1",
-    "lucide-react": "^1.7.0",
-    "next": "^15.3.9",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "sharp": "^0.34.5",
-    "zustand": "^5.0.3"
-  },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
-    "@playwright/test": "^1.59.0",
-    "@tailwindcss/postcss": "^4.0.0",
-    "@types/node": "^22.10.7",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "eslint": "^9.18.0",
-    "eslint-config-next": "15.1.6",
-    "eslint-config-prettier": "^10.0.1",
+    "@commitlint/types": "^19.5.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.2",
-    "playwright": "^1.59.0",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.0.0",
+    "turbo": "^2.3.3",
     "typescript": "^5.7.3"
   },
   "engines": {
-    "node": ">=20.18.0"
+    "node": ">=20.18.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "react": "19.2.3",
+      "react-dom": "19.2.3"
+    }
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ],
     "*.{json,md,css}": [

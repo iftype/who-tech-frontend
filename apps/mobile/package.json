@@ -1,0 +1,32 @@
+{
+  "name": "@who-tech/mobile",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "dev": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "ios:release": "expo run:ios --configuration Release",
+    "android:release": "expo run:android --variant release",
+    "build": "expo export --platform all",
+    "prebuild": "expo prebuild --clean",
+    "lint": "tsc --noEmit",
+    "lint:fix": "tsc --noEmit"
+  },
+  "dependencies": {
+    "expo": "~56.0.4",
+    "expo-constants": "~18.0.9",
+    "expo-linking": "~8.0.8",
+    "expo-status-bar": "~56.0.4",
+    "react": "19.2.3",
+    "react-native": "0.85.3",
+    "react-native-safe-area-context": "^5.8.0",
+    "react-native-webview": "^13.16.1"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  }
+}

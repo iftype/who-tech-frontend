@@ -1,39 +1,44 @@
-# CLAUDE.md — Frontend
+# CLAUDE.md — who-tech monorepo
 
-우아한테크코스 크루 검색 서비스의 프론트엔드. Next.js 15 App Router 기반 SPA.
+우아한테크코스 크루 검색 서비스. pnpm workspaces + Turborepo 기반 모노레포.
 
-- **백엔드 API**: https://iftype.store (로컬: http://localhost:3001)
-- **프로덕션**: Vercel (`who-tech.vercel.app`), `main` push 시 자동 배포
+## 구조
 
-## 주요 명령어
+```
+who-tech-frontend/
+├── apps/
+│   ├── web/      # Next.js 15 App Router 웹 (@who-tech/web)
+│   └── mobile/   # Expo + react-native-webview 셸 (@who-tech/mobile)
+├── package.json          # 워크스페이스 루트, 공통 devDependencies
+├── pnpm-workspace.yaml
+├── turbo.json
+└── .npmrc                # node-linker=hoisted (Metro 호환)
+```
+
+- 백엔드 API: https://iftype.store
+- 웹 배포: Vercel (`who-tech.vercel.app`). **Root Directory = `apps/web`** (Vercel 대시보드 설정)
+- 앱 빌드: 로컬에서 `expo prebuild` + Xcode / Gradle로 직접 수행 (EAS 사용하지 않음). 웹 URL을 로드하는 WebView 셸 → 웹 배포 = 앱 콘텐츠 갱신
+
+## 명령어 (루트)
 
 ```bash
-npm run dev       # http://localhost:3000
-npm run build
-npm run lint:fix
-npm run format
+pnpm install
+pnpm dev              # 모든 앱 dev 병렬 실행
+pnpm dev:web          # web만
+pnpm dev:mobile       # mobile만 (expo start)
+pnpm build            # 모든 앱 빌드
+pnpm build:web        # next build
+pnpm build:mobile     # expo export --platform all
+pnpm lint
+pnpm format
 ```
 
-## 아키텍처
+## 워크스페이스 규칙
 
-```
-app/
-  page.tsx                 → /            홈
-  [githubId]/page.tsx      → /:githubId   크루 상세
-  cohort/[number]/page.tsx → /cohort/:n   기수별 목록
-  feed/page.tsx            → /feed        블로그 피드
-  settings/page.tsx        → /settings   설정
-```
-
-- 페이지 진입: Server Component. 검색/필터/네비 인터랙션: `'use client'`
-- 기수 목록: TanStack Query 캐시 + `startTransition`/`useDeferredValue`
-- API: 서버 환경 → `NEXT_PUBLIC_API_URL` 직접, 브라우저 → `/api` 프록시 (CORS)
-
-## 컨벤션
-
-- Tailwind CSS v4 + CSS 변수 `@theme` 연결
-- **`transition-colors` 전역 사용 금지** — 테마 전환 잔상 방지
-- 다크모드 기본값, `html.dark` 클래스 토글, `localStorage` 유지
+- 루트 `package.json` → 공통 도구만 (turbo, prettier, husky, commitlint, lint-staged, typescript)
+- 앱별 의존성은 `apps/*/package.json`에 격리
+- React 버전은 mobile (Expo)에 맞춰 루트 `pnpm.overrides`로 고정 → web/mobile 동일 React 사용
+- `.npmrc`의 `node-linker=hoisted`: Metro가 pnpm 심볼릭 링크를 처리 못해서 필수
 
 ## PR/브랜치 규칙
 
@@ -41,18 +46,14 @@ app/
 feat/#이슈번호-설명 → develop PR → 머지
 ```
 
-- PR은 기능 완성 시에만, 커밋: Conventional Commits, subject 소문자
+- 커밋: Conventional Commits, subject 소문자 (commitlint로 강제)
+- 구조 이동과 코드 수정을 한 PR에 섞지 않기
 
-## 환경변수 (.env.local)
+## 패키지별 상세
 
-```
-NEXT_PUBLIC_API_URL=https://iftype.store
-```
+- [apps/web/CLAUDE.md](apps/web/CLAUDE.md)
+- [apps/mobile/CLAUDE.md](apps/mobile/CLAUDE.md)
 
-## 참고 문서
+## 모노레포 전환 이력
 
-- [아키텍처/렌더링 전략](.claude/ARCHITECTURE.md)
-- [컴포넌트 스펙](.claude/COMPONENTS.md)
-- [API 클라이언트](.claude/API_CLIENT.md)
-- [디자인 시스템](.claude/DESIGN_SYSTEM.md)
-- [페이지 구성](.claude/PAGES.md)
+[`.claude/MONOREPO_MIGRATION.md`](.claude/MONOREPO_MIGRATION.md) — Phase 1~3 계획 및 결정 보류 항목.
