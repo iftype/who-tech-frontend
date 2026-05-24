@@ -5,5 +5,5 @@ import { TAB_PATHS } from '../config';
 
 export function FeedScreen() {
   const isFocused = useIsFocused();
-  return <WebTabScreen path={TAB_PATHS.feed} isFocused={isFocused} />;
+  return <WebTabScreen path={TAB_PATHS.feed} tabKey="feed" isFocused={isFocused} />;
 }

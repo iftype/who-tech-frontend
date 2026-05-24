@@ -1,6 +1,7 @@
 'use client';
 
 import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import type { Member, Track } from '@/types';
@@ -70,14 +71,10 @@ interface Props {
   initialTrack: Track | 'all';
 }
 
-function getCohortFromPath(pathname: string): number | null {
-  const match = pathname.match(/^\/cohort\/(\d+)$/);
-  return match ? Number(match[1]) : null;
-}
-
 const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
 
 export function CohortExplorer({ members, allCohorts, initialCohort, initialRoleGroup, initialTrack }: Props) {
+  const router = useRouter();
   const [activeCohort, setActiveCohort] = useState<number | null>(initialCohort);
   const deferredActiveCohort = useDeferredValue(activeCohort);
   const [hydrated, setHydrated] = useState(false);
@@ -100,14 +97,6 @@ export function CohortExplorer({ members, allCohorts, initialCohort, initialRole
   useEffect(() => {
     setActiveCohort((prev) => (prev === initialCohort ? prev : initialCohort));
   }, [initialCohort]);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveCohort(getCohortFromPath(window.location.pathname));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
 
   const applyFilters = useCallback((patch: Partial<{ roleGroup: RoleGroup; track: Track | 'all' }>) => {
     setRoleGroup((prev) => (patch.roleGroup === undefined ? prev : patch.roleGroup));
@@ -190,7 +179,7 @@ export function CohortExplorer({ members, allCohorts, initialCohort, initialRole
     if (track !== 'all') params.set('track', track);
     else params.delete('track');
     const query = params.toString();
-    window.history.pushState(null, '', query ? `${nextPath}?${query}` : nextPath);
+    router.push(query ? `${nextPath}?${query}` : nextPath, { scroll: false });
   };
 
   return (

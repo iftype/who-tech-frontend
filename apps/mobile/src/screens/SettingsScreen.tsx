@@ -5,5 +5,5 @@ import { TAB_PATHS } from '../config';
 
 export function SettingsScreen() {
   const isFocused = useIsFocused();
-  return <WebTabScreen path={TAB_PATHS.settings} isFocused={isFocused} />;
+  return <WebTabScreen path={TAB_PATHS.settings} tabKey="settings" isFocused={isFocused} />;
 }

@@ -1,22 +1,63 @@
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  BackHandler,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-} from 'react-native';
+import { BackHandler, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { WebView, type WebViewNavigation } from 'react-native-webview';
+import { WebView, type WebViewNavigation, type WebViewMessageEvent } from 'react-native-webview';
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes';
 
-import { buildUrl, getWebHostname } from '../config';
+import { buildUrl, getWebHostname, isPathAllowedForTab, type TabKey } from '../config';
+import { useAppTheme } from '../contexts/ThemeContext';
+import type { RootStackParamList } from '../navigation/types';
+import { WebSkeleton } from './WebSkeleton';
 
 const ALLOWED_HOSTS = [getWebHostname(), 'localhost', '127.0.0.1'];
+
+const HIDE_HAMBURGER_SCRIPT = `
+(function() {
+  var css = 'button[aria-label="메뉴"]{display:none !important;}'
+    + 'header[data-nav] a[href="/"]{pointer-events:none !important;cursor:default !important;}';
+  function inject() {
+    if (!document.head) return;
+    if (document.getElementById('__rn_hide_hamburger__')) return;
+    var style = document.createElement('style');
+    style.id = '__rn_hide_hamburger__';
+    style.appendChild(document.createTextNode(css));
+    document.head.appendChild(style);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inject);
+  } else {
+    inject();
+  }
+  true;
+})();
+`;
+
+const THEME_SYNC_SCRIPT = `
+(function() {
+  function currentTheme() {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  }
+  function currentDesign() {
+    var cl = document.documentElement.classList;
+    if (cl.contains('apple')) return 'apple';
+    if (cl.contains('sentry')) return 'sentry';
+    return 'paper';
+  }
+  function post() {
+    try {
+      window.ReactNativeWebView && window.ReactNativeWebView.postMessage(
+        JSON.stringify({ type: 'theme', value: currentTheme(), design: currentDesign() })
+      );
+    } catch (e) {}
+  }
+  post();
+  var observer = new MutationObserver(post);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+})();
+`;
 
 const DISABLE_ZOOM_SCRIPT = `
 (function() {
@@ -63,16 +104,55 @@ function isInternalUrl(url: string): boolean {
 
 type Props = {
   path: string;
+  tabKey: TabKey;
   isFocused: boolean;
 };
 
-export function WebTabScreen({ path, isFocused }: Props) {
+export function WebTabScreen({ path, tabKey, isFocused }: Props) {
   const webViewRef = useRef<WebView>(null);
   const [canGoBack, setCanGoBack] = useState(false);
   const [errored, setErrored] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
+  const [loaded, setLoaded] = useState(false);
+  const { isDark, setTheme, setDesign, settingsVersion, notifySettingsChanged } = useAppTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const isSettingsTab = tabKey === 'settings';
+
+  const handleMessage = useCallback(
+    (event: WebViewMessageEvent) => {
+      try {
+        const data = JSON.parse(event.nativeEvent.data);
+        if (!data || typeof data !== 'object') return;
+        if (data.type === 'theme' && (data.value === 'dark' || data.value === 'light')) {
+          setTheme(data.value);
+          if (data.design === 'paper' || data.design === 'apple' || data.design === 'sentry') {
+            setDesign(data.design);
+          }
+          return;
+        }
+        if (data.type === 'design' && (data.value === 'paper' || data.value === 'apple' || data.value === 'sentry')) {
+          setDesign(data.value);
+          return;
+        }
+        if (isSettingsTab && data.type === 'settings-changed') {
+          notifySettingsChanged();
+        }
+      } catch {}
+    },
+    [setTheme, setDesign, isSettingsTab, notifySettingsChanged],
+  );
+
+  const lastReloadedVersionRef = useRef(settingsVersion);
+  useEffect(() => {
+    if (isSettingsTab) {
+      lastReloadedVersionRef.current = settingsVersion;
+      return;
+    }
+    if (settingsVersion === lastReloadedVersionRef.current) return;
+    lastReloadedVersionRef.current = settingsVersion;
+    if (!loaded) return;
+    webViewRef.current?.reload();
+  }, [settingsVersion, isSettingsTab, loaded]);
 
   useEffect(() => {
     if (Platform.OS !== 'android' || !isFocused) return;
@@ -90,17 +170,38 @@ export function WebTabScreen({ path, isFocused }: Props) {
     setCanGoBack(nav.canGoBack);
   }, []);
 
-  const handleShouldStartLoad = useCallback((req: ShouldStartLoadRequest) => {
-    if (isInternalUrl(req.url)) return true;
-    if (/^https?:\/\//.test(req.url)) {
-      Linking.openURL(req.url).catch(() => undefined);
-      return false;
-    }
-    return true;
-  }, []);
+  const handleShouldStartLoad = useCallback(
+    (req: ShouldStartLoadRequest) => {
+      if (isInternalUrl(req.url)) {
+        try {
+          const { pathname } = new URL(req.url);
+          if (!isPathAllowedForTab(tabKey, pathname)) {
+            if (req.isTopFrame !== false) {
+              navigation.navigate('WebStack', { url: req.url });
+            }
+            return false;
+          }
+        } catch {
+          return false;
+        }
+        return true;
+      }
+      if (/^https?:\/\//.test(req.url)) {
+        if (req.isTopFrame === false) {
+          Linking.openURL(req.url).catch(() => undefined);
+          return false;
+        }
+        navigation.navigate('BlogWebView', { url: req.url });
+        return false;
+      }
+      return true;
+    },
+    [navigation, tabKey],
+  );
 
   const retry = useCallback(() => {
     setErrored(false);
+    setLoaded(false);
     setReloadKey((k) => k + 1);
   }, []);
 
@@ -119,37 +220,36 @@ export function WebTabScreen({ path, isFocused }: Props) {
           </Pressable>
         </View>
       ) : (
-        <WebView
-          key={reloadKey}
-          ref={webViewRef}
-          source={{ uri }}
-          style={{ backgroundColor: bgColor }}
-          onNavigationStateChange={handleNavigationStateChange}
-          onShouldStartLoadWithRequest={handleShouldStartLoad}
-          onError={() => setErrored(true)}
-          onHttpError={({ nativeEvent }) => {
-            if (nativeEvent.statusCode >= 500) setErrored(true);
-          }}
-          startInLoadingState
-          renderLoading={() => (
-            <View style={[styles.loading, { backgroundColor: bgColor }]}>
-              <ActivityIndicator size="large" color={textColor} />
-            </View>
-          )}
-          allowsBackForwardNavigationGestures
-          javaScriptEnabled
-          domStorageEnabled
-          originWhitelist={['https://*', 'http://*']}
-          decelerationRate="normal"
-          pullToRefreshEnabled
-          injectedJavaScriptBeforeContentLoaded={DISABLE_ZOOM_SCRIPT}
-          injectedJavaScript={DISABLE_ZOOM_SCRIPT}
-          scalesPageToFit={false}
-          setBuiltInZoomControls={false}
-          setDisplayZoomControls={false}
-          minimumZoomScale={1}
-          maximumZoomScale={1}
-        />
+        <View style={{ flex: 1, backgroundColor: bgColor }}>
+          <WebView
+            key={reloadKey}
+            ref={webViewRef}
+            source={{ uri }}
+            style={{ backgroundColor: bgColor }}
+            onNavigationStateChange={handleNavigationStateChange}
+            onMessage={handleMessage}
+            onShouldStartLoadWithRequest={handleShouldStartLoad}
+            onLoadEnd={() => setLoaded(true)}
+            onError={() => setErrored(true)}
+            onHttpError={({ nativeEvent }) => {
+              if (nativeEvent.statusCode >= 500) setErrored(true);
+            }}
+            allowsBackForwardNavigationGestures
+            javaScriptEnabled
+            domStorageEnabled
+            originWhitelist={['https://*', 'http://*']}
+            decelerationRate="normal"
+            pullToRefreshEnabled
+            injectedJavaScriptBeforeContentLoaded={DISABLE_ZOOM_SCRIPT + HIDE_HAMBURGER_SCRIPT}
+            injectedJavaScript={DISABLE_ZOOM_SCRIPT + HIDE_HAMBURGER_SCRIPT + THEME_SYNC_SCRIPT}
+            scalesPageToFit={false}
+            setBuiltInZoomControls={false}
+            setDisplayZoomControls={false}
+            minimumZoomScale={1}
+            maximumZoomScale={1}
+          />
+          {!loaded && <WebSkeleton tabKey={tabKey} />}
+        </View>
       )}
     </SafeAreaView>
   );
@@ -157,15 +257,6 @@ export function WebTabScreen({ path, isFocused }: Props) {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
-  loading: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   fallback: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   fallbackTitle: { fontSize: 20, fontWeight: '600', marginBottom: 8 },
   fallbackBody: { fontSize: 14, textAlign: 'center', marginBottom: 24, opacity: 0.7 },

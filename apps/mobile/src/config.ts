@@ -25,6 +25,16 @@ export function buildUrl(path: string): string {
   return `${WEB_URL}${path}`;
 }
 
+export function isPathAllowedForTab(tabKey: TabKey, pathname: string): boolean {
+  const normalized = pathname.replace(/\/+$/, '') || '/';
+  const isCohortArea = normalized === '/cohort' || normalized.startsWith('/cohort/');
+  const isSettingsArea = normalized === '/settings' || normalized.startsWith('/settings/');
+  const isFeedRoot = normalized === '/';
+  if (tabKey === 'cohort') return !isFeedRoot && !isSettingsArea;
+  if (tabKey === 'settings') return !isFeedRoot && !isCohortArea;
+  return !isCohortArea && !isSettingsArea;
+}
+
 export function getWebHostname(): string {
   try {
     return new URL(WEB_URL).hostname;

@@ -5,5 +5,5 @@ import { TAB_PATHS } from '../config';
 
 export function CohortScreen() {
   const isFocused = useIsFocused();
-  return <WebTabScreen path={TAB_PATHS.cohort} isFocused={isFocused} />;
+  return <WebTabScreen path={TAB_PATHS.cohort} tabKey="cohort" isFocused={isFocused} />;
 }
