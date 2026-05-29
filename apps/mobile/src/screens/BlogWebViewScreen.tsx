@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCallback, useRef } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View, useColorScheme } from 'react-native';
+import { useCallback, useMemo, useRef } from 'react';
+import { ActivityIndicator, Linking, Pressable, StyleSheet, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes';
@@ -10,10 +10,23 @@ import type { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BlogWebView'>;
 
+function getRegistrableHost(hostname: string): string {
+  const parts = hostname.split('.');
+  if (parts.length <= 2) return hostname;
+  return parts.slice(-2).join('.');
+}
+
+function safeParseHost(raw: string): string | null {
+  try {
+    return new URL(raw).hostname;
+  } catch {
+    return null;
+  }
+}
+
 export function BlogWebViewScreen({ route, navigation }: Props) {
   const { url } = route.params;
   const webViewRef = useRef<WebView>(null);
-  const hasLoadedInitial = useRef(false);
   const scheme = useColorScheme();
   const isDark = scheme === 'dark';
 
@@ -21,20 +34,26 @@ export function BlogWebViewScreen({ route, navigation }: Props) {
   const textColor = isDark ? '#f5f5f5' : '#0a0a0a';
   const borderColor = isDark ? '#1f1f1f' : '#e5e7eb';
 
+  const initialRegistrableHost = useMemo(() => {
+    const host = safeParseHost(url);
+    return host ? getRegistrableHost(host) : null;
+  }, [url]);
+
   const handleShouldStartLoad = useCallback(
     (req: ShouldStartLoadRequest) => {
       if (req.isTopFrame === false) return true;
-      if (req.url === url) {
-        hasLoadedInitial.current = true;
-        return true;
-      }
-      if (!hasLoadedInitial.current) {
-        hasLoadedInitial.current = true;
-        return true;
-      }
+      if (req.url === url) return true;
+      if (!initialRegistrableHost) return true;
+
+      const reqHost = safeParseHost(req.url);
+      if (!reqHost) return true;
+
+      if (getRegistrableHost(reqHost) === initialRegistrableHost) return true;
+
+      Linking.openURL(req.url).catch(() => {});
       return false;
     },
-    [url],
+    [url, initialRegistrableHost],
   );
 
   return (
