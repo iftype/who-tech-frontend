@@ -13,8 +13,8 @@ const SearchDropdown = dynamic(
 );
 
 const NAV_LINKS = [
-  { href: '/cohort', label: '기수 목록' },
   { href: '/feed', label: '피드' },
+  { href: '/cohort', label: '기수 목록' },
   { href: '/settings', label: '설정' },
 ];
 

@@ -42,7 +42,7 @@ function TabsNavigator() {
 
   return (
     <Tab.Navigator
-      initialRouteName="Cohort"
+      initialRouteName="Feed"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarLabel: TAB_LABELS[route.name as keyof TabParamList],
@@ -58,8 +58,8 @@ function TabsNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Cohort" component={CohortScreen} />
       <Tab.Screen name="Feed" component={FeedScreen} />
+      <Tab.Screen name="Cohort" component={CohortScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
