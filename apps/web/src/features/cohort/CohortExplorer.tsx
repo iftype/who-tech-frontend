@@ -1,7 +1,7 @@
 'use client';
 
-import { startTransition, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import type { Member, Track } from '@/types';
@@ -75,44 +75,35 @@ const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'revie
 
 export function CohortExplorer({ members, allCohorts, initialCohort, initialRoleGroup, initialTrack }: Props) {
   const router = useRouter();
-  const [activeCohort, setActiveCohort] = useState<number | null>(initialCohort);
-  const deferredActiveCohort = useDeferredValue(activeCohort);
-  const [hydrated, setHydrated] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
+  const roleGroup: RoleGroup = searchParams.get('roleGroup') === 'staff' ? 'staff' : initialRoleGroup;
+  const trackParam = searchParams.get('track') as Track | 'all' | null;
+  const track: Track | 'all' =
+    trackParam === 'frontend' || trackParam === 'backend' || trackParam === 'android' || trackParam === 'all'
+      ? trackParam
+      : initialTrack;
+
+  const [hydrated, setHydrated] = useState(false);
   useLayoutEffect(() => {
     setHydrated(true);
   }, []);
 
-  const [roleGroup, setRoleGroup] = useState<RoleGroup>(initialRoleGroup);
-  const [track, setTrack] = useState<Track | 'all'>(initialTrack);
-
-  useEffect(() => {
-    setRoleGroup((prev) => (prev === initialRoleGroup ? prev : initialRoleGroup));
-  }, [initialRoleGroup]);
-
-  useEffect(() => {
-    setTrack((prev) => (prev === initialTrack ? prev : initialTrack));
-  }, [initialTrack]);
-
-  useEffect(() => {
-    setActiveCohort((prev) => (prev === initialCohort ? prev : initialCohort));
-  }, [initialCohort]);
-
-  const applyFilters = useCallback((patch: Partial<{ roleGroup: RoleGroup; track: Track | 'all' }>) => {
-    setRoleGroup((prev) => (patch.roleGroup === undefined ? prev : patch.roleGroup));
-    setTrack((prev) => (patch.track === undefined ? prev : patch.track));
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (roleGroup !== 'crew') params.set('roleGroup', roleGroup);
-    else params.delete('roleGroup');
-    if (track !== 'all') params.set('track', track);
-    else params.delete('track');
-    const query = params.toString();
-    const url = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-    window.history.replaceState(null, '', url);
-  }, [roleGroup, track]);
+  const applyFilters = useCallback(
+    (patch: Partial<{ roleGroup: RoleGroup; track: Track | 'all' }>) => {
+      const next = new URLSearchParams(searchParams.toString());
+      const nextRoleGroup = patch.roleGroup ?? roleGroup;
+      const nextTrack = patch.track ?? track;
+      if (nextRoleGroup !== 'crew') next.set('roleGroup', nextRoleGroup);
+      else next.delete('roleGroup');
+      if (nextTrack !== 'all') next.set('track', nextTrack);
+      else next.delete('track');
+      const query = next.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    },
+    [pathname, router, searchParams, roleGroup, track],
+  );
 
   const { data: fetchedCohorts } = useQuery({
     queryKey: ['cohorts'],
@@ -124,18 +115,17 @@ export function CohortExplorer({ members, allCohorts, initialCohort, initialRole
   const cohorts = fetchedCohorts?.length ? fetchedCohorts : allCohorts;
 
   const { data: fetchedMembers } = useQuery({
-    queryKey: ['members', 'cohort', deferredActiveCohort],
-    queryFn: () => api.members.search(deferredActiveCohort != null ? { cohort: deferredActiveCohort } : {}),
-    initialData: deferredActiveCohort === initialCohort ? members : undefined,
+    queryKey: ['members', 'cohort', initialCohort],
+    queryFn: () => api.members.search(initialCohort != null ? { cohort: initialCohort } : {}),
+    initialData: members,
     staleTime: 60_000,
   });
 
   const activeMembers = fetchedMembers ?? members;
 
   const cohortMembers = useMemo(
-    () =>
-      deferredActiveCohort === null ? activeMembers : activeMembers.filter((m) => m.cohort === deferredActiveCohort),
-    [deferredActiveCohort, activeMembers],
+    () => (initialCohort === null ? activeMembers : activeMembers.filter((m) => m.cohort === initialCohort)),
+    [initialCohort, activeMembers],
   );
 
   const crewCount = useMemo(
@@ -168,27 +158,13 @@ export function CohortExplorer({ members, allCohorts, initialCohort, initialRole
 
   const emptyMessage = roleScopedMembers.length === 0 ? '해당 기수의 멤버가 없습니다.' : '조건에 맞는 멤버가 없습니다.';
 
-  const handleCohortChange = (cohort: number | null) => {
-    startTransition(() => {
-      setActiveCohort(cohort);
-    });
-    const nextPath = cohort === null ? '/cohort' : `/cohort/${cohort}`;
-    const params = new URLSearchParams(window.location.search);
-    if (roleGroup !== 'crew') params.set('roleGroup', roleGroup);
-    else params.delete('roleGroup');
-    if (track !== 'all') params.set('track', track);
-    else params.delete('track');
-    const query = params.toString();
-    router.push(query ? `${nextPath}?${query}` : nextPath, { scroll: false });
-  };
-
   return (
     <>
-      <CohortTabBar activeCohort={activeCohort} cohorts={cohorts} onChange={handleCohortChange} />
+      <CohortTabBar activeCohort={initialCohort} cohorts={cohorts} />
       {!hydrated ? (
         <>
           <CohortFilterBarSkeleton
-            cohort={activeCohort ?? 0}
+            cohort={initialCohort ?? 0}
             counts={{ crew: crewCount, staff: staffCount }}
             visibleTrackOptions={visibleTrackOptions}
             filteredCount={filtered.length}
@@ -226,7 +202,7 @@ export function CohortExplorer({ members, allCohorts, initialCohort, initialRole
       ) : (
         <>
           <CohortFilterBar
-            cohort={activeCohort ?? 0}
+            cohort={initialCohort ?? 0}
             filters={{ roleGroup, track }}
             applyFilters={applyFilters}
             counts={{ crew: crewCount, staff: staffCount }}
