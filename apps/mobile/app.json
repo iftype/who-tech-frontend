@@ -3,7 +3,7 @@
     "name": "who-tech",
     "slug": "who-tech",
     "scheme": "whotech",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "store.iftype.whotech",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "icon": {
         "light": "./assets/icon-light.png",
         "dark": "./assets/icon-dark.png",
@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "store.iftype.whotech",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "backgroundColor": "#0d0d0d",
         "foregroundImage": "./assets/android-icon-foreground.png",
