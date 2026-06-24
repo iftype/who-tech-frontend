@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useEffect, useState, useTransition } from 'react';
+import { type MouseEvent, useEffect, useState, useTransition } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 
 const SearchDropdown = dynamic(
@@ -42,6 +42,16 @@ export function Navbar() {
     });
   };
 
+  // 홈(피드)에선 필터가 replaceState로만 URL에 남아 Next 라우터가 같은 경로로 인식한다.
+  // 이미 홈이면 <Link>의 소프트 내비게이션 대신 직접 URL을 비우고 popstate로 피드를 초기화한다.
+  const handleLogoClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== '/') return;
+    e.preventDefault();
+    window.history.replaceState(null, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0 });
+  };
+
   const linkClass = (href: string, mobile = false) => {
     const active = (optimisticPath ?? pathname) === href;
     return mobile
@@ -59,7 +69,7 @@ export function Navbar() {
         className="mx-auto flex h-14 items-center gap-2 px-4 sm:px-6"
         style={{ maxWidth: 'var(--container-max, 1200px)' }}
       >
-        <Link href="/" className="flex shrink-0 items-center gap-2">
+        <Link href="/" onClick={handleLogoClick} className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
             alt="who.tech"
