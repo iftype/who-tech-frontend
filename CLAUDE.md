@@ -17,6 +17,8 @@ who-tech-frontend/
 
 - 백엔드 API: https://iftype.store
 - 웹 배포: Vercel (`who-tech.vercel.app`). **Root Directory = `apps/web`** (Vercel 대시보드 설정)
+  - `main` push → **프로덕션** 배포 (`who-tech.vercel.app`)
+  - `develop` push → **스테이징 프리뷰** 자동 배포 (`who-tech-git-develop-<team>.vercel.app`)
 - 앱 빌드: 로컬에서 `expo prebuild` + Xcode / Gradle로 직접 수행 (EAS 사용하지 않음). 웹 URL을 로드하는 WebView 셸 → 웹 배포 = 앱 콘텐츠 갱신
 
 ## 명령어 (루트)
@@ -45,9 +47,12 @@ pnpm format
 ## PR/브랜치 규칙
 
 ```
-feat/#이슈번호-설명 → develop PR → 머지
+feat/#이슈번호-설명 ──PR──▶ develop ──(Vercel 프리뷰에서 확인)──▶ PR ──▶ main ──▶ 프로덕션
 ```
 
+- **모든 작업 PR은 `develop` 대상으로 올린다.** `main` 직접 PR/푸시 금지.
+- `develop` 머지 → Vercel 스테이징 프리뷰에서 동작 확인.
+- 프리뷰 확인 후 `develop → main` PR을 머지하면 프로덕션 배포 (이 머지는 메인테이너가 수행).
 - 커밋: Conventional Commits, subject 소문자 (commitlint로 강제)
 - 구조 이동과 코드 수정을 한 PR에 섞지 않기
 

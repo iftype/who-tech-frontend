@@ -4,6 +4,8 @@ Next.js 15 App Router 기반 SPA. 모노레포 `apps/web` 패키지.
 
 - **백엔드 API**: https://iftype.store (로컬: http://localhost:3001)
 - **프로덕션**: Vercel (`who-tech.vercel.app`), `main` push 시 자동 배포
+- **스테이징**: `develop` push 시 프리뷰 자동 배포 (`who-tech-git-develop-<team>.vercel.app`)
+- **배포 흐름**: PR → `develop` → 프리뷰 확인 → `develop→main` 머지 → 프로덕션
 - **Vercel Root Directory**: `apps/web` (대시보드 설정)
 
 ## 주요 명령어 (루트에서)

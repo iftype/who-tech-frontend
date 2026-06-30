@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - develop
     paths:
       - 'apps/web/**'
       - '.github/workflows/web-ci.yml'
@@ -17,6 +18,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths:
       - 'apps/web/**'
       - '.github/workflows/web-ci.yml'
