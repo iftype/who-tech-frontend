@@ -48,6 +48,7 @@ jobs:
       lint: ${{ steps.lint.outcome }}
       format: ${{ steps.format.outcome }}
       typecheck: ${{ steps.typecheck.outcome }}
+      test: ${{ steps.test.outcome }}
       build: ${{ steps.build.outcome }}
 
     steps:
@@ -93,6 +94,11 @@ jobs:
         continue-on-error: true
         run: pnpm --filter @who-tech/web exec tsc --noEmit
 
+      - name: Test web
+        id: test
+        continue-on-error: true
+        run: pnpm --filter @who-tech/web test
+
       - name: Build web
         id: build
         continue-on-error: true
@@ -116,6 +122,7 @@ jobs:
           LINT_RESULT: ${{ steps.lint.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
+          TEST_RESULT: ${{ steps.test.outcome }}
           BUILD_RESULT: ${{ steps.build.outcome }}
         with:
           script: |
@@ -130,6 +137,7 @@ jobs:
             | 린트 | ${status(process.env.LINT_RESULT)} |
             | 포맷 | ${status(process.env.FORMAT_RESULT)} |
             | 타입 체크 | ${status(process.env.TYPECHECK_RESULT)} |
+            | 테스트 | ${status(process.env.TEST_RESULT)} |
             | 빌드 | ${status(process.env.BUILD_RESULT)} |
             `;
 
@@ -150,11 +158,13 @@ jobs:
           LINT_RESULT: ${{ steps.lint.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
+          TEST_RESULT: ${{ steps.test.outcome }}
           BUILD_RESULT: ${{ steps.build.outcome }}
         run: |
           test "$LINT_RESULT" = "success"
           test "$FORMAT_RESULT" = "success"
           test "$TYPECHECK_RESULT" = "success"
+          test "$TEST_RESULT" = "success"
           test "$BUILD_RESULT" = "success"
 
   lighthouse:
