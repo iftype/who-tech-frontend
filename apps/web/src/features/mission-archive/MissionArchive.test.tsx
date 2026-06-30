@@ -291,7 +291,7 @@ describe('MissionArchive', () => {
       configurable: true,
       value: { writeText },
     });
-    renderMissionArchive();
+    renderMissionArchive({ memberTracks: [] });
 
     await user.click(screen.getByRole('button', { name: /Markdown 복사/ }));
 
@@ -331,7 +331,7 @@ describe('MissionArchive', () => {
     expect(markdown).not.toContain('pending-legacy');
   });
 
-  it('mission 탭 Markdown은 현재 화면과 달리 memberTracks 필터를 적용하지 않는 현재 동작을 보존한다', async () => {
+  it('mission 탭 Markdown은 화면과 동일하게 memberTracks 필터를 적용한다', async () => {
     const user = userEvent.setup({ writeToClipboard: false });
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
@@ -346,7 +346,7 @@ describe('MissionArchive', () => {
 
     const markdown = writeText.mock.calls[0]?.[0] ?? '';
     expect(markdown).toContain('javascript-calculator');
-    expect(markdown).toContain('backend-mission');
+    expect(markdown).not.toContain('backend-mission');
   });
 });
 

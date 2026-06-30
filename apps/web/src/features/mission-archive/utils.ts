@@ -6,7 +6,12 @@ export function getForkUrl(githubId: string, repoName: string) {
   return `https://github.com/${githubId}/${repoName}`;
 }
 
-export function buildMarkdown(archives: CohortArchive[], tab: MissionTab, githubId: string): string {
+export function buildMarkdown(
+  archives: CohortArchive[],
+  tab: MissionTab,
+  githubId: string,
+  memberTracks: string[],
+): string {
   const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n`];
 
   for (const archive of archives) {
@@ -15,7 +20,7 @@ export function buildMarkdown(archives: CohortArchive[], tab: MissionTab, github
     }
 
     for (const { level, repos } of archive.levels) {
-      const filtered = getFilteredRepos(repos, tab, archive.cohort);
+      const filtered = getFilteredRepos(repos, tab, archive.cohort, memberTracks);
 
       if (filtered.length === 0) continue;
 

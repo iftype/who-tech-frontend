@@ -29,7 +29,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId, initialMi
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId));
+    navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId, memberTracks));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
