@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
 import { MissionArchive } from './MissionArchive';
+import { getFilteredArchives } from './utils';
 import type { CohortArchive } from '@/types';
 
 const archive: CohortArchive[] = [
@@ -346,5 +347,48 @@ describe('MissionArchive', () => {
     const markdown = writeText.mock.calls[0]?.[0] ?? '';
     expect(markdown).toContain('javascript-calculator');
     expect(markdown).toContain('backend-mission');
+  });
+});
+
+describe('getFilteredArchives - 확인전 정렬', () => {
+  it('같은 레벨의 repo를 가장 최신(마지막) 제출일 기준 내림차순으로 정렬한다', () => {
+    // submissions는 백엔드에서 오름차순(오래된→최신)으로 내려온다.
+    // alpha는 [0]=03-08로 더 최근이지만 최신 제출은 03-09,
+    // beta는 [0]=03-01로 더 과거이지만 최신 제출은 03-10이라 beta가 먼저 와야 한다.
+    const pendingArchive: CohortArchive[] = [
+      {
+        cohort: 0,
+        levels: [
+          {
+            level: null,
+            repos: [
+              {
+                name: 'alpha-mission',
+                track: null,
+                tabCategory: 'base',
+                submissions: [
+                  { prUrl: 'u1', prNumber: 1, title: 't', status: 'open', submittedAt: '2026-03-08T00:00:00.000Z' },
+                  { prUrl: 'u2', prNumber: 2, title: 't', status: 'open', submittedAt: '2026-03-09T00:00:00.000Z' },
+                ],
+              },
+              {
+                name: 'beta-mission',
+                track: null,
+                tabCategory: 'base',
+                submissions: [
+                  { prUrl: 'u3', prNumber: 3, title: 't', status: 'open', submittedAt: '2026-03-01T00:00:00.000Z' },
+                  { prUrl: 'u4', prNumber: 4, title: 't', status: 'open', submittedAt: '2026-03-10T00:00:00.000Z' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const result = getFilteredArchives(pendingArchive, 'pending', []);
+    const names = result[0]?.levels[0]?.repos.map((repo) => repo.name);
+
+    expect(names).toEqual(['beta-mission', 'alpha-mission']);
   });
 });

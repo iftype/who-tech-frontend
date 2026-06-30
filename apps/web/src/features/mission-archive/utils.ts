@@ -93,15 +93,22 @@ function shouldIncludeRepo(repo: ArchiveRepo, tab: MissionTab, cohort: number, m
   return true;
 }
 
+function latestSubmittedAt(repo: ArchiveRepo): number | null {
+  if (!repo.submissions || repo.submissions.length === 0) return null;
+  // submissions는 백엔드에서 submittedAt 오름차순(오래된→최신)으로 내려오지만,
+  // 순서에 의존하지 않도록 최댓값으로 최신 제출일을 구한다.
+  return Math.max(...repo.submissions.map((s) => new Date(String(s.submittedAt)).getTime()));
+}
+
 function compareReposByLatestSubmission(a: ArchiveRepo, b: ArchiveRepo, tab: MissionTab) {
   if (tab !== MISSION_TAB.PENDING) return 0;
 
-  const aDate = a.submissions?.[0]?.submittedAt;
-  const bDate = b.submissions?.[0]?.submittedAt;
+  const aDate = latestSubmittedAt(a);
+  const bDate = latestSubmittedAt(b);
 
-  if (!aDate) return 1;
-  if (!bDate) return -1;
-  return new Date(String(bDate)).getTime() - new Date(String(aDate)).getTime();
+  if (aDate === null) return 1;
+  if (bDate === null) return -1;
+  return bDate - aDate;
 }
 
 function buildLevelHeading(level: number | null) {
