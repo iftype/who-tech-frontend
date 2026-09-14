@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-const FALLBACK_WEB_URL = 'https://who-tech.vercel.app';
+const FALLBACK_WEB_URL = 'https://iftype.site';
 
 function resolveWebUrl(): string {
   const fromEnv = process.env.EXPO_PUBLIC_WEB_URL;
@@ -39,6 +39,6 @@ export function getWebHostname(): string {
   try {
     return new URL(WEB_URL).hostname;
   } catch {
-    return 'who-tech.vercel.app';
+    return 'iftype.site';
   }
 }

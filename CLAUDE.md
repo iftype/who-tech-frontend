@@ -16,8 +16,8 @@ who-tech-frontend/
 ```
 
 - 백엔드 API: https://iftype.store
-- 웹 배포: Vercel (`who-tech.vercel.app`). **Root Directory = `apps/web`** (Vercel 대시보드 설정)
-  - `main` push → **프로덕션** 배포 (`who-tech.vercel.app`)
+- 웹 배포: Vercel (`iftype.site`). **Root Directory = `apps/web`** (Vercel 대시보드 설정)
+  - `main` push → **프로덕션** 배포 (`iftype.site`)
   - `develop` push → **스테이징 프리뷰** 자동 배포 (`who-tech-git-develop-<team>.vercel.app`)
 - 앱 빌드: 로컬에서 `expo prebuild` + Xcode / Gradle로 직접 수행 (EAS 사용하지 않음). 웹 URL을 로드하는 WebView 셸 → 웹 배포 = 앱 콘텐츠 갱신
 
