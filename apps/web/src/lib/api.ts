@@ -16,7 +16,7 @@ export type MemberSearchPage = {
   nextOffset: number | null;
 };
 
-const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
+const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.site';
 // 브라우저에서는 CORS 우회를 위해 Next.js rewrite 프록시 사용
 const BASE_URL = typeof window === 'undefined' ? SERVER_URL : '/api';
 

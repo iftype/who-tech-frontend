@@ -9,7 +9,7 @@
 ## 환경변수 (.env.local)
 
 ```
-NEXT_PUBLIC_API_URL=https://iftype.store
+NEXT_PUBLIC_API_URL=https://iftype.site
 ```
 
 ## 백엔드 공개 API

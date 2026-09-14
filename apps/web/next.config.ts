@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 import path from 'path';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.store';
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.site';
 
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
@@ -16,7 +16,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https://avatars.githubusercontent.com",
       "font-src 'self'",
-      "connect-src 'self' https://iftype.store",
+      "connect-src 'self' https://iftype.site",
       "frame-ancestors 'none'",
     ].join('; '),
   },

@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 
-const BASE = 'https://iftype.site';
+const BASE = 'https://who-tech.vercel.app';
 
 const shots = [
   {

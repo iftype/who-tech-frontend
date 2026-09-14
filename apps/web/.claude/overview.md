@@ -5,7 +5,7 @@
 - Next.js 15 App Router + TypeScript strict
 - Tailwind CSS v4 + TanStack Query v5
 - Vercel 자동 배포 (main 브랜치 push)
-- 백엔드 API: `https://iftype.store` (로컬: `http://localhost:3001`)
+- 백엔드 API: `https://iftype.site` (로컬: `http://localhost:3001`)
 
 ## 페이지 구조
 
@@ -60,7 +60,7 @@ npm run lint:fix
 ## 환경변수
 
 ```
-NEXT_PUBLIC_API_URL=https://iftype.store
+NEXT_PUBLIC_API_URL=https://iftype.site
 ```
 
 ## 브랜치 전략

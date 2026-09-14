@@ -2,7 +2,7 @@
 
 # CLAUDE.md — @who-tech/mobile
 
-Expo + react-native-webview로 web (`https://iftype.site`)을 감싼 모바일 셸.
+Expo + react-native-webview로 web (`https://who-tech.vercel.app`)을 감싼 모바일 셸.
 콘텐츠는 전적으로 웹에서 가져오므로 **웹 배포가 곧 앱 콘텐츠 갱신**이다.
 
 ## 주요 명령어 (루트에서)
@@ -51,7 +51,7 @@ apps/mobile/
 
 ## 핵심 동작
 
-- `app.json` → `extra.webUrl`로 로드할 URL 주입 (기본: `https://iftype.site`)
+- `app.json` → `extra.webUrl`로 로드할 URL 주입 (기본: `https://who-tech.vercel.app`)
 - 외부 도메인 링크는 `Linking.openURL`로 시스템 브라우저 위임 (`onShouldStartLoadWithRequest`)
 - Android 하드웨어 뒤로가기 → WebView `goBack()` (스택 없으면 시스템 동작)
 - `useColorScheme`로 시스템 다크모드 감지 → SafeArea/로딩 배경 동기화
