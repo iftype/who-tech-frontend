@@ -61,7 +61,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
             )}
             <div className="flex flex-wrap items-center gap-1">
               {item.member.isTeamBlog ? (
-                <span className="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-400/15 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
+                <span className="inline-flex items-center rounded-full border border-indigo-900/30 bg-indigo-900/10 px-1.5 py-0.5 text-[10px] font-medium text-indigo-950">
                   팀 블로그
                 </span>
               ) : (
