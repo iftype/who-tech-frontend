@@ -26,7 +26,7 @@ export function PatchToast() {
         </span>
         <p className="min-w-0 flex-1 truncate">
           <a
-            href="https://www.rilog.kr/@official"
+            href="https://www.rilog.kr/feeds"
             target="_blank"
             rel="noopener noreferrer"
             className="font-medium text-text hover:underline"
