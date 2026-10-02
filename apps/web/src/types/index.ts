@@ -48,6 +48,7 @@ export interface CohortArchive {
 export interface BlogPost {
   url: string;
   title: string;
+  authorName?: string | null;
   publishedAt: string;
 }
 
