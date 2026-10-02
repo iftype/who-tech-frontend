@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/components/layout/Navbar';
+import { PatchToast } from '@/components/layout/PatchToast';
 import { QueryProvider } from '@/components/layout/QueryProvider';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeProvider initialTheme={theme} initialDesign={design}>
           <QueryProvider>
             <Navbar />
+            <PatchToast />
             <main>{children}</main>
           </QueryProvider>
         </ThemeProvider>

@@ -21,7 +21,11 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
       }
     >
       <div className="relative z-10 mt-0.5 flex flex-shrink-0">
-        <a href={`https://github.com/${item.member.githubId}`} target="_blank" rel="noopener noreferrer">
+        <a
+          href={item.member.isTeamBlog ? (item.member.blog ?? item.url) : `https://github.com/${item.member.githubId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} />
         </a>
       </div>
@@ -38,34 +42,53 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
         </div>
         <div className="mt-1 flex items-center gap-1.5 text-[12px]">
           <div className="flex flex-wrap items-center gap-1.5">
-            <Link
-              href={`/${item.member.githubId}`}
-              className="relative z-10 text-[13px] text-text-secondary hover:underline"
-            >
-              {item.member.nickname}
-            </Link>
+            {item.member.isTeamBlog ? (
+              <a
+                href={item.member.blog ?? item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 text-[13px] text-text-secondary hover:underline"
+              >
+                {item.member.nickname}
+              </a>
+            ) : (
+              <Link
+                href={`/${item.member.githubId}`}
+                className="relative z-10 text-[13px] text-text-secondary hover:underline"
+              >
+                {item.member.nickname}
+              </Link>
+            )}
             <div className="flex flex-wrap items-center gap-1">
-              <TrackBadge track={item.member.tracks[0]} compact />
-              {(item.member.cohorts ?? []).length > 0 ? (
-                item.member.cohorts!.map((c) => {
-                  const hasCrew = c.roles.includes('crew');
-                  const nonCrewRoles = c.roles.filter((r) => r !== 'crew');
-                  return (
-                    <span key={c.cohort} className="inline-flex items-center gap-1">
-                      <CohortBadge cohort={c.cohort} />
-                      {hasCrew && <RoleBadge role="crew" />}
-                      {!hasCrew && nonCrewRoles.map((r) => <RoleBadge key={r} role={r} />)}
-                    </span>
-                  );
-                })
+              {item.member.isTeamBlog ? (
+                <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[10px] font-medium text-accent-dm">
+                  팀 블로그
+                </span>
               ) : (
                 <>
-                  {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
-                  {(item.member.roles ?? [])
-                    .filter((r) => r !== 'crew')
-                    .map((r) => (
-                      <RoleBadge key={r} role={r} />
-                    ))}
+                  <TrackBadge track={item.member.tracks[0]} compact />
+                  {(item.member.cohorts ?? []).length > 0 ? (
+                    item.member.cohorts!.map((c) => {
+                      const hasCrew = c.roles.includes('crew');
+                      const nonCrewRoles = c.roles.filter((r) => r !== 'crew');
+                      return (
+                        <span key={c.cohort} className="inline-flex items-center gap-1">
+                          <CohortBadge cohort={c.cohort} />
+                          {hasCrew && <RoleBadge role="crew" />}
+                          {!hasCrew && nonCrewRoles.map((r) => <RoleBadge key={r} role={r} />)}
+                        </span>
+                      );
+                    })
+                  ) : (
+                    <>
+                      {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
+                      {(item.member.roles ?? [])
+                        .filter((r) => r !== 'crew')
+                        .map((r) => (
+                          <RoleBadge key={r} role={r} />
+                        ))}
+                    </>
+                  )}
                 </>
               )}
             </div>
