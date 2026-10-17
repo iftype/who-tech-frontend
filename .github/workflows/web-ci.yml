@@ -35,15 +35,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 9.15.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -52,7 +52,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Restore Turbo and Next.js cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             .turbo
@@ -93,7 +93,7 @@ jobs:
 
       - name: Upload web build artifact
         if: steps.build.outcome == 'success'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-next-build
           path: |
@@ -105,7 +105,7 @@ jobs:
       - name: Comment quality report on PR
         # Dependabot PR은 GITHUB_TOKEN이 읽기 전용이라 코멘트를 쓸 수 없다
         if: always() && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           LINT_RESULT: ${{ steps.lint.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
@@ -176,15 +176,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 9.15.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
@@ -193,7 +193,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Download web build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: web-next-build
           path: apps/web/.next
@@ -304,7 +304,7 @@ jobs:
       - name: Comment Lighthouse report on PR
         # Dependabot PR은 GITHUB_TOKEN이 읽기 전용이라 코멘트를 쓸 수 없다
         if: always() && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           LIGHTHOUSE_RESULT: ${{ steps.lighthouse.outcome }}
           LH_PERFORMANCE: ${{ steps.scores.outputs.performance }}
