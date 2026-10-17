@@ -1,34 +1,15 @@
 name: Web CI
 
+# 필수 상태 체크로 쓰이므로 paths 필터 없이 모든 PR/푸시에서 실행한다
 on:
   pull_request:
     branches:
       - main
       - develop
-    paths:
-      - 'apps/web/**'
-      - '.github/workflows/web-ci.yml'
-      - '.npmrc'
-      - '.prettierignore'
-      - '.prettierrc'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
-      - 'turbo.json'
   push:
     branches:
       - main
       - develop
-    paths:
-      - 'apps/web/**'
-      - '.github/workflows/web-ci.yml'
-      - '.npmrc'
-      - '.prettierignore'
-      - '.prettierrc'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
-      - 'turbo.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -48,6 +29,7 @@ jobs:
       lint: ${{ steps.lint.outcome }}
       format: ${{ steps.format.outcome }}
       typecheck: ${{ steps.typecheck.outcome }}
+      mobile_typecheck: ${{ steps.mobile_typecheck.outcome }}
       test: ${{ steps.test.outcome }}
       build: ${{ steps.build.outcome }}
 
@@ -94,6 +76,11 @@ jobs:
         continue-on-error: true
         run: pnpm --filter @who-tech/web exec tsc --noEmit
 
+      - name: Type-check mobile
+        id: mobile_typecheck
+        continue-on-error: true
+        run: pnpm --filter @who-tech/mobile exec tsc --noEmit
+
       - name: Test web
         id: test
         continue-on-error: true
@@ -122,6 +109,7 @@ jobs:
           LINT_RESULT: ${{ steps.lint.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
+          MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
           TEST_RESULT: ${{ steps.test.outcome }}
           BUILD_RESULT: ${{ steps.build.outcome }}
         with:
@@ -137,6 +125,7 @@ jobs:
             | 린트 | ${status(process.env.LINT_RESULT)} |
             | 포맷 | ${status(process.env.FORMAT_RESULT)} |
             | 타입 체크 | ${status(process.env.TYPECHECK_RESULT)} |
+            | 모바일 타입 체크 | ${status(process.env.MOBILE_TYPECHECK_RESULT)} |
             | 테스트 | ${status(process.env.TEST_RESULT)} |
             | 빌드 | ${status(process.env.BUILD_RESULT)} |
             `;
@@ -158,12 +147,14 @@ jobs:
           LINT_RESULT: ${{ steps.lint.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
+          MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
           TEST_RESULT: ${{ steps.test.outcome }}
           BUILD_RESULT: ${{ steps.build.outcome }}
         run: |
           test "$LINT_RESULT" = "success"
           test "$FORMAT_RESULT" = "success"
           test "$TYPECHECK_RESULT" = "success"
+          test "$MOBILE_TYPECHECK_RESULT" = "success"
           test "$TEST_RESULT" = "success"
           test "$BUILD_RESULT" = "success"
 
