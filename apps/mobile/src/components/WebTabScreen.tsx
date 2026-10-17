@@ -245,8 +245,6 @@ export function WebTabScreen({ path, tabKey, isFocused }: Props) {
             scalesPageToFit={false}
             setBuiltInZoomControls={false}
             setDisplayZoomControls={false}
-            minimumZoomScale={1}
-            maximumZoomScale={1}
           />
           {!loaded && <WebSkeleton tabKey={tabKey} />}
         </View>
