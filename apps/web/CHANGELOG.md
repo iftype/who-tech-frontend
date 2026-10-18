@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.2...web-v0.0.3) (2026-10-18)
+
+
+### 리팩토링
+
+* 설정 페이지 탭을 파일별로 분리 ([#80](https://github.com/iftype/who-tech-frontend/issues/80)) ([b077463](https://github.com/iftype/who-tech-frontend/commit/b0774636a3d706c6077cd5a0a86f0a9c66588e1b))
+
 ## [0.0.2](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.1...web-v0.0.2) (2026-10-18)
 
 
