@@ -32,6 +32,7 @@ jobs:
       format: ${{ steps.format.outcome }}
       typecheck: ${{ steps.typecheck.outcome }}
       mobile_typecheck: ${{ steps.mobile_typecheck.outcome }}
+      mobile_test: ${{ steps.mobile_test.outcome }}
       test: ${{ steps.test.outcome }}
       build: ${{ steps.build.outcome }}
 
@@ -83,6 +84,11 @@ jobs:
         continue-on-error: true
         run: pnpm --filter @who-tech/mobile exec tsc --noEmit
 
+      - name: Test mobile
+        id: mobile_test
+        continue-on-error: true
+        run: pnpm --filter @who-tech/mobile test
+
       - name: Test web
         id: test
         continue-on-error: true
@@ -113,6 +119,7 @@ jobs:
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
           MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
+          MOBILE_TEST_RESULT: ${{ steps.mobile_test.outcome }}
           TEST_RESULT: ${{ steps.test.outcome }}
           BUILD_RESULT: ${{ steps.build.outcome }}
         with:
@@ -129,6 +136,7 @@ jobs:
             | 포맷 | ${status(process.env.FORMAT_RESULT)} |
             | 타입 체크 | ${status(process.env.TYPECHECK_RESULT)} |
             | 모바일 타입 체크 | ${status(process.env.MOBILE_TYPECHECK_RESULT)} |
+            | 모바일 테스트 | ${status(process.env.MOBILE_TEST_RESULT)} |
             | 테스트 | ${status(process.env.TEST_RESULT)} |
             | 빌드 | ${status(process.env.BUILD_RESULT)} |
             `;
@@ -151,6 +159,7 @@ jobs:
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
           MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
+          MOBILE_TEST_RESULT: ${{ steps.mobile_test.outcome }}
           TEST_RESULT: ${{ steps.test.outcome }}
           BUILD_RESULT: ${{ steps.build.outcome }}
         run: |
@@ -158,6 +167,7 @@ jobs:
           test "$FORMAT_RESULT" = "success"
           test "$TYPECHECK_RESULT" = "success"
           test "$MOBILE_TYPECHECK_RESULT" = "success"
+          test "$MOBILE_TEST_RESULT" = "success"
           test "$TEST_RESULT" = "success"
           test "$BUILD_RESULT" = "success"
 
