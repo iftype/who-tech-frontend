@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
+import { buttonVariants } from '@/shared/ui';
 
 const sections = [
   {
@@ -12,14 +14,14 @@ const sections = [
       <>
         홈 화면 중앙의 검색창에 <strong className="text-text">닉네임</strong> 또는{' '}
         <strong className="text-text">GitHub ID</strong>를 입력하면 실시간으로 크루를 검색할 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>입력 후 자동으로 드롭다운에 검색 결과가 나타납니다</li>
           <li>기수 번호, 역할(크루/코치/리뷰어), 트랙 정보가 함께 표시됩니다</li>
           <li>결과를 클릭하면 해당 크루의 상세 페이지로 이동합니다</li>
-        </ul>
-        <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-border-dim bg-surface px-3 py-2 text-[12px] text-text-muted">
-          <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px]">⌘</kbd>
-          <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px]">K</kbd>
+        </GuideList>
+        <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-border-dim bg-surface px-3 py-2 text-label text-text-muted">
+          <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-caption">⌘</kbd>
+          <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-caption">K</kbd>
           <span>단축키로 어디서든 검색창을 열 수 있어요</span>
         </div>
       </>
@@ -33,7 +35,7 @@ const sections = [
       <>
         크루의 <strong className="text-text">미션 PR 이력</strong>과 <strong className="text-text">블로그 글</strong>을
         한 페이지에서 확인할 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>기준 미션 / 공통 미션 / 프리코스 탭으로 구분되어 있어요</li>
           <li>레벨별 PR 링크를 직접 클릭해 제출 내역을 볼 수 있습니다</li>
           <li>미제출 항목도 함께 표시되어 전체 미션 현황을 파악할 수 있어요</li>
@@ -42,7 +44,7 @@ const sections = [
             있습니다
           </li>
           <li>여러 기수를 거친 크루라면 크루로 참여한 기수의 기록만 표시됩니다</li>
-        </ul>
+        </GuideList>
       </>
     ),
   },
@@ -53,14 +55,14 @@ const sections = [
     description: (
       <>
         기수별로 모든 크루, 코치, 리뷰어를 한눈에 볼 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>상단 탭에서 전체 기수 또는 특정 기수를 선택할 수 있어요</li>
           <li>
             <strong className="text-text">크루 / 운영진</strong> 역할 토글로 구분해서 볼 수 있습니다
           </li>
           <li>트랙 필터(프론트엔드 / 백엔드 / 안드로이드)로 원하는 트랙만 볼 수 있어요</li>
           <li>크루 카드를 클릭하면 상세 페이지로 이동합니다</li>
-        </ul>
+        </GuideList>
       </>
     ),
   },
@@ -71,13 +73,13 @@ const sections = [
     description: (
       <>
         크루들이 최근에 올린 블로그 글을 모아볼 수 있습니다. 스터디 자료나 회고, 기술 글을 한 곳에서 탐색해보세요.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>전체 / 기수별 탭으로 범위를 좁힐 수 있어요</li>
           <li>7일 / 30일 기간 필터로 최신 글과 이달의 글을 구분할 수 있습니다</li>
           <li>트랙 필터로 원하는 트랙 크루의 글만 볼 수 있어요</li>
           <li>닉네임 클릭 시 크루 상세 페이지, 프로필 사진 클릭 시 GitHub으로 이동합니다</li>
           <li>Velog, Tistory, 브런치 등 다양한 플랫폼 블로그를 지원합니다</li>
-        </ul>
+        </GuideList>
       </>
     ),
   },
@@ -96,11 +98,11 @@ const sections = [
           <li>다음 수집 주기(매시간)에 자동으로 반영됩니다</li>
         </ol>
         <div className="mt-4 flex flex-col gap-2">
-          <div className="rounded-md border border-border-dim bg-surface px-4 py-3 text-[12px] text-text-secondary">
+          <div className="rounded-md border border-border-dim bg-surface px-4 py-3 text-label text-text-secondary">
             <strong className="text-text block mb-1">지원 플랫폼</strong>
             Velog, Tistory, GitHub Pages, 브런치, Medium, 개인 블로그 등 RSS를 제공하는 모든 블로그
           </div>
-          <div className="rounded-md border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-[12px] text-amber-400">
+          <div className="rounded-md border border-notice/20 bg-notice/5 px-4 py-3 text-label text-notice-text">
             <strong className="block mb-1">블로그 글이 안 보인다면?</strong>
             블로그가 RSS를 지원하지 않거나 URL이 잘못 등록된 경우 글이 수집되지 않을 수 있어요. Notion, Instagram,
             LinkedIn 등 RSS가 없는 플랫폼은 지원하지 않습니다.
@@ -124,12 +126,12 @@ export function GuideTab() {
     <div className="flex gap-12">
       <aside className="hidden lg:block w-[160px] flex-shrink-0">
         <nav className="sticky top-8 flex flex-col gap-0.5">
-          <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-3 px-2">목차</p>
+          <p className="text-caption font-semibold text-text-muted uppercase tracking-wider mb-3 px-2">목차</p>
           {guideNavItems.map((item) => (
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="block px-2 py-1.5 rounded text-[13px] text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
+              className="block px-2 py-1.5 rounded text-body-sm text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
             >
               {item.label}
             </a>
@@ -139,29 +141,20 @@ export function GuideTab() {
 
       <div className="flex-1 min-w-0">
         <div className="mb-10">
-          <h1 className="text-[20px] font-bold text-text mb-2">who.tech 사용 가이드</h1>
-          <p className="text-[14px] text-text-secondary leading-relaxed">
+          <h1 className="text-title-sm font-bold text-text mb-2">who.tech 사용 가이드</h1>
+          <p className="text-body text-text-secondary leading-relaxed">
             who.tech는 우아한테크코스 크루의 미션 PR 이력과 블로그를 한 곳에서 탐색할 수 있는 서비스예요.
             <br />
             크루를 검색하거나 기수별로 목록을 살펴보고, 블로그 피드로 최신 글을 확인해보세요.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[12px] text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <Link href="/" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
               홈으로 가기 →
             </Link>
-            <Link
-              href="/cohort"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[12px] text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <Link href="/cohort" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
               기수별 목록 보기 →
             </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[12px] text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <Link href="/" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
               블로그 피드 보기 →
             </Link>
           </div>
@@ -171,13 +164,13 @@ export function GuideTab() {
           {sections.map((section) => (
             <section key={section.id} id={section.id} className="flex flex-col gap-4 scroll-mt-6">
               <div className="flex items-center gap-3">
-                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent-bg border border-accent-border text-[13px] font-bold text-accent-dm">
+                <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-accent-bg border border-accent-border text-body-sm font-bold text-accent-dm">
                   {section.number}
                 </span>
-                <h2 className="text-[16px] font-semibold text-text">{section.title}</h2>
+                <h2 className="text-body-lg font-semibold text-text">{section.title}</h2>
               </div>
               <div className="flex flex-col gap-4">
-                <p className="pl-10 text-[13px] text-text-secondary leading-relaxed">{section.description}</p>
+                <p className="pl-10 text-body-sm text-text-secondary leading-relaxed">{section.description}</p>
                 {section.id !== 'blog-register' && (
                   <div className="overflow-hidden rounded-xl border border-border-dim shadow-sm">
                     <Image
@@ -196,4 +189,8 @@ export function GuideTab() {
       </div>
     </div>
   );
+}
+
+function GuideList({ children }: { children: ReactNode }) {
+  return <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">{children}</ul>;
 }

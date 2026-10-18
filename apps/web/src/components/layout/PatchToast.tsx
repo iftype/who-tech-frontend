@@ -19,9 +19,9 @@ export function PatchToast() {
   };
 
   return (
-    <aside className="border-b border-border bg-surface-alt/95 px-4 py-2.5 text-[12px] text-text-secondary">
+    <aside className="border-b border-border bg-surface-alt/95 px-4 py-2.5 text-label text-text-secondary">
       <div className="mx-auto flex items-center gap-2" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
-        <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-accent-dm">
+        <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-tiny font-semibold text-accent-dm">
           PATCH
         </span>
         <p className="min-w-0 flex-1 truncate">

@@ -34,7 +34,7 @@ export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt, ini
             <button
               key={t}
               onClick={() => handleTabChange(t)}
-              className={`px-4 py-3 text-[14px] font-medium border-b-2 -mb-px cursor-pointer ${
+              className={`px-4 py-3 text-body font-medium border-b-2 -mb-px cursor-pointer ${
                 tab === t
                   ? 'border-accent-dm text-text'
                   : 'border-transparent text-text-muted hover:text-text-secondary'
@@ -71,11 +71,11 @@ function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedA
   });
 
   if (isLoading) {
-    return <p className="py-8 text-[13px] text-text-muted">블로그 글을 불러오는 중...</p>;
+    return <p className="py-8 text-body-sm text-text-muted">블로그 글을 불러오는 중...</p>;
   }
 
   if (!blogPosts) {
-    return <p className="py-8 text-[13px] text-text-muted">등록된 블로그 글이 없습니다</p>;
+    return <p className="py-8 text-body-sm text-text-muted">등록된 블로그 글이 없습니다</p>;
   }
 
   const { archive: archivePosts } = blogPosts;
@@ -83,7 +83,7 @@ function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedA
   return (
     <div className="flex flex-col gap-4">
       {archivePosts.length === 0 ? (
-        <p className="text-[13px] text-text-muted">등록된 블로그 글이 없습니다</p>
+        <p className="text-body-sm text-text-muted">등록된 블로그 글이 없습니다</p>
       ) : (
         <>
           <div className="flex flex-col divide-y divide-border-dim border border-border rounded-lg overflow-hidden bg-surface">
@@ -95,14 +95,14 @@ function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedA
                 rel="noopener noreferrer"
                 className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 px-4 py-3 hover:bg-surface-alt"
               >
-                <p className="text-[13px] font-medium text-text line-clamp-2">{decodeHtml(post.title)}</p>
-                <p className="text-[11px] text-text-dim sm:shrink-0">{formatDate(post.publishedAt)}</p>
+                <p className="text-body-sm font-medium text-text line-clamp-2">{decodeHtml(post.title)}</p>
+                <p className="text-caption text-text-dim sm:shrink-0">{formatDate(post.publishedAt)}</p>
               </a>
             ))}
           </div>
 
           {lastPostedAt && (
-            <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-border-dim bg-surface text-[11px] text-text-muted">
+            <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-border-dim bg-surface text-caption text-text-muted">
               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />

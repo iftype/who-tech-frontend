@@ -75,7 +75,7 @@ export function RefreshButton({ githubId, onRefreshed }: Props) {
       <button
         onClick={handleRefresh}
         disabled={disabled}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[11px] transition-colors ${
+        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-caption transition-colors ${
           disabled
             ? 'border-border text-text-muted cursor-not-allowed opacity-50'
             : 'border-border text-text-muted hover:text-text hover:bg-surface-alt cursor-pointer'
@@ -85,7 +85,7 @@ export function RefreshButton({ githubId, onRefreshed }: Props) {
         <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
         {countdown > 0 ? `${countdown}초` : '새로고침'}
       </button>
-      {error && <span className="text-[10px] text-red-400">{error}</span>}
+      {error && <span className="text-tiny text-danger">{error}</span>}
     </div>
   );
 }
