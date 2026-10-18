@@ -47,7 +47,7 @@ interface LevelTitleProps {
 function LevelTitle({ level }: LevelTitleProps) {
   return (
     <div className="flex items-center gap-2">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
+      <span className="font-mono text-tiny font-semibold uppercase tracking-[0.06em] text-accent-dm">
         Level {level ?? '–'}
       </span>
       <div className="h-px flex-1 bg-border-dim" />
@@ -63,7 +63,7 @@ function CohortTitle({ cohort }: CohortTitleProps) {
   return (
     <div className="flex items-center gap-3">
       <div className="h-px flex-1 bg-border-dim" />
-      <span className="rounded-full border border-border-dim bg-surface-alt px-3 py-1 text-[12px] font-bold text-text-secondary shadow-sm">
+      <span className="rounded-full border border-border-dim bg-surface-alt px-3 py-1 text-label font-bold text-text-secondary shadow-sm">
         {cohort}기 미션
       </span>
       <div className="h-px flex-1 bg-border-dim" />

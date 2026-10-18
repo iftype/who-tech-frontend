@@ -5,7 +5,7 @@ import type { Track } from '@/entities/member';
 type Range = '30d' | 'all';
 
 const tabClass = (active: boolean) =>
-  `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap sm:rounded-none sm:px-4 sm:py-2 ${
+  `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-body-sm font-medium whitespace-nowrap sm:rounded-none sm:px-4 sm:py-2 ${
     active ? 'border-accent-dm text-accent-dm' : 'border-transparent text-text-muted hover:text-text'
   }`;
 
@@ -41,10 +41,10 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
 
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[24px] font-bold tracking-tight text-text sm:text-[26px]">
+          <h1 className="text-title-lg font-bold tracking-tight text-text sm:text-headline-sm">
             {cohort ? `${cohort}기 피드` : '피드'}
           </h1>
-          <p className="mt-1 text-[12px] text-text-secondary">
+          <p className="mt-1 text-label text-text-secondary">
             {cohort ? `${cohort}기 크루의 최신 블로그 글` : '모든 크루의 최신 블로그 글'}
           </p>
         </div>
@@ -53,7 +53,7 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
             <button
               key={r}
               onClick={() => applyFilters({ range: r })}
-              className={`cursor-pointer rounded px-2.5 py-1.5 text-[11px] ${
+              className={`cursor-pointer rounded px-2.5 py-1.5 text-caption ${
                 range === r ? 'bg-border text-text' : 'text-text-muted hover:text-text'
               }`}
             >
@@ -69,7 +69,7 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
             <button
               key={v ?? 'all'}
               onClick={() => applyFilters({ track: v })}
-              className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium ${
+              className={`cursor-pointer rounded-md px-2.5 py-1 text-label font-medium ${
                 track === v ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'
               }`}
             >
@@ -77,7 +77,7 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
             </button>
           ))}
         </div>
-        <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
+        <p className="ml-auto whitespace-nowrap text-label text-text-muted">
           <span className="font-mono text-text">{filteredCount}</span>개
           {totalCount != null && totalCount > 0 && (
             <span className="ml-1 text-text-secondary">/ 전체 {totalCount}개</span>

@@ -50,12 +50,12 @@ function ArchiveRepoHeader({ repoName, index, githubId }: ArchiveRepoHeaderProps
 
   return (
     <div className="flex items-center gap-3 border-b border-border-dim bg-surface-alt/30 px-3 py-2">
-      <span className="w-5 shrink-0 font-mono text-[11px] text-text-dim">{repoNumber}</span>
+      <span className="w-5 shrink-0 font-mono text-caption text-text-dim">{repoNumber}</span>
       <a
         href={forkUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex-1 text-[13px] font-medium text-text hover:text-accent-dm hover:underline"
+        className="flex-1 text-body-sm font-medium text-text hover:text-accent-dm hover:underline"
       >
         {repoName}
       </a>
@@ -66,8 +66,8 @@ function ArchiveRepoHeader({ repoName, index, githubId }: ArchiveRepoHeaderProps
 function UnsubmittedRepoRow() {
   return (
     <div className="flex items-center py-1.5 pl-11 pr-3">
-      <span className="w-9 shrink-0 font-mono text-[10px] text-text-dim">step1</span>
-      <span className="ml-auto font-mono text-[11px] text-text-dim">미제출</span>
+      <span className="w-9 shrink-0 font-mono text-tiny text-text-dim">step1</span>
+      <span className="ml-auto font-mono text-caption text-text-dim">미제출</span>
     </div>
   );
 }
@@ -83,12 +83,12 @@ function ArchiveSubmissionRow({ step, index }: ArchiveSubmissionRowProps) {
 
   return (
     <div className="flex items-center border-b border-border-dim py-1.5 pl-11 pr-3 last:border-0 hover:bg-surface-alt/50">
-      <span className="w-9 shrink-0 font-mono text-[10px] text-text-dim">{stepLabel}</span>
+      <span className="w-9 shrink-0 font-mono text-tiny text-text-dim">{stepLabel}</span>
       <a
         href={step.prUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="min-w-0 flex-1 truncate text-[12px] font-medium text-text hover:text-accent-dm hover:underline"
+        className="min-w-0 flex-1 truncate text-label font-medium text-text hover:text-accent-dm hover:underline"
       >
         {step.title}
         {isClosed && <ClosedBadge />}
@@ -100,7 +100,7 @@ function ArchiveSubmissionRow({ step, index }: ArchiveSubmissionRowProps) {
 
 function ClosedBadge() {
   return (
-    <span className="ml-1.5 inline-flex items-center rounded px-1 py-0.5 text-[9px] font-medium bg-red-100 text-red-600">
+    <span className="ml-1.5 inline-flex items-center rounded px-1 py-0.5 text-micro font-medium bg-danger-soft text-danger-strong">
       closed
     </span>
   );
@@ -113,14 +113,14 @@ interface PullRequestLinkProps {
 }
 
 function PullRequestLink({ prUrl, prNumber, isClosed }: PullRequestLinkProps) {
-  const statusColorClassName = isClosed ? 'text-red-400' : 'text-accent-dm';
+  const statusColorClassName = isClosed ? 'text-danger' : 'text-accent-dm';
 
   return (
     <a
       href={prUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className={`ml-3 shrink-0 font-mono text-[11px] font-medium hover:opacity-80 ${statusColorClassName}`}
+      className={`ml-3 shrink-0 font-mono text-caption font-medium hover:opacity-80 ${statusColorClassName}`}
     >
       PR #{prNumber} →
     </a>

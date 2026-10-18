@@ -141,9 +141,9 @@ export function SearchDropdown({
               'w-full bg-transparent text-text placeholder:text-text-muted outline-none',
               compact
                 ? mobileHeader
-                  ? 'origin-left text-[16px] placeholder:text-[12px] sm:text-[13px]'
-                  : 'text-[13px]'
-                : 'text-[16px] sm:text-[14px]',
+                  ? 'origin-left text-body-lg placeholder:text-label sm:text-body-sm'
+                  : 'text-body-sm'
+                : 'text-body-lg sm:text-body',
             )}
             style={
               mobileHeader
@@ -156,7 +156,7 @@ export function SearchDropdown({
           />
         </div>
         {!compact && (
-          <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
+          <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-tiny font-mono text-text-muted">
             ⌘K
           </kbd>
         )}
@@ -171,7 +171,7 @@ export function SearchDropdown({
           )}
         >
           {results.length === 0 ? (
-            <div className="px-4 py-6 text-center text-[13px] text-text-muted">검색 결과가 없습니다</div>
+            <div className="px-4 py-6 text-center text-body-sm text-text-muted">검색 결과가 없습니다</div>
           ) : (
             <ul>
               {results.map((member, idx) => (
@@ -186,8 +186,8 @@ export function SearchDropdown({
                     <Avatar src={member.avatarUrl} alt={member.nickname} size={32} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[13px] font-medium text-text">{member.nickname}</span>
-                        <span className="text-[12px] text-text-muted font-mono">@{member.githubId}</span>
+                        <span className="text-body-sm font-medium text-text">{member.nickname}</span>
+                        <span className="text-label text-text-muted font-mono">@{member.githubId}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">

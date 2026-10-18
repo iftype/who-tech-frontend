@@ -35,33 +35,33 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
             href={`/api/members/blog-posts/${item.id}/visit`}
             target="_blank"
             rel="noopener noreferrer"
-            className="break-all text-[14px] text-text hover:underline after:absolute after:inset-0 after:content-['']"
+            className="break-all text-body text-text hover:underline after:absolute after:inset-0 after:content-['']"
           >
             {item.title}
           </a>
         </div>
-        <div className="mt-1 flex items-center gap-1.5 text-[12px]">
+        <div className="mt-1 flex items-center gap-1.5 text-label">
           <div className="flex flex-wrap items-center gap-1.5">
             {item.member.isTeamBlog ? (
               <a
                 href={item.member.blog ?? item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative z-10 text-[13px] text-text-secondary hover:underline"
+                className="relative z-10 text-body-sm text-text-secondary hover:underline"
               >
                 {item.member.nickname}
               </a>
             ) : (
               <Link
                 href={`/${item.member.githubId}`}
-                className="relative z-10 text-[13px] text-text-secondary hover:underline"
+                className="relative z-10 text-body-sm text-text-secondary hover:underline"
               >
                 {item.member.nickname}
               </Link>
             )}
             <div className="flex flex-wrap items-center gap-1">
               {item.member.isTeamBlog ? (
-                <span className="inline-flex items-center rounded-full border border-gray-400/50 bg-gray-400/15 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
+                <span className="inline-flex items-center rounded-full border border-team-blog/50 bg-team-blog/15 px-1.5 py-0.5 text-tiny font-medium text-team-blog-text">
                   팀 블로그
                 </span>
               ) : (
@@ -101,7 +101,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative z-10 mt-0.5 hidden flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] text-text-muted hover:bg-surface-alt sm:inline-flex"
+          className="relative z-10 mt-0.5 hidden flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-tiny text-text-muted hover:bg-surface-alt sm:inline-flex"
         >
           {source}
         </a>
@@ -113,7 +113,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
 export function FeedList({ items }: { items: FeedItem[] }) {
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-surface py-16 text-center text-[14px] text-text-muted">
+      <div className="rounded-xl border border-border bg-surface py-16 text-center text-body text-text-muted">
         등록된 블로그 글이 없습니다
       </div>
     );

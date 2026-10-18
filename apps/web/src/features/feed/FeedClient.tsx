@@ -195,7 +195,7 @@ export function FeedClient({
           <>
             <FeedListSection cohort={cohort} cohorts={cohorts} filtered={items} grouped={grouped} />
             <div ref={sentinelRef} className="h-10" />
-            {isFetchingNextPage && <div className="py-4 text-center text-[13px] text-text-muted">로딩 중...</div>}
+            {isFetchingNextPage && <div className="py-4 text-center text-body-sm text-text-muted">로딩 중...</div>}
           </>
         ) : isFetching ? (
           <div className="flex flex-col">
@@ -210,7 +210,7 @@ export function FeedClient({
             ))}
           </div>
         ) : (
-          <div className="py-16 text-center text-[14px] text-text-muted">등록된 블로그 글이 없습니다</div>
+          <div className="py-16 text-center text-body text-text-muted">등록된 블로그 글이 없습니다</div>
         )}
       </section>
       <FeedSidebar staffPosts={staffPosts} platformStats={platformStats} />

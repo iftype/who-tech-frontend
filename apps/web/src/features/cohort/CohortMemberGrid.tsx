@@ -22,8 +22,8 @@ export function CohortMemberGrid({ members, emptyMessage }: Props) {
         >
           <Avatar src={member.avatarUrl} alt={member.nickname} size={48} />
           <div className="w-full text-center">
-            <p className="truncate text-[13px] font-medium text-text">{member.nickname}</p>
-            <p className="truncate text-[11px] text-text-dim">@{member.githubId}</p>
+            <p className="truncate text-body-sm font-medium text-text">{member.nickname}</p>
+            <p className="truncate text-caption text-text-dim">@{member.githubId}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-1">
             {member.roles
@@ -36,7 +36,7 @@ export function CohortMemberGrid({ members, emptyMessage }: Props) {
         </Link>
       ))}
       {members.length === 0 && (
-        <div className="col-span-full rounded-xl border border-border bg-surface px-4 py-12 text-center text-[14px] text-text-muted">
+        <div className="col-span-full rounded-xl border border-border bg-surface px-4 py-12 text-center text-body text-text-muted">
           {emptyMessage}
         </div>
       )}

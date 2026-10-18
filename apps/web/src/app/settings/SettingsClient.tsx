@@ -51,7 +51,7 @@ export function SettingsClient() {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`cursor-pointer px-4 py-2.5 text-[14px] font-medium transition-colors border-b-2 -mb-px ${
+              className={`cursor-pointer px-4 py-2.5 text-body font-medium transition-colors border-b-2 -mb-px ${
                 activeTab === tab.id
                   ? 'border-text text-text'
                   : 'border-transparent text-text-muted hover:text-text-secondary'

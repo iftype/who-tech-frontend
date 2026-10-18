@@ -21,11 +21,11 @@ export function FeedListSection({ cohort, cohorts, filtered, grouped }: Props) {
           return (
             <div key={c}>
               <div className="mb-2 flex items-center gap-2">
-                <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-accent-dm">
+                <span className="font-mono text-tiny font-semibold uppercase tracking-[0.06em] text-accent-dm">
                   {c}기
                 </span>
                 <div className="h-px flex-1 bg-border-dim" />
-                <span className="text-[11px] text-text-dim">{items.length}개</span>
+                <span className="text-caption text-text-dim">{items.length}개</span>
               </div>
               <FeedList items={items} />
             </div>
