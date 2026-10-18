@@ -33,9 +33,9 @@ module.exports = {
     {
       name: 'entities-no-cross',
       severity: 'warn',
-      comment: '엔티티끼리 직접 참조 금지',
+      comment: '다른 엔티티는 공개 진입점(index.ts)으로만 참조한다 (예: 피드 글이 작성자 Member 타입을 씀)',
       from: { path: '^src/entities/([^/]+)/' },
-      to: { path: ENTITIES, pathNot: '^src/entities/$1/' },
+      to: { path: ENTITIES, pathNot: ['^src/entities/$1/', '^src/entities/[^/]+/index\\.ts$'] },
     },
     {
       name: 'features-no-upward',
