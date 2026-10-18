@@ -6,7 +6,7 @@ import { MissionArchiveHeader } from './components/MissionArchiveHeader';
 import { UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
 import { buildMarkdown, getFilteredArchives } from './utils';
-import type { CohortArchive } from '@/types';
+import type { CohortArchive } from '@/entities/member';
 
 interface Props {
   archive: CohortArchive[];

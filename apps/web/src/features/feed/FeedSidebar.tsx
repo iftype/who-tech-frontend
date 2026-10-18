@@ -1,6 +1,6 @@
 import { Avatar } from '@/components/ui/Avatar';
 import { formatRelativeDate } from '@/lib/utils';
-import type { FeedItem } from '@/types';
+import type { FeedItem } from '@/entities/post';
 
 interface Props {
   staffPosts: FeedItem[];

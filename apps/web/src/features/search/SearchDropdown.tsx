@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
+import { memberApi, memberKeys } from '@/entities/member';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
-import type { Member } from '@/types';
+import type { Member } from '@/entities/member';
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -40,8 +40,8 @@ export function SearchDropdown({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { data: results = [] } = useQuery({
-    queryKey: ['members', 'search', debouncedQuery],
-    queryFn: () => api.members.search({ q: debouncedQuery }),
+    queryKey: memberKeys.search(debouncedQuery),
+    queryFn: () => memberApi.search({ q: debouncedQuery }),
     enabled: debouncedQuery.length >= 1,
   });
 

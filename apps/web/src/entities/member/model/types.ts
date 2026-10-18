@@ -1,6 +1,8 @@
 export type Role = 'crew' | 'coach' | 'reviewer';
 export type Track = 'frontend' | 'backend' | 'android';
 export type TabCategory = 'base' | 'common' | 'excluded' | 'precourse';
+/** 기수 목록의 구분: 크루 / 운영진(코치·리뷰어) */
+export type RoleGroup = 'crew' | 'staff';
 
 export interface MemberCohort {
   cohort: number;
@@ -19,6 +21,13 @@ export interface Member {
   blog?: string | null;
   lastPostedAt?: string | null;
 }
+
+export type MemberSearchPage = {
+  members: Member[];
+  totalCount: number;
+  counts: { crew: number; staff: number };
+  nextOffset: number | null;
+};
 
 export interface ArchiveStep {
   prUrl: string;
@@ -45,20 +54,6 @@ export interface CohortArchive {
   levels: ArchiveLevel[];
 }
 
-export interface BlogPost {
-  url: string;
-  title: string;
-  authorName?: string | null;
-  publishedAt: string;
-}
-
-export interface BlogPostDetail {
-  latest: BlogPost[];
-  archive: BlogPost[];
-  page: number;
-  totalPages: number;
-}
-
 export interface TecoTalk {
   id: number;
   videoId: string;
@@ -75,18 +70,4 @@ export interface MemberDetail extends Omit<Member, 'cohort' | 'roles'> {
   lastPostedAt: string | null;
   archive: CohortArchive[];
   tecoTalks?: TecoTalk[];
-}
-
-export interface FeedItem {
-  id: number;
-  url: string;
-  title: string;
-  publishedAt: string;
-  member: Member;
-}
-
-export interface FeedResponse {
-  posts: FeedItem[];
-  nextCursor: string | null;
-  totalCount?: number;
 }

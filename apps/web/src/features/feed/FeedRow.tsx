@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { formatRelativeDate, getBlogSource } from '@/lib/utils';
-import type { FeedItem } from '@/types';
+import type { FeedItem } from '@/entities/post';
 
 export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
   const source = getBlogSource(item.url);

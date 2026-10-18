@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
-import { api } from '@/lib/api';
-import type { CohortArchive } from '@/types';
+import { postApi, postKeys } from '@/entities/post';
+import type { CohortArchive } from '@/entities/member';
 
 interface Props {
   archive: CohortArchive[];
@@ -64,8 +64,8 @@ export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt, ini
 
 function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedAt: string | null }) {
   const { data: blogPosts, isLoading } = useQuery({
-    queryKey: ['blogPosts', githubId],
-    queryFn: () => api.members.blogPosts(githubId),
+    queryKey: postKeys.byMember(githubId),
+    queryFn: () => postApi.byMember(githubId),
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

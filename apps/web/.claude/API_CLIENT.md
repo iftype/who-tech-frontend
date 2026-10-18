@@ -1,10 +1,17 @@
 # API_CLIENT.md — API 클라이언트
 
-## 클라이언트 (`src/lib/api.ts`)
+## 구조
+
+```
+src/shared/api/http.ts        공통 요청: requestJson·send, withQuery(빈 파라미터 제외), ApiError·RateLimitError(429)
+src/entities/member/          멤버 타입, memberApi(search·searchPage·cohorts·detail·refresh), memberKeys(쿼리 키)
+src/entities/post/            블로그 글 타입, postApi(feed·byMember, 제목 HTML 엔티티 디코드), postKeys(쿼리 키)
+```
 
 - 서버 환경: `NEXT_PUBLIC_API_URL` 직접 호출
 - 브라우저 환경: `/api` 프록시 경로 사용 (CORS 우회, `next.config.ts`의 rewrite로 백엔드로 전달)
-- `normalizeDetail()`: 구버전(`submission` 단수) / 신버전(`submissions` 배열) 응답 모두 처리
+- 쿼리 키는 `memberKeys`·`postKeys`로만 만든다. 서버 렌더 `initialData`·prefetch와 맞물리므로 문자열로 직접 쓰지 않는다
+- 새로고침 429는 `RateLimitError`(`remainingSeconds`)로 던진다
 
 ## 환경변수 (.env.local)
 

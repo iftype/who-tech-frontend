@@ -2,14 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Member, Track } from '@/types';
-import { api, type MemberSearchPage } from '@/lib/api';
+import type { Member, RoleGroup, Track } from '@/entities/member';
+import { memberApi, memberKeys, type MemberSearchPage } from '@/entities/member';
 import { CohortFilterBar, TRACK_OPTIONS } from './CohortFilterBar';
 import { CohortTabBar } from './CohortTabBar';
 import { CohortMemberList } from './CohortMemberList';
 import { CohortMemberGrid } from './CohortMemberGrid';
-
-type RoleGroup = 'crew' | 'staff';
 
 interface SkeletonProps {
   cohort: number;
@@ -148,8 +146,8 @@ export function CohortExplorer({ initialPage, allCohorts, initialCohort, initial
   );
 
   const { data: fetchedCohorts } = useQuery({
-    queryKey: ['cohorts'],
-    queryFn: () => api.members.cohorts(),
+    queryKey: memberKeys.cohorts(),
+    queryFn: () => memberApi.cohorts(),
     initialData: allCohorts.length > 0 ? allCohorts : undefined,
     staleTime: 60_000,
   });
@@ -166,9 +164,9 @@ export function CohortExplorer({ initialPage, allCohorts, initialCohort, initial
     isFetchingNextPage,
     isPending: isMembersPending,
   } = useInfiniteQuery({
-    queryKey: ['members', 'cohort-explorer', activeCohort, track, roleGroup],
+    queryKey: memberKeys.cohortExplorer(activeCohort, track, roleGroup),
     queryFn: ({ pageParam }) =>
-      api.members.searchPage({
+      memberApi.searchPage({
         ...(activeCohort != null ? { cohort: activeCohort } : {}),
         ...(track !== 'all' ? { track } : {}),
         roleGroup,
@@ -205,9 +203,9 @@ export function CohortExplorer({ initialPage, allCohorts, initialCohort, initial
     const prefetch = () => {
       adjacentCohorts.forEach((cohort) => {
         void queryClient.prefetchQuery({
-          queryKey: ['members', 'cohort-explorer', cohort, track, roleGroup],
+          queryKey: memberKeys.cohortExplorer(cohort, track, roleGroup),
           queryFn: () =>
-            api.members.searchPage({
+            memberApi.searchPage({
               cohort,
               ...(track !== 'all' ? { track } : {}),
               roleGroup,

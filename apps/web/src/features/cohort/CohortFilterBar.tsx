@@ -1,8 +1,6 @@
 'use client';
 
-import type { Track } from '@/types';
-
-type RoleGroup = 'crew' | 'staff';
+import type { RoleGroup, Track } from '@/entities/member';
 
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
   { label: '전체', value: 'all' },

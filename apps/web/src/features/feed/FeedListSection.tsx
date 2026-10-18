@@ -1,5 +1,5 @@
 import { FeedList } from '@/features/feed/FeedRow';
-import type { FeedItem } from '@/types';
+import type { FeedItem } from '@/entities/post';
 
 interface Props {
   cohort: string | null;

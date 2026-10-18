@@ -2,13 +2,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Member } from '@/types';
+import type { Member } from '@/entities/member';
 
 const push = vi.fn();
 const search = vi.fn();
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
-vi.mock('@/lib/api', () => ({ api: { members: { search: (...args: unknown[]) => search(...args) } } }));
+vi.mock('@/entities/member', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/member')>()),
+  memberApi: { search: (...args: unknown[]) => search(...args) },
+}));
 
 const { SearchDropdown } = await import('./SearchDropdown');
 

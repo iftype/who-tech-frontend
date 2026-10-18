@@ -1,6 +1,6 @@
 import { MISSION_TAB, UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
-import type { ArchiveRepo, ArchiveStep, CohortArchive } from '@/types';
+import type { ArchiveRepo, ArchiveStep, CohortArchive } from '@/entities/member';
 
 export function getForkUrl(githubId: string, repoName: string) {
   return `https://github.com/${githubId}/${repoName}`;

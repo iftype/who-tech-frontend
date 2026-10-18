@@ -6,7 +6,7 @@ import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
 import { TecoTalkBadge } from '@/components/ui/TecoTalkBadge';
 import { ProfileTabs } from '@/features/profile/ProfileTabs';
 import { RefreshButton } from '@/components/ui/RefreshButton';
-import type { MemberDetail } from '@/types';
+import type { MemberDetail } from '@/entities/member';
 
 interface Props {
   initialMember: MemberDetail;

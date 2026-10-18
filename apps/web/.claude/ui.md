@@ -104,7 +104,7 @@
 
 - 페이지: `/`, `/:githubId`, `/cohort/:number`, `/feed`, `/stats`, `/guide`
 - Server Component 기반, 검색 드롭다운 / 필터 / 모바일 메뉴 `'use client'`
-- `src/lib/api.ts` — 서버: `NEXT_PUBLIC_API_URL` 직접, 브라우저: `/api` 프록시 (CORS 우회)
+- `src/shared/api/http.ts` — 서버: `NEXT_PUBLIC_API_URL` 직접, 브라우저: `/api` 프록시 (CORS 우회)
 - 뱃지: 기수(cohort), 역할(crew/coach/reviewer), 트랙(frontend/backend/android)
 - Navbar: 데스크톱 검색창 + 네비 링크 + 모바일 햄버거 메뉴
 
