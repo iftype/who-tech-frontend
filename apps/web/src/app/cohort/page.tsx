@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { memberApi } from '@/entities/member';
-import { CohortExplorer } from '@/features/cohort/CohortExplorer';
+import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
 import { PageContainer } from '@/shared/ui';
 
 export const revalidate = 300;

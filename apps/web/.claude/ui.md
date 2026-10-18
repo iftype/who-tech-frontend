@@ -64,7 +64,7 @@
 **아바타 이미지 로드 실패 수정 (핫픽스)**
 
 - **왜**: Vercel 무료 플랜 Image Optimization 할당량 초과 → 402 오류
-- **핵심 파일**: `next.config.ts`, `src/components/ui/Avatar.tsx`
+- **핵심 파일**: `next.config.ts`, `src/shared/ui/Avatar.tsx`
 - **결정**: `images.unoptimized: true` (GitHub CDN이 이미 최적화 이미지 서빙), `onError` 폴백으로 텍스트 이니셜 표시
 
 **홈 피드 링크 개선**

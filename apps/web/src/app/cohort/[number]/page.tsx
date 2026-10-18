@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { memberApi } from '@/entities/member';
-import { CohortExplorer } from '@/features/cohort/CohortExplorer';
+import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
 import { PageContainer } from '@/shared/ui';
 
 export const revalidate = 300;
 
-interface Props {
+interface CohortPageProps {
   params: Promise<{ number: string }>;
   searchParams?: Promise<{ roleGroup?: string; track?: string }>;
 }
@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: 'who.tech' };
 }
 
-export default async function CohortPage({ params, searchParams }: Props) {
+export default async function CohortPage({ params, searchParams }: CohortPageProps) {
   const { number } = await params;
   const cohort = Number(number);
   const sp = await searchParams;

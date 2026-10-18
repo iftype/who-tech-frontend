@@ -1,4 +1,4 @@
-import { decodeHtml } from '@/lib/utils';
+import { decodeHtml } from '@/shared/lib/utils';
 import { requestJson, withQuery } from '@/shared/api';
 import type { BlogPostDetail, FeedResponse } from '../model/types';
 

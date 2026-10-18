@@ -35,6 +35,7 @@ jobs:
     outputs:
       lint: ${{ steps.lint.outcome }}
       tokens: ${{ steps.tokens.outcome }}
+      deps: ${{ steps.deps.outcome }}
       format: ${{ steps.format.outcome }}
       typecheck: ${{ steps.typecheck.outcome }}
       mobile_typecheck: ${{ steps.mobile_typecheck.outcome }}
@@ -100,8 +101,10 @@ jobs:
         continue-on-error: true
         run: pnpm --filter @who-tech/mobile test
 
-      - name: Dependency rules report
-        # 보고 모드: 위반은 경고로만 출력한다 (ARCHITECTURE_PLAN B-6에서 실패 처리로 전환)
+      - name: Check dependency rules
+        # 의존 방향(app → widgets → features → entities → shared)과 순환 금지 (ARCHITECTURE_PLAN B-6)
+        id: deps
+        continue-on-error: true
         run: pnpm --filter @who-tech/web deps:check
 
       - name: Test web
@@ -132,6 +135,7 @@ jobs:
         env:
           LINT_RESULT: ${{ steps.lint.outcome }}
           TOKENS_RESULT: ${{ steps.tokens.outcome }}
+          DEPS_RESULT: ${{ steps.deps.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
           MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
@@ -150,6 +154,7 @@ jobs:
             | --- | --- |
             | 린트 | ${status(process.env.LINT_RESULT)} |
             | 디자인 토큰 | ${status(process.env.TOKENS_RESULT)} |
+            | 의존 규칙 | ${status(process.env.DEPS_RESULT)} |
             | 포맷 | ${status(process.env.FORMAT_RESULT)} |
             | 타입 체크 | ${status(process.env.TYPECHECK_RESULT)} |
             | 모바일 타입 체크 | ${status(process.env.MOBILE_TYPECHECK_RESULT)} |
@@ -174,6 +179,7 @@ jobs:
         env:
           LINT_RESULT: ${{ steps.lint.outcome }}
           TOKENS_RESULT: ${{ steps.tokens.outcome }}
+          DEPS_RESULT: ${{ steps.deps.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
           MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
@@ -183,6 +189,7 @@ jobs:
         run: |
           test "$LINT_RESULT" = "success"
           test "$TOKENS_RESULT" = "success"
+          test "$DEPS_RESULT" = "success"
           test "$FORMAT_RESULT" = "success"
           test "$TYPECHECK_RESULT" = "success"
           test "$MOBILE_TYPECHECK_RESULT" = "success"
