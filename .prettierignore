@@ -15,3 +15,8 @@ CHANGELOG.md
 # stryker
 .stryker-tmp
 apps/**/reports
+
+# 스크린샷 테스트 녹화 응답 (fixture-server가 생성)
+apps/web/e2e/visual/fixtures/
+apps/**/test-results
+apps/**/playwright-report
