@@ -21,3 +21,7 @@ coverage/
 # stryker
 .stryker-tmp/
 reports/
+
+# playwright
+test-results/
+playwright-report/

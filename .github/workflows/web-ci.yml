@@ -10,8 +10,13 @@ on:
     branches:
       - main
       - develop
-  # release-please 릴리즈 PR에서 CI를 수동 실행하기 위함
+  # release-please 릴리즈 PR에서 CI를 수동 실행하기 위함. update_snapshots=true면 스크린샷 기준 이미지를 새로 만들어 아티팩트로 올린다
   workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: '스크린샷 기준 이미지 재생성 (결과는 web-visual-baseline 아티팩트)'
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -88,6 +93,10 @@ jobs:
         id: mobile_test
         continue-on-error: true
         run: pnpm --filter @who-tech/mobile test
+
+      - name: Dependency rules report
+        # 보고 모드: 위반은 경고로만 출력한다 (ARCHITECTURE_PLAN B-6에서 실패 처리로 전환)
+        run: pnpm --filter @who-tech/web deps:check
 
       - name: Test web
         id: test
@@ -170,6 +179,73 @@ jobs:
           test "$MOBILE_TEST_RESULT" = "success"
           test "$TEST_RESULT" = "success"
           test "$BUILD_RESULT" = "success"
+
+  visual:
+    # 구조 리팩토링이 화면을 바꾸지 않았는지 확인한다 (ARCHITECTURE_PLAN A-1). 기준 이미지는 이 Linux 환경에서 만든 것만 쓴다
+    name: Web visual regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @who-tech/web exec playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @who-tech/web exec playwright install-deps chromium
+
+      - name: Build web against fixture API
+        run: pnpm --filter @who-tech/web build:visual
+
+      - name: Compare screenshots
+        if: ${{ !inputs.update_snapshots }}
+        run: pnpm --filter @who-tech/web test:visual
+
+      - name: Regenerate baseline screenshots
+        if: ${{ inputs.update_snapshots }}
+        run: pnpm --filter @who-tech/web test:visual --update-snapshots
+
+      - name: Upload baseline screenshots
+        if: ${{ inputs.update_snapshots }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-visual-baseline
+          path: apps/web/e2e/visual/__screenshots__
+          retention-days: 7
+
+      - name: Upload diff report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-visual-diff
+          path: |
+            apps/web/test-results
+            apps/web/playwright-report
+          retention-days: 7
 
   lighthouse:
     name: Lighthouse report
