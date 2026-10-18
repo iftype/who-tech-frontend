@@ -14,7 +14,7 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/**/*.test.{ts,tsx}'],
       reporter: ['text-summary'],
-      thresholds: { lines: 61, functions: 63 },
+      thresholds: { lines: 66, functions: 67 },
     },
   },
   resolve: {
