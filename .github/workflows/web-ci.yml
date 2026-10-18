@@ -10,6 +10,8 @@ on:
     branches:
       - main
       - develop
+  # release-please 릴리즈 PR에서 CI를 수동 실행하기 위함
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

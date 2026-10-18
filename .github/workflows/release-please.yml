@@ -1,0 +1,34 @@
+name: Release Please
+
+# main에 push될 때마다 릴리즈 PR(버전·CHANGELOG)을 만들거나 갱신하고, 그 PR이 머지되면 태그·GitHub Release를 만든다
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # GITHUB_TOKEN으로 만든 PR에는 CI가 자동 트리거되지 않아 필수 체크가 비어 있다.
+      # workflow_dispatch는 GITHUB_TOKEN으로도 실행되고, 결과가 커밋 SHA에 붙어 필수 체크를 채운다
+      - name: Run CI on release PR
+        if: steps.release.outputs.pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_JSON: ${{ steps.release.outputs.pr }}
+        run: |
+          branch="$(echo "$PR_JSON" | jq -r '.headBranchName')"
+          echo "Dispatching web-ci.yml on $branch"
+          gh workflow run web-ci.yml --ref "$branch" -R "${{ github.repository }}"
