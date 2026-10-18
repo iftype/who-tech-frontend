@@ -1,22 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { memberApi, memberKeys } from '@/entities/member';
-import { Avatar } from '@/shared/ui';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 import { cn } from '@/shared/lib/utils';
-import type { Member } from '@/entities/member';
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-  return debouncedValue;
-}
+import { useMemberSearch } from './model/useMemberSearch';
+import { SearchResultItem } from './ui/SearchResultItem';
 
 interface SearchDropdownProps {
   className?: string;
@@ -31,63 +17,18 @@ export function SearchDropdown({
   dropdownClassName,
   mobileHeader = false,
 }: SearchDropdownProps) {
-  const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const debouncedQuery = useDebounce(query, 300);
-  const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const { data: results = [] } = useQuery({
-    queryKey: memberKeys.search(debouncedQuery),
-    queryFn: () => memberApi.search({ q: debouncedQuery }),
-    enabled: debouncedQuery.length >= 1,
-  });
-
-  // 쿼리 바뀔 때 activeIndex 초기화
-  useEffect(() => {
-    setActiveIndex(-1);
-  }, [debouncedQuery]);
-
-  // ⌘K / Ctrl+K shortcut
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        inputRef.current?.focus();
-        setOpen(true);
-      }
-      if (e.key === 'Escape') {
-        setOpen(false);
-        inputRef.current?.blur();
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
-
-  // 외부 클릭 닫기
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const handleSelect = useCallback(
-    (member: Member) => {
-      router.push(`/${member.githubId}`);
-      setQuery('');
-      setOpen(false);
-    },
-    [router],
-  );
-
-  const showDropdown = open && debouncedQuery.length >= 1;
+  const {
+    query,
+    setQuery,
+    setOpen,
+    activeIndex,
+    results,
+    showDropdown,
+    inputRef,
+    containerRef,
+    handleSelect,
+    handleKeyDown,
+  } = useMemberSearch();
 
   const placeholder = mobileHeader ? '검색' : compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...';
   const mobileHeaderInputScale = 0.86;
@@ -122,19 +63,7 @@ export function SearchDropdown({
               setQuery(e.target.value);
               setOpen(true);
             }}
-            onKeyDown={(e) => {
-              if (!showDropdown || results.length === 0) return;
-              if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                setActiveIndex((i) => (i + 1) % results.length);
-              } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                setActiveIndex((i) => (i <= 0 ? results.length - 1 : i - 1));
-              } else if (e.key === 'Enter' && activeIndex >= 0) {
-                e.preventDefault();
-                handleSelect(results[activeIndex]!);
-              }
-            }}
+            onKeyDown={handleKeyDown}
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
             className={cn(
@@ -176,32 +105,11 @@ export function SearchDropdown({
             <ul>
               {results.map((member, idx) => (
                 <li key={member.githubId}>
-                  <button
-                    onClick={() => handleSelect(member)}
-                    className={cn(
-                      'flex w-full cursor-pointer items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors last:border-0',
-                      idx === activeIndex ? 'bg-surface-alt' : 'hover:bg-surface-alt',
-                    )}
-                  >
-                    <Avatar src={member.avatarUrl} alt={member.nickname} size={32} />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-body-sm font-medium text-text">{member.nickname}</span>
-                        <span className="text-label text-text-muted font-mono">@{member.githubId}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      {member.cohort && <CohortBadge cohort={member.cohort} />}
-                      {member.roles
-                        .filter((r) => r !== 'crew')
-                        .map((r) => (
-                          <RoleBadge key={r} role={r} />
-                        ))}
-                      {member.tracks.map((t) => (
-                        <TrackBadge key={t} track={t} />
-                      ))}
-                    </div>
-                  </button>
+                  <SearchResultItem
+                    member={member}
+                    active={idx === activeIndex}
+                    onSelect={() => handleSelect(member)}
+                  />
                 </li>
               ))}
             </ul>
