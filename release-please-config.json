@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "bcf8f49c1eb065b31729fc037b46af03be2fcdbd",
+  "changelog-sections": [
+    {
+      "type": "feat",
+      "section": "기능"
+    },
+    {
+      "type": "fix",
+      "section": "버그 수정"
+    },
+    {
+      "type": "perf",
+      "section": "성능"
+    },
+    {
+      "type": "refactor",
+      "section": "리팩토링"
+    },
+    {
+      "type": "revert",
+      "section": "되돌림"
+    },
+    {
+      "type": "docs",
+      "section": "문서",
+      "hidden": true
+    },
+    {
+      "type": "test",
+      "section": "테스트",
+      "hidden": true
+    },
+    {
+      "type": "build",
+      "section": "빌드",
+      "hidden": true
+    },
+    {
+      "type": "ci",
+      "section": "CI",
+      "hidden": true
+    },
+    {
+      "type": "chore",
+      "section": "기타",
+      "hidden": true
+    },
+    {
+      "type": "style",
+      "section": "스타일",
+      "hidden": true
+    }
+  ],
+  "packages": {
+    "apps/web": {
+      "release-type": "node",
+      "component": "web",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "apps/mobile": {
+      "release-type": "node",
+      "component": "mobile",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "app.json",
+          "jsonpath": "$.expo.version"
+        }
+      ]
+    }
+  }
+}
