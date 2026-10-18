@@ -1,4 +1,4 @@
-# features/cohort
+# widgets/cohort-explorer
 
 ## 역할
 
@@ -7,16 +7,20 @@
 ## 컴포넌트 구조
 
 ```
-CohortExplorer (컨테이너)
-  ├── CohortTabBar        — 기수 탭 (전체/1기/2기/...)
-  ├── CohortFilterBar     — 역할 토글 + 트랙 버튼 (정적 import, SSR 렌더)
-  ├── CohortMemberList    — 모바일 리스트 뷰 (sm:hidden)
-  └── CohortMemberGrid    — 데스크톱 카드 그리드 (hidden sm:block)
+widgets/cohort-explorer/
+  CohortExplorer.tsx          화면 조합 (필터링·빈 상태 문구·더 보기)
+  model/useCohortUrlState.ts  기수·구분·트랙 상태 (URL 단일 소스, popstate·pushState)
+  model/useCohortMembers.ts   기수 목록·멤버 페이지 쿼리, 인접 기수 prefetch
+  model/cohortLocation.ts     URL ↔ 상태 변환 순수 함수
+  ui/CohortExplorerSkeleton   로딩 화면
+사용하는 하위 층:
+  features/cohort-filter      CohortTabBar(기수 탭), CohortFilterBar(구분 토글·트랙 칩, TRACK_OPTIONS)
+  entities/member             CohortMemberList(모바일), CohortMemberGrid(데스크톱), memberApi·memberKeys
 ```
 
 ## 경계
 
-- ✅ `CohortExplorer`가 유일한 상태 owner (URL params 기반)
+- ✅ 상태는 `useCohortUrlState` 한 곳에서만 가진다 (URL 기반). 화면은 훅이 돌려준 값만 쓴다
 - ✅ `CohortFilterBar`, `CohortMemberList`, `CohortMemberGrid`는 props-only
 - ❌ `CohortFilterBar`/`MemberList`/`MemberGrid`에서 상태 훅 직접 호출 금지
 - ❌ `CohortExplorer` 외 컴포넌트에서 localStorage 접근 금지

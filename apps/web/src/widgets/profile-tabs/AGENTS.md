@@ -1,4 +1,4 @@
-# features/profile
+# widgets/profile-tabs
 
 ## 역할
 

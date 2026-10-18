@@ -45,10 +45,10 @@ app/
 
 ## 컴포넌트
 
-- `src/components/ui/MemberBadges.tsx` — 기수/역할/트랙 badge 조합
-- `src/components/ui/FeedRow.tsx` — 피드 행 렌더
-- `src/components/layout/ThemeProvider.tsx` — 테마/디자인 컨텍스트
-- `src/components/ui/Avatar.tsx` — 아바타 (unoptimized, onError 폴백)
+- `src/entities/member/ui/MemberBadges.tsx` — 기수·역할·트랙 배지 (공용 `Badge`의 tone)
+- `src/entities/post/ui/FeedRow.tsx` — 피드 행·목록 렌더
+- `src/shared/providers/ThemeProvider.tsx` — 테마/디자인 컨텍스트
+- `src/shared/ui/Avatar.tsx` — 아바타 (unoptimized, onError 폴백)
 
 ## 주요 명령어
 

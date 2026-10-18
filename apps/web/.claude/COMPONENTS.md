@@ -21,10 +21,10 @@ src/
 
 ## 주요 컴포넌트 (추가)
 
-- `src/components/ui/MemberBadges.tsx` — 기수/역할/트랙 badge 조합
-- `src/components/ui/FeedRow.tsx` — 피드 행 렌더
-- `src/components/ui/Avatar.tsx` — 아바타 (unoptimized, onError 폴백)
-- `src/components/layout/DesignToggle.tsx` — paper→apple→sentry 순환 (설정 페이지 전용)
+- `src/entities/member/ui/MemberBadges.tsx` — 기수·역할·트랙 배지 (공용 `Badge`의 tone)
+- `src/entities/post/ui/FeedRow.tsx` — 피드 행·목록 렌더
+- `src/shared/ui/Avatar.tsx` — 아바타 (unoptimized, onError 폴백)
+- `src/features/theme-switch/DesignToggle.tsx` — paper→apple→sentry 순환 (설정 페이지 전용)
 
 ## 상태 관리
 
