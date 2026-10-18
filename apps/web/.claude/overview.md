@@ -66,7 +66,7 @@ NEXT_PUBLIC_API_URL=https://iftype.site
 ## 브랜치 전략
 
 ```
-main     ← 배포 브랜치 (Vercel 자동 배포)
-develop  ← 기능 통합
+main     ← 배포 브랜치 (PR only, squash, Vercel 자동 배포)
+develop  ← 스테이징 전용 (런타임 영향 변경을 먼저 머지해 확인)
 feat/#이슈번호-설명
 ```
