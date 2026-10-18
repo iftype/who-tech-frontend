@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { memberApi } from '@/entities/member';
 import { CohortExplorer } from '@/features/cohort/CohortExplorer';
+import { PageContainer } from '@/shared/ui';
 
 export const revalidate = 300;
 
@@ -30,7 +31,7 @@ export default async function CohortPage({ params, searchParams }: Props) {
   ]);
 
   return (
-    <div className="mx-auto px-4 sm:px-6 py-8 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
+    <PageContainer>
       <CohortExplorer
         initialPage={memberPage}
         allCohorts={allCohorts}
@@ -38,6 +39,6 @@ export default async function CohortPage({ params, searchParams }: Props) {
         initialRoleGroup={roleGroup}
         initialTrack={track}
       />
-    </div>
+    </PageContainer>
   );
 }

@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { TabBar, tabVariants } from '@/shared/ui';
 
 interface Props {
   activeCohort: number | null; // null = 전체
@@ -16,35 +18,30 @@ export function CohortTabBar({ activeCohort, cohorts = DEFAULT_COHORTS, onChange
   const query = searchParams.toString();
   const suffix = query ? `?${query}` : '';
 
-  const tabClass = (active: boolean) =>
-    `-mb-px cursor-pointer rounded-t-md border-b-2 px-4 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors sm:rounded-none sm:px-4 sm:py-2 ${
-      active ? 'border-accent-dm text-accent-dm' : 'border-transparent text-text-muted hover:text-text'
-    }`;
+  const tabClass = (active: boolean) => cn(tabVariants({ active }), 'transition-colors');
 
   return (
-    <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
-      <div className="flex min-w-max items-center gap-1 sm:gap-0">
-        {onChange ? (
-          <button onClick={() => onChange(null)} className={tabClass(activeCohort === null)}>
-            전체
+    <TabBar>
+      {onChange ? (
+        <button onClick={() => onChange(null)} className={tabClass(activeCohort === null)}>
+          전체
+        </button>
+      ) : (
+        <Link href={`/cohort${suffix}`} scroll={false} className={tabClass(activeCohort === null)}>
+          전체
+        </Link>
+      )}
+      {cohorts.map((c) =>
+        onChange ? (
+          <button key={c} onClick={() => onChange(c)} className={tabClass(activeCohort === c)}>
+            {c}기
           </button>
         ) : (
-          <Link href={`/cohort${suffix}`} scroll={false} className={tabClass(activeCohort === null)}>
-            전체
+          <Link key={c} href={`/cohort/${c}${suffix}`} scroll={false} className={tabClass(activeCohort === c)}>
+            {c}기
           </Link>
-        )}
-        {cohorts.map((c) =>
-          onChange ? (
-            <button key={c} onClick={() => onChange(c)} className={tabClass(activeCohort === c)}>
-              {c}기
-            </button>
-          ) : (
-            <Link key={c} href={`/cohort/${c}${suffix}`} scroll={false} className={tabClass(activeCohort === c)}>
-              {c}기
-            </Link>
-          ),
-        )}
-      </div>
-    </div>
+        ),
+      )}
+    </TabBar>
   );
 }

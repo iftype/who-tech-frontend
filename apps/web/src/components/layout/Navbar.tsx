@@ -55,10 +55,10 @@ export function Navbar() {
   const linkClass = (href: string, mobile = false) => {
     const active = (optimisticPath ?? pathname) === href;
     return mobile
-      ? `px-6 py-3 text-[14px] ${
+      ? `px-6 py-3 text-body ${
           active ? 'bg-surface text-text' : 'text-text-secondary hover:bg-surface hover:text-text'
         }`
-      : `cursor-pointer whitespace-nowrap text-[13px] ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
+      : `cursor-pointer whitespace-nowrap text-body-sm ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
   };
 
   const showHeaderSearch = true;
@@ -78,8 +78,8 @@ export function Navbar() {
             unoptimized
             style={{ filter: 'invert(1)', mixBlendMode: 'screen' }}
           />
-          <span className="font-mono text-[15px] font-semibold text-text">who.tech</span>
-          <span className="hidden sm:inline-flex items-center rounded px-1 py-0.5 text-[9px] font-semibold tracking-widest text-text-muted border border-border">
+          <span className="font-mono text-body-md font-semibold text-text">who.tech</span>
+          <span className="hidden sm:inline-flex items-center rounded px-1 py-0.5 text-micro font-semibold tracking-widest text-text-muted border border-border">
             BETA
           </span>
         </Link>
@@ -144,7 +144,7 @@ export function Navbar() {
                   >
                     <button
                       onClick={() => navigate(href)}
-                      className="flex min-w-0 flex-1 cursor-pointer items-center justify-start px-6 py-3 text-left text-[14px]"
+                      className="flex min-w-0 flex-1 cursor-pointer items-center justify-start px-6 py-3 text-left text-body"
                     >
                       {label}
                     </button>

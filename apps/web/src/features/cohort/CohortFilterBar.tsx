@@ -1,6 +1,8 @@
 'use client';
 
 import type { RoleGroup, Track } from '@/entities/member';
+import { cn } from '@/lib/utils';
+import { FilterRow, SegmentedControl, filterChipVariants, segmentVariants } from '@/shared/ui';
 
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
   { label: '전체', value: 'all' },
@@ -36,48 +38,48 @@ export function CohortFilterBar({
     <>
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">
+          <h1 className="text-title font-bold tracking-tight text-text sm:text-title-lg">
             {cohort === 0 ? '전체 크루' : `${cohort}기 크루`}
           </h1>
-          <p className="mt-1 text-[12px] text-text-muted">
+          <p className="mt-1 text-label text-text-muted">
             우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
           </p>
         </div>
-        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+        <SegmentedControl>
           <button
             onClick={() => applyFilters({ roleGroup: 'crew' })}
-            className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer ${roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'}`}
+            className={cn(segmentVariants({ active: roleGroup === 'crew' }), 'transition-colors')}
           >
             크루 {counts.crew}
           </button>
           <button
             onClick={() => applyFilters({ roleGroup: 'staff' })}
-            className={`rounded px-2.5 py-1.5 text-[11px] transition-colors cursor-pointer ${roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'}`}
+            className={cn(segmentVariants({ active: roleGroup === 'staff' }), 'transition-colors')}
           >
             운영진 {counts.staff}
           </button>
-        </div>
+        </SegmentedControl>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
+      <FilterRow>
         <div className="flex items-center gap-0.5">
           {visibleTrackOptions.map(({ label, value }) => (
             <button
               key={value}
               onClick={() => applyFilters({ track: value })}
-              className={`cursor-pointer rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors ${track === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'}`}
+              className={cn(filterChipVariants({ active: track === value }), 'transition-colors')}
             >
               {label}
             </button>
           ))}
         </div>
         <div className="ml-auto flex items-center gap-3">
-          <p className="text-[12px] text-text-muted whitespace-nowrap">
+          <p className="text-label text-text-muted whitespace-nowrap">
             <span className="font-mono text-text">{filteredCount}</span>
             {filteredCount !== totalCount && <span className="text-text-dim">/{totalCount}</span>}명
           </p>
         </div>
-      </div>
+      </FilterRow>
     </>
   );
 }

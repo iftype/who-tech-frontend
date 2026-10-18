@@ -15,6 +15,37 @@
   --color-accent-bg: var(--accent-bg);
   --color-accent-border: var(--accent-border);
 
+  /* 의미 색. 기존 화면의 팔레트 값을 그대로 가리킨다 (투명도는 /10, /20 처럼 붙여 쓴다) */
+  --color-track-frontend: var(--color-sky-400);
+  --color-track-backend: var(--color-violet-400);
+  --color-track-android: var(--color-green-400);
+  --color-danger: var(--color-red-400);
+  --color-danger-strong: var(--color-red-600);
+  --color-danger-soft: var(--color-red-100);
+  --color-video: var(--color-red-400); /* 테코톡(YouTube) */
+  --color-notice: var(--color-amber-500);
+  --color-notice-text: var(--color-amber-400);
+  --color-team-blog: var(--color-gray-400);
+  --color-team-blog-text: var(--color-gray-500);
+
+  /* 글자 크기 스케일. 기존 화면의 px 값을 그대로 이름 붙였다 (줄간격은 정하지 않아 기존처럼 상속).
+     임의 값 text-[Npx]는 lint로 막고 이 스케일만 쓴다. 값을 통합하는 것은 별도 디자인 결정 */
+  --text-micro: 9px;
+  --text-tiny: 10px;
+  --text-caption: 11px;
+  --text-label: 12px;
+  --text-body-sm: 13px;
+  --text-body: 14px;
+  --text-body-md: 15px;
+  --text-body-lg: 16px;
+  --text-title-xs: 18px;
+  --text-title-sm: 20px;
+  --text-title: 22px;
+  --text-title-lg: 24px;
+  --text-headline-sm: 26px;
+  --text-headline: 28px;
+  --text-display: 48px;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

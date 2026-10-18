@@ -21,27 +21,27 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
     <>
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-text sm:text-[24px]">
+          <h1 className="text-title font-bold tracking-tight text-text sm:text-title-lg">
             {cohort === 0 ? '전체 크루' : `${cohort}기 크루`}
           </h1>
-          <p className="mt-1 text-[12px] text-text-muted">
+          <p className="mt-1 text-label text-text-muted">
             우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
           </p>
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">크루 {counts.crew}</div>
-          <div className="rounded px-2.5 py-1.5 text-[11px] text-text-muted">운영진 {counts.staff}</div>
+          <div className="rounded px-2.5 py-1.5 text-caption text-text-muted">크루 {counts.crew}</div>
+          <div className="rounded px-2.5 py-1.5 text-caption text-text-muted">운영진 {counts.staff}</div>
         </div>
       </div>
       <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-0.5">
           {visibleTrackOptions.map(({ label, value }) => (
-            <div key={value} className="rounded-md px-2.5 py-1 text-[12px] font-medium text-text-muted">
+            <div key={value} className="rounded-md px-2.5 py-1 text-label font-medium text-text-muted">
               {label}
             </div>
           ))}
         </div>
-        <p className="ml-auto whitespace-nowrap text-[12px] text-text-muted">
+        <p className="ml-auto whitespace-nowrap text-label text-text-muted">
           <span className="font-mono text-text">{filteredCount}</span>명
         </p>
       </div>
@@ -325,7 +325,7 @@ export function CohortExplorer({ initialPage, allCohorts, initialCohort, initial
               <button
                 onClick={() => void fetchNextPage()}
                 disabled={isFetchingNextPage}
-                className="cursor-pointer rounded-md border border-border px-4 py-2 text-[13px] font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text disabled:cursor-default disabled:opacity-60"
+                className="cursor-pointer rounded-md border border-border px-4 py-2 text-body-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text disabled:cursor-default disabled:opacity-60"
               >
                 {isFetchingNextPage
                   ? '불러오는 중...'

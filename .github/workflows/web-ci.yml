@@ -34,6 +34,7 @@ jobs:
     timeout-minutes: 20
     outputs:
       lint: ${{ steps.lint.outcome }}
+      tokens: ${{ steps.tokens.outcome }}
       format: ${{ steps.format.outcome }}
       typecheck: ${{ steps.typecheck.outcome }}
       mobile_typecheck: ${{ steps.mobile_typecheck.outcome }}
@@ -73,6 +74,11 @@ jobs:
         id: lint
         continue-on-error: true
         run: pnpm --filter @who-tech/web lint
+
+      - name: Check design tokens
+        id: tokens
+        continue-on-error: true
+        run: pnpm --filter @who-tech/web lint:tokens
 
       - name: Check web formatting
         id: format
@@ -125,6 +131,7 @@ jobs:
         uses: actions/github-script@v9
         env:
           LINT_RESULT: ${{ steps.lint.outcome }}
+          TOKENS_RESULT: ${{ steps.tokens.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
           MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
@@ -142,6 +149,7 @@ jobs:
             | 항목 | 결과 |
             | --- | --- |
             | 린트 | ${status(process.env.LINT_RESULT)} |
+            | 디자인 토큰 | ${status(process.env.TOKENS_RESULT)} |
             | 포맷 | ${status(process.env.FORMAT_RESULT)} |
             | 타입 체크 | ${status(process.env.TYPECHECK_RESULT)} |
             | 모바일 타입 체크 | ${status(process.env.MOBILE_TYPECHECK_RESULT)} |
@@ -165,6 +173,7 @@ jobs:
         if: always()
         env:
           LINT_RESULT: ${{ steps.lint.outcome }}
+          TOKENS_RESULT: ${{ steps.tokens.outcome }}
           FORMAT_RESULT: ${{ steps.format.outcome }}
           TYPECHECK_RESULT: ${{ steps.typecheck.outcome }}
           MOBILE_TYPECHECK_RESULT: ${{ steps.mobile_typecheck.outcome }}
@@ -173,6 +182,7 @@ jobs:
           BUILD_RESULT: ${{ steps.build.outcome }}
         run: |
           test "$LINT_RESULT" = "success"
+          test "$TOKENS_RESULT" = "success"
           test "$FORMAT_RESULT" = "success"
           test "$TYPECHECK_RESULT" = "success"
           test "$MOBILE_TYPECHECK_RESULT" = "success"

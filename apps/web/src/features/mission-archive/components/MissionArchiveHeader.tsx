@@ -11,7 +11,7 @@ interface MissionArchiveHeaderProps {
 export function MissionArchiveHeader({ tab, copied, onTabChange, onCopy }: MissionArchiveHeaderProps) {
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-      <h2 className="text-[13px] font-semibold text-text">미션 PR 아카이브</h2>
+      <h2 className="text-body-sm font-semibold text-text">미션 PR 아카이브</h2>
 
       <div className="flex items-center gap-2">
         <div className="flex overflow-hidden rounded-md border border-border bg-surface">
@@ -35,7 +35,7 @@ function MissionTabButton({ label, selected, onClick }: MissionTabButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`cursor-pointer px-3 py-1.5 text-[11px] ${
+      className={`cursor-pointer px-3 py-1.5 text-caption ${
         selected ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
       }`}
     >
@@ -53,7 +53,7 @@ function CopyMarkdownButton({ copied, onClick }: CopyMarkdownButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] text-text-muted hover:text-text"
+      className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-caption text-text-muted hover:text-text"
     >
       <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="9" y="9" width="13" height="13" rx="2" />

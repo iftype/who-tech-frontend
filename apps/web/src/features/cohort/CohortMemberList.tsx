@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import type { Member } from '@/entities/member';
-import { Avatar } from '@/components/ui/Avatar';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { Avatar } from '@/shared/ui';
+import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 
 interface Props {
   members: Member[];
@@ -14,7 +14,7 @@ export function CohortMemberList({ members, emptyMessage }: Props) {
   return (
     <div className="sm:hidden">
       {members.length === 0 ? (
-        <div className="rounded-xl border border-border bg-surface px-4 py-12 text-center text-[14px] text-text-muted">
+        <div className="rounded-xl border border-border bg-surface px-4 py-12 text-center text-body text-text-muted">
           {emptyMessage}
         </div>
       ) : (
@@ -29,12 +29,14 @@ export function CohortMemberList({ members, emptyMessage }: Props) {
               <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="min-w-0 truncate text-[14px] font-semibold text-text">
+                  <p className="min-w-0 truncate text-body font-semibold text-text">
                     {member.nickname}
-                    <span className="ml-1.5 font-mono text-[11px] font-normal text-text-muted">@{member.githubId}</span>
+                    <span className="ml-1.5 font-mono text-caption font-normal text-text-muted">
+                      @{member.githubId}
+                    </span>
                   </p>
                   {member.blog && (
-                    <span className="flex-shrink-0 rounded-full border border-accent-border bg-accent-bg px-2 py-0.5 text-[10px] font-medium text-accent-dm">
+                    <span className="flex-shrink-0 rounded-full border border-accent-border bg-accent-bg px-2 py-0.5 text-tiny font-medium text-accent-dm">
                       블로그
                     </span>
                   )}
