@@ -47,13 +47,15 @@ pnpm format
 ## PR/브랜치 규칙
 
 ```
-feat/#이슈번호-설명 ──PR──▶ develop ──(Vercel 프리뷰에서 확인)──▶ PR ──▶ main ──▶ 프로덕션
+<type>/<topic> ──PR──▶ main (squash) ──▶ 프로덕션
+        └─(런타임 영향 변경이면 먼저)─▶ develop에 머지 ──▶ Vercel 스테이징에서 확인
 ```
 
-- **모든 작업 PR은 `develop` 대상으로 올린다.** `main` 직접 PR/푸시 금지.
-- `develop` 머지 → Vercel 스테이징 프리뷰에서 동작 확인.
-- 프리뷰 확인 후 `develop → main` PR을 머지하면 프로덕션 배포 (이 머지는 메인테이너가 수행).
-- 커밋: Conventional Commits, subject 소문자 (commitlint로 강제)
+- **PR은 `main` 대상.** `main`은 보호됨: 직접 푸시 불가, `Web quality gate` 통과 + 최신 main 기준 필수, squash 머지만 허용, 머지 후 브랜치 자동 삭제.
+- `vercel.json`이 `main`·`develop` 외 브랜치 빌드를 건너뛰므로 PR 브랜치에는 프리뷰가 없다.
+  런타임 영향이 있는 변경(의존성, 렌더링 로직 등)은 PR 브랜치를 `develop`에 머지해 스테이징(`who-tech-git-develop-<team>.vercel.app`)에서 먼저 확인한다 (force push 없이 머지 커밋으로).
+- `develop`은 스테이징 전용. 주기적으로 `main`을 머지해 맞춘다.
+- 커밋: Conventional Commits (commitlint로 강제, 백엔드와 같은 규칙)
 - 구조 이동과 코드 수정을 한 PR에 섞지 않기
 
 ## 패키지별 상세
