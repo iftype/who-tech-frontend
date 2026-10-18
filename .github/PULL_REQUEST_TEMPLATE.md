@@ -13,6 +13,23 @@ closes #
 - [ ]
 - [ ]
 
+## 배포 영향
+
+<!-- main 머지 = Vercel 프로덕션 배포. 런타임 영향 변경은 develop에 먼저 머지해 스테이징에서 확인 (CLAUDE.md) -->
+
+- [ ] 런타임 영향 없음 (문서·CI·테스트만)
+- [ ] 런타임 영향 있음 — 스테이징(develop)에서 확인함
+- [ ] 모바일(apps/mobile) 변경 있음 — 앱 빌드 필요 여부:
+
+## 검증
+
+- [ ] web `lint` / `tsc` / `test` / `build`
+- [ ] mobile `tsc --noEmit`
+
+## 롤백
+
+<!-- 기본: 이 PR revert 또는 Vercel에서 이전 배포 Promote -->
+
 ## 리뷰 포인트
 
 <!-- 리뷰어가 집중해서 봐줬으면 하는 부분을 적어주세요 -->
