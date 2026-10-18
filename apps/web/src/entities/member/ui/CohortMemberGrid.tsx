@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import type { Member } from '../model/types';
 import { Avatar } from '@/shared/ui';
-import { RoleBadge, TrackBadge } from './MemberBadge';
+import { RoleBadge, TrackBadge } from './MemberBadges';
 
-interface Props {
+interface CohortMemberGridProps {
   members: Member[];
   emptyMessage: string;
 }
 
-export function CohortMemberGrid({ members, emptyMessage }: Props) {
+export function CohortMemberGrid({ members, emptyMessage }: CohortMemberGridProps) {
   return (
     <div className="hidden sm:grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
       {members.map((member, i) => (

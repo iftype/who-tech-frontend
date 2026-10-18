@@ -13,7 +13,7 @@ const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
 
 export { TRACK_OPTIONS };
 
-interface Props {
+interface CohortFilterBarProps {
   cohort: number;
   filters: { roleGroup: RoleGroup; track: Track | 'all' };
   applyFilters: (patch: { roleGroup?: RoleGroup; track?: Track | 'all' }) => void;
@@ -31,7 +31,7 @@ export function CohortFilterBar({
   visibleTrackOptions,
   filteredCount,
   totalCount,
-}: Props) {
+}: CohortFilterBarProps) {
   const { roleGroup, track } = filters;
 
   return (

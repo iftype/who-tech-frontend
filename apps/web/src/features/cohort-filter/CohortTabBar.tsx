@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { cn } from '@/shared/lib/utils';
 import { TabBar, tabVariants } from '@/shared/ui';
 
-interface Props {
+interface CohortTabBarProps {
   activeCohort: number | null; // null = 전체
   cohorts?: number[];
   onChange?: (cohort: number | null) => void;
@@ -13,7 +13,7 @@ interface Props {
 
 const DEFAULT_COHORTS = [8, 7, 6, 5, 4, 3, 2, 1];
 
-export function CohortTabBar({ activeCohort, cohorts = DEFAULT_COHORTS, onChange }: Props) {
+export function CohortTabBar({ activeCohort, cohorts = DEFAULT_COHORTS, onChange }: CohortTabBarProps) {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
   const suffix = query ? `?${query}` : '';

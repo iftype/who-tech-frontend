@@ -5,14 +5,14 @@ import { RefreshCw } from 'lucide-react';
 import { memberApi, type MemberDetail } from '@/entities/member';
 import { RateLimitError } from '@/shared/api';
 
-interface Props {
+interface RefreshButtonProps {
   githubId: string;
   onRefreshed: (member: MemberDetail) => void;
 }
 
 const rateLimitKey = (githubId: string) => `rateLimit_${githubId}`;
 
-export function RefreshButton({ githubId, onRefreshed }: Props) {
+export function RefreshButton({ githubId, onRefreshed }: RefreshButtonProps) {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(() => {
     if (typeof window === 'undefined') return 0;

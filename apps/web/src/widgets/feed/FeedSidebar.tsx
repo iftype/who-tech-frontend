@@ -2,12 +2,12 @@ import { Avatar } from '@/shared/ui';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import type { FeedItem } from '@/entities/post';
 
-interface Props {
+interface FeedSidebarProps {
   staffPosts: FeedItem[];
   platformStats: [string, number][];
 }
 
-export function FeedSidebar({ staffPosts, platformStats }: Props) {
+export function FeedSidebar({ staffPosts, platformStats }: FeedSidebarProps) {
   const totalPlatformCount = platformStats.reduce((sum, [, c]) => sum + c, 0);
 
   return (

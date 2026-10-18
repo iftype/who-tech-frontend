@@ -2,14 +2,14 @@ import { FeedList } from '@/entities/post';
 import type { FeedItem } from '@/entities/post';
 import { Divider, SectionLabel } from '@/shared/ui';
 
-interface Props {
+interface FeedListSectionProps {
   cohort: string | null;
   cohorts: number[];
   filtered: FeedItem[];
   grouped: Map<number, FeedItem[]>;
 }
 
-export function FeedListSection({ cohort, cohorts, filtered, grouped }: Props) {
+export function FeedListSection({ cohort, cohorts, filtered, grouped }: FeedListSectionProps) {
   if (cohort) {
     const matchedCohorts = cohorts.filter((c) => String(c) === cohort);
     const hasItems = matchedCohorts.some((c) => (grouped.get(c) ?? []).length > 0);

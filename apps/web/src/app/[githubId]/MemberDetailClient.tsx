@@ -9,13 +9,13 @@ import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
 import type { MemberDetail } from '@/entities/member';
 import { PageContainer, buttonVariants } from '@/shared/ui';
 
-interface Props {
+interface MemberDetailClientProps {
   initialMember: MemberDetail;
   initialTab: 'mission' | 'blog';
   initialMissionTab: 'mission' | 'common' | 'pending';
 }
 
-export function MemberDetailClient({ initialMember, initialTab, initialMissionTab }: Props) {
+export function MemberDetailClient({ initialMember, initialTab, initialMissionTab }: MemberDetailClientProps) {
   const [member, setMember] = useState(initialMember);
 
   const handleRefreshed = useCallback((newMember: MemberDetail) => {

@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import type { Member } from '../model/types';
 import { Avatar } from '@/shared/ui';
-import { CohortBadge, RoleBadge, TrackBadge } from './MemberBadge';
+import { CohortBadge, RoleBadge, TrackBadge } from './MemberBadges';
 
-interface Props {
+interface CohortMemberListProps {
   members: Member[];
   emptyMessage: string;
 }
 
-export function CohortMemberList({ members, emptyMessage }: Props) {
+export function CohortMemberList({ members, emptyMessage }: CohortMemberListProps) {
   return (
     <div className="sm:hidden">
       {members.length === 0 ? (

@@ -7,7 +7,7 @@ import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { postApi, postKeys } from '@/entities/post';
 import type { CohortArchive } from '@/entities/member';
 
-interface Props {
+interface ProfileTabsProps {
   archive: CohortArchive[];
   memberTracks: string[];
   githubId: string;
@@ -16,7 +16,14 @@ interface Props {
   initialMissionTab: 'mission' | 'common' | 'pending';
 }
 
-export function ProfileTabs({ archive, memberTracks, githubId, lastPostedAt, initialTab, initialMissionTab }: Props) {
+export function ProfileTabs({
+  archive,
+  memberTracks,
+  githubId,
+  lastPostedAt,
+  initialTab,
+  initialMissionTab,
+}: ProfileTabsProps) {
   const [tab, setTab] = useState<'mission' | 'blog'>(initialTab);
 
   const handleTabChange = (t: 'mission' | 'blog') => {

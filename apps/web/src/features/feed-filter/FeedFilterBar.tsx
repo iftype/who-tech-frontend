@@ -5,7 +5,7 @@ import { FilterRow, SegmentedControl, TabBar, filterChipVariants, segmentVariant
 
 type Range = '30d' | 'all';
 
-interface Props {
+interface FeedFilterBarProps {
   filters: { range: Range; cohort: string | null; track: Track | null };
   applyFilters: (patch: Partial<{ range: Range; cohort: string | null; track: Track | null }>) => void;
   cohorts: number[];
@@ -13,7 +13,7 @@ interface Props {
   totalCount?: number;
 }
 
-export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, totalCount }: Props) {
+export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, totalCount }: FeedFilterBarProps) {
   const { range, cohort, track } = filters;
 
   return (
