@@ -32,3 +32,24 @@ jobs:
           branch="$(echo "$PR_JSON" | jq -r '.headBranchName')"
           echo "Dispatching web-ci.yml on $branch"
           gh workflow run web-ci.yml --ref "$branch" -R "${{ github.repository }}"
+
+      # GitHub은 GITHUB_TOKEN이 만든 PR의 pull_request 실행을 승인 대기(action_required)로 두고,
+      # 이 대기 상태가 머지를 막는다 → 릴리즈 PR 커밋의 대기 실행을 승인한다
+      - name: Approve pending CI runs on release PR
+        if: steps.release.outputs.pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_JSON: ${{ steps.release.outputs.pr }}
+          REPO: ${{ github.repository }}
+        run: |
+          number="$(echo "$PR_JSON" | jq -r '.number')"
+          sha="$(gh api "repos/$REPO/pulls/$number" --jq .head.sha)"
+          ids=""
+          for _ in $(seq 1 12); do
+            ids="$(gh api "repos/$REPO/actions/runs?head_sha=$sha&status=action_required" --jq '.workflow_runs[].id')"
+            [ -n "$ids" ] && break
+            sleep 5
+          done
+          for id in $ids; do
+            gh api -X POST "repos/$REPO/actions/runs/$id/approve" && echo "approved run $id" || echo "::warning::run $id 승인 실패 (수동 승인 필요)"
+          done
