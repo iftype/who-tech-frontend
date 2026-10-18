@@ -1,6 +1,6 @@
 import { memberApi } from '@/entities/member';
 import { postApi } from '@/entities/post';
-import { FeedClient } from '@/features/feed/FeedClient';
+import { FeedClient } from '@/widgets/feed/FeedClient';
 import { PageContainer } from '@/shared/ui';
 
 export default async function HomePage(props: {

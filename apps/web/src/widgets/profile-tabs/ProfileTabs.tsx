@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
-import { formatDate, formatRelativeDate, decodeHtml } from '@/lib/utils';
+import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { postApi, postKeys } from '@/entities/post';
 import type { CohortArchive } from '@/entities/member';
 

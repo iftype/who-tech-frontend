@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { Avatar } from '@/shared/ui';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 import { TecoTalkBadge } from '@/entities/member';
-import { ProfileTabs } from '@/features/profile/ProfileTabs';
+import { ProfileTabs } from '@/widgets/profile-tabs/ProfileTabs';
 import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
 import type { MemberDetail } from '@/entities/member';
 import { PageContainer, buttonVariants } from '@/shared/ui';

@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import type { Member } from '@/entities/member';
+import type { Member } from '../model/types';
 import { Avatar } from '@/shared/ui';
-import { RoleBadge, TrackBadge } from '@/entities/member';
+import { RoleBadge, TrackBadge } from './MemberBadge';
 
 interface Props {
   members: Member[];

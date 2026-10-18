@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { type MouseEvent, useEffect, useState, useTransition } from 'react';
-import { ThemeToggle } from './ThemeToggle';
+import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
 
 const SearchDropdown = dynamic(
-  () => import('@/features/search/SearchDropdown').then((mod) => ({ default: mod.SearchDropdown })),
+  () => import('@/features/member-search/SearchDropdown').then((mod) => ({ default: mod.SearchDropdown })),
   { ssr: false },
 );
 

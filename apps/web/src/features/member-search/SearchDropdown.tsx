@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { memberApi, memberKeys } from '@/entities/member';
 import { Avatar } from '@/shared/ui';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import type { Member } from '@/entities/member';
 
 function useDebounce<T>(value: T, delay: number): T {

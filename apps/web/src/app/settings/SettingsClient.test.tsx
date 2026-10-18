@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const theme = { theme: 'dark', toggle: vi.fn(), designSystem: 'paper', setDesign: vi.fn() };
-vi.mock('@/components/layout/ThemeProvider', () => ({ useTheme: () => theme }));
+vi.mock('@/shared/providers/ThemeProvider', () => ({ useTheme: () => theme }));
 
 const { SettingsClient } = await import('./SettingsClient');
 

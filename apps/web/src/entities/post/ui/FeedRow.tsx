@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { Avatar } from '@/shared/ui';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
-import { formatRelativeDate, getBlogSource } from '@/lib/utils';
-import type { FeedItem } from '@/entities/post';
+import { formatRelativeDate, getBlogSource } from '@/shared/lib/utils';
+import type { FeedItem } from '../model/types';
 
 export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
   const source = getBlogSource(item.url);

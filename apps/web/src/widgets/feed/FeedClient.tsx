@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useRef, useCallback, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { FeedFilterBar } from '@/features/feed/FeedFilterBar';
-import { FeedListSection } from '@/features/feed/FeedListSection';
-import { FeedSidebar } from '@/features/feed/FeedSidebar';
+import { FeedFilterBar } from '@/features/feed-filter/FeedFilterBar';
+import { FeedListSection } from '@/widgets/feed/FeedListSection';
+import { FeedSidebar } from '@/widgets/feed/FeedSidebar';
 import { postApi, postKeys } from '@/entities/post';
-import { getBlogSource } from '@/lib/utils';
+import { getBlogSource } from '@/shared/lib/utils';
 import type { Track } from '@/entities/member';
 import type { FeedItem } from '@/entities/post';
 

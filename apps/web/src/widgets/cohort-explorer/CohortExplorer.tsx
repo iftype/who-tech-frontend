@@ -4,10 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Member, RoleGroup, Track } from '@/entities/member';
 import { memberApi, memberKeys, type MemberSearchPage } from '@/entities/member';
-import { CohortFilterBar, TRACK_OPTIONS } from './CohortFilterBar';
-import { CohortTabBar } from './CohortTabBar';
-import { CohortMemberList } from './CohortMemberList';
-import { CohortMemberGrid } from './CohortMemberGrid';
+import { CohortFilterBar, TRACK_OPTIONS } from '@/features/cohort-filter/CohortFilterBar';
+import { CohortTabBar } from '@/features/cohort-filter/CohortTabBar';
+import { CohortMemberList } from '@/entities/member';
+import { CohortMemberGrid } from '@/entities/member';
 
 interface SkeletonProps {
   cohort: number;

@@ -5,10 +5,10 @@ import { Rubik } from 'next/font/google';
 import { cookies } from 'next/headers';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
-import { Navbar } from '@/components/layout/Navbar';
-import { PatchToast } from '@/components/layout/PatchToast';
-import { QueryProvider } from '@/components/layout/QueryProvider';
-import { ThemeProvider } from '@/components/layout/ThemeProvider';
+import { Navbar } from '@/widgets/layout/Navbar';
+import { PatchToast } from '@/widgets/layout/PatchToast';
+import { QueryProvider } from '@/shared/providers/QueryProvider';
+import { ThemeProvider } from '@/shared/providers/ThemeProvider';
 
 const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 

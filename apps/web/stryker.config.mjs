@@ -5,7 +5,7 @@ export default {
   packageManager: 'pnpm',
   testRunner: 'vitest',
   vitest: { configFile: 'vitest.config.mts' },
-  mutate: ['src/lib/utils.ts', 'src/lib/api.ts', 'src/features/mission-archive/utils.ts'],
+  mutate: ['src/shared/lib/utils.ts', 'src/lib/api.ts', 'src/features/mission-archive/utils.ts'],
   coverageAnalysis: 'perTest',
   thresholds: { high: 80, low: 70, break: 70 },
   reporters: ['clear-text', 'progress', 'html', 'json'],

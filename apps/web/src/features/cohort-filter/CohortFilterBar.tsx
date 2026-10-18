@@ -1,7 +1,7 @@
 'use client';
 
 import type { RoleGroup, Track } from '@/entities/member';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import { FilterRow, SegmentedControl, filterChipVariants, segmentVariants } from '@/shared/ui';
 
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [

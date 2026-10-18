@@ -1,4 +1,4 @@
-import { FeedList } from '@/features/feed/FeedRow';
+import { FeedList } from '@/entities/post';
 import type { FeedItem } from '@/entities/post';
 import { Divider, SectionLabel } from '@/shared/ui';
 

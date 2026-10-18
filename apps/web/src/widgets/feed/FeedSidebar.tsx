@@ -1,5 +1,5 @@
 import { Avatar } from '@/shared/ui';
-import { formatRelativeDate } from '@/lib/utils';
+import { formatRelativeDate } from '@/shared/lib/utils';
 import type { FeedItem } from '@/entities/post';
 
 interface Props {
