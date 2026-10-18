@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { Member } from '@/types';
+import type { Member } from '@/entities/member';
 import { Avatar } from '@/components/ui/Avatar';
 import { RoleBadge, TrackBadge } from '@/components/ui/Badge';
 

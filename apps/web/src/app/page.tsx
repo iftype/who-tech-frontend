@@ -1,4 +1,5 @@
-import { api } from '@/lib/api';
+import { memberApi } from '@/entities/member';
+import { postApi } from '@/entities/post';
 import { FeedClient } from '@/features/feed/FeedClient';
 
 export default async function HomePage(props: {
@@ -11,10 +12,10 @@ export default async function HomePage(props: {
   const days = range === '30d' ? 30 : undefined;
 
   const [feed, allCohorts] = await Promise.all([
-    api.members
+    postApi
       .feed({ ...(days ? { days } : {}), ...(cohort ? { cohort } : {}), ...(track ? { track } : {}), limit: 50 })
       .catch(() => ({ posts: [], nextCursor: null, totalCount: 0 })),
-    api.members.cohorts().catch(() => []),
+    memberApi.cohorts().catch(() => []),
   ]);
 
   return (

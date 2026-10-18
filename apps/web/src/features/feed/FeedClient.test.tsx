@@ -2,10 +2,14 @@ import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { FeedItem, Member } from '@/types';
+import type { Member } from '@/entities/member';
+import type { FeedItem } from '@/entities/post';
 
 const feed = vi.fn();
-vi.mock('@/lib/api', () => ({ api: { members: { feed: (...args: unknown[]) => feed(...args) } } }));
+vi.mock('@/entities/post', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/post')>()),
+  postApi: { feed: (...args: unknown[]) => feed(...args) },
+}));
 
 const { FeedClient } = await import('./FeedClient');
 

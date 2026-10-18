@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { api } from '@/lib/api';
+import { memberApi } from '@/entities/member';
 import { CohortExplorer } from '@/features/cohort/CohortExplorer';
 
 export const revalidate = 300;
@@ -20,13 +20,13 @@ export default async function CohortPage({ params, searchParams }: Props) {
   const roleGroup = sp?.roleGroup === 'staff' ? 'staff' : 'crew';
   const track = (sp?.track as 'frontend' | 'backend' | 'android' | 'all' | undefined) ?? 'all';
   const [memberPage, allCohorts] = await Promise.all([
-    api.members
+    memberApi
       .searchPage(
         { cohort, ...(track !== 'all' ? { track } : {}), roleGroup, limit: 120 },
         { next: { revalidate: 300 } },
       )
       .catch(() => ({ members: [], totalCount: 0, counts: { crew: 0, staff: 0 }, nextOffset: null })),
-    api.members.cohorts().catch(() => []),
+    memberApi.cohorts().catch(() => []),
   ]);
 
   return (

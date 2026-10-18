@@ -2,17 +2,16 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Member } from '@/types';
-import type { MemberSearchPage } from '@/lib/api';
+import type { Member } from '@/entities/member';
+import type { MemberSearchPage } from '@/entities/member';
 
 const cohorts = vi.fn();
 const searchPage = vi.fn();
-vi.mock('@/lib/api', () => ({
-  api: {
-    members: {
-      cohorts: (...args: unknown[]) => cohorts(...args),
-      searchPage: (...args: unknown[]) => searchPage(...args),
-    },
+vi.mock('@/entities/member', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/member')>()),
+  memberApi: {
+    cohorts: (...args: unknown[]) => cohorts(...args),
+    searchPage: (...args: unknown[]) => searchPage(...args),
   },
 }));
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { ArchiveRepo, ArchiveStep } from '@/types';
+import type { ArchiveRepo, ArchiveStep } from '@/entities/member';
 import { getForkUrl } from '../utils';
 
 interface ArchiveRepoListProps {
