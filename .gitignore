@@ -14,3 +14,10 @@ dist/
 
 # OMC
 .omc/
+
+# vitest coverage
+coverage/
+
+# stryker
+.stryker-tmp/
+reports/
