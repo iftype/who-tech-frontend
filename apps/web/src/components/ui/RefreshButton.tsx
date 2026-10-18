@@ -2,8 +2,8 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { api } from '@/lib/api';
-import type { MemberDetail } from '@/types';
+import { memberApi, type MemberDetail } from '@/entities/member';
+import { RateLimitError } from '@/shared/api';
 
 interface Props {
   githubId: string;
@@ -46,15 +46,14 @@ export function RefreshButton({ githubId, onRefreshed }: Props) {
     }
 
     try {
-      const member = await api.members.refresh(githubId);
+      const member = await memberApi.refresh(githubId);
       onRefreshed(member);
     } catch (e: unknown) {
-      if (typeof e === 'object' && e !== null && 'rateLimited' in e) {
-        const err = e as { rateLimited: boolean; remainingSeconds: number; message: string };
-        setCountdown(err.remainingSeconds);
+      if (e instanceof RateLimitError) {
+        setCountdown(e.remainingSeconds);
         setError('잠시 후에 시도해주세요');
         if (typeof window !== 'undefined') {
-          localStorage.setItem(rateLimitKey(githubId), String(Date.now() + err.remainingSeconds * 1000));
+          localStorage.setItem(rateLimitKey(githubId), String(Date.now() + e.remainingSeconds * 1000));
         }
         setTimeout(() => setError(null), 2500);
       } else {

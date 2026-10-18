@@ -1,6 +1,6 @@
 'use client';
 
-import type { Track } from '@/types';
+import type { Track } from '@/entities/member';
 
 type Range = '30d' | 'all';
 

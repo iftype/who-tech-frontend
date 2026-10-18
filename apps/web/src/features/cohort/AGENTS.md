@@ -32,7 +32,7 @@ CohortExplorer (컨테이너)
 
 - track fallback `useEffect`는 `CohortExplorer`에 있음 (`CohortFilterBar` 아님)
 - 기수 탭 전환은 `CohortExplorer` local state + TanStack Query cache로 처리하고, URL은 History API로 동기화
-- TanStack Query `queryKey: ['members', 'cohort-explorer', activeCohort, track]` — 기수/트랙별 멤버 fetch/cache에 사용
+- TanStack Query 키는 `memberKeys.cohortExplorer(cohort, track, roleGroup)` (`@/entities/member`) — 기수/트랙/구분별 멤버 fetch/cache에 사용
 - numbered cohort 탭 데이터는 현재 기수의 인접 기수만 idle 시점에 prefetch
 - 모바일 리스트/데스크톱 그리드는 둘 다 SSR 렌더하고 CSS(`sm:hidden`·`hidden sm:block`)로 전환 → 첫 페인트 플래시 방지 (JS `isMobile` 분기·하이드레이션 게이트 제거)
 - 실제 fetch 중(`isMembersPending`, 캐시 미스 탭 전환)에만 스켈레톤 표시. 초기 로드는 `initialPage`로 즉시 실제 콘텐츠 렌더

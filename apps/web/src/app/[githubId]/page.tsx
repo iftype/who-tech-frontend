@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { api } from '@/lib/api';
+import { memberApi } from '@/entities/member';
 import { MemberDetailClient } from './MemberDetailClient';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { githubId } = await params;
-  const member = await api.members.detail(githubId).catch(() => null);
+  const member = await memberApi.detail(githubId).catch(() => null);
   if (!member) return {};
   return {
     title: 'who.tech',
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DetailPage({ params, searchParams }: Props) {
   const { githubId } = await params;
-  const member = await api.members.detail(githubId).catch(() => null);
+  const member = await memberApi.detail(githubId).catch(() => null);
   if (!member) notFound();
 
   const sp = await searchParams;

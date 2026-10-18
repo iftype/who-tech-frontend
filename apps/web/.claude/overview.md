@@ -29,10 +29,11 @@ app/
 - 피드: 30일치 1회 fetch → 클라이언트 필터링 (기수/기간/트랙)
 - revalidate: 300 (5분)
 
-## API 클라이언트 (`src/lib/api.ts`)
+## API 클라이언트 (`src/shared/api`, `src/entities/*/api`)
 
 - 서버: `NEXT_PUBLIC_API_URL` 직접 호출
 - 브라우저: `/api` 프록시 (CORS 우회, next.config.ts rewrite)
+- 자세한 구조: [API_CLIENT.md](API_CLIENT.md)
 
 ## 디자인 시스템
 

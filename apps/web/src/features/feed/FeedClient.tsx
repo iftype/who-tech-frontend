@@ -5,9 +5,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { FeedFilterBar } from '@/features/feed/FeedFilterBar';
 import { FeedListSection } from '@/features/feed/FeedListSection';
 import { FeedSidebar } from '@/features/feed/FeedSidebar';
-import { api } from '@/lib/api';
+import { postApi, postKeys } from '@/entities/post';
 import { getBlogSource } from '@/lib/utils';
-import type { FeedItem, Track } from '@/types';
+import type { Track } from '@/entities/member';
+import type { FeedItem } from '@/entities/post';
 
 type Range = '30d' | 'all';
 
@@ -82,9 +83,9 @@ export function FeedClient({
   const filtersMatchSSR = range === initialRange && cohort === initialCohort && track === initialTrack;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } = useInfiniteQuery({
-    queryKey: ['feed', days, track, cohort],
+    queryKey: postKeys.feed(days, track, cohort),
     queryFn: ({ pageParam }) =>
-      api.members.feed({
+      postApi.feed({
         ...(days ? { days } : {}),
         track: track ?? undefined,
         cohort: cohort ? Number(cohort) : undefined,

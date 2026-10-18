@@ -7,7 +7,7 @@
 ## 경계
 
 - ✅ 순수 프리미티브 props만 받음 (`string`, `number`, `boolean`, `ReactNode`)
-- ❌ `@/types`의 `Member`, `Track`, `Role` 등 도메인 타입 import 금지
+- ❌ `@/entities/*`의 `Member`, `Track`, `Role` 등 도메인 타입 import 금지 (도메인 배지는 B-4에서 `entities/member/ui`로 이동 예정)
 - ❌ API 호출 등 사이드이펙트 금지
 - ❌ 비즈니스 로직 금지 (cohort === 8이면 특별 처리 같은 것)
 
@@ -15,7 +15,7 @@
 
 - `Avatar`: `src`, `alt`, `size`(px), `className`
 - `CohortBadge`: `cohort: number`
-- `TrackBadge`: `track: Track` (Track 타입은 `@/types`에서 — 예외적으로 타입만 import 허용)
+- `TrackBadge`: `track: Track` (Track 타입은 `@/entities/member`에서 — 예외적으로 타입만 import 허용)
 - `RoleBadge`: `role: Role`
 - 스타일은 Tailwind + CSS 변수 토큰만 사용 (`bg`, `surface`, `border`, `text`, `accent`)
 

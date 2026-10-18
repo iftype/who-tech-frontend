@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import type { Role, Track } from '@/types';
+import type { Role, Track } from '@/entities/member';
 
 interface CohortBadgeProps {
   cohort: number;

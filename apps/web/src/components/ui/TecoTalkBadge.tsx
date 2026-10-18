@@ -1,4 +1,4 @@
-import type { TecoTalk } from '@/types';
+import type { TecoTalk } from '@/entities/member';
 
 // 제목 앞 대괄호 라벨("[10분 테코톡] ")을 제거해 주제만 노출
 function talkLabel(title: string): string {

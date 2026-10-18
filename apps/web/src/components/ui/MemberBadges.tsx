@@ -1,5 +1,5 @@
 import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
-import type { Role, Track } from '@/types';
+import type { Role, Track } from '@/entities/member';
 
 interface Props {
   tracks: Track[];

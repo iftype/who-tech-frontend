@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { CohortArchive } from '@/types';
+import type { CohortArchive } from '@/entities/member';
 import { ArchiveRepoList } from './ArchiveRepoList';
 
 interface ArchiveCohortSectionProps {
