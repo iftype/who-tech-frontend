@@ -17,3 +17,7 @@ dist/
 
 # vitest coverage
 coverage/
+
+# stryker
+.stryker-tmp/
+reports/

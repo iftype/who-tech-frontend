@@ -11,3 +11,7 @@ apps/mobile/android
 
 # release-please가 생성
 CHANGELOG.md
+
+# stryker
+.stryker-tmp
+apps/**/reports
