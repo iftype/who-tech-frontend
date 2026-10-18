@@ -12,8 +12,8 @@
 
 - `src/app/globals.css`
 - `src/app/layout.tsx`
-- `src/components/layout/ThemeProvider.tsx`
-- `src/components/layout/DesignToggle.tsx`
+- `src/shared/providers/ThemeProvider.tsx`
+- `src/features/theme-switch/DesignToggle.tsx`
 
 **결정**:
 

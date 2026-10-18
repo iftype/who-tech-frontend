@@ -8,14 +8,14 @@ import type { MissionTab } from './types';
 import { buildMarkdown, getFilteredArchives } from './utils';
 import type { CohortArchive } from '@/entities/member';
 
-interface Props {
+interface MissionArchiveProps {
   archive: CohortArchive[];
   memberTracks: string[];
   githubId: string;
   initialMissionTab: MissionTab;
 }
 
-export function MissionArchive({ archive = [], memberTracks, githubId, initialMissionTab }: Props) {
+export function MissionArchive({ archive = [], memberTracks, githubId, initialMissionTab }: MissionArchiveProps) {
   const [tab, setTab] = useState<MissionTab>(initialMissionTab);
   const [copied, setCopied] = useState(false);
 

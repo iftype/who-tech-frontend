@@ -1,7 +1,7 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
-import { useTheme } from '@/components/layout/ThemeProvider';
+import { useTheme } from '@/shared/providers/ThemeProvider';
 
 const DESIGN_OPTIONS = [
   { id: 'paper' as const, label: 'Next', sub: '기본 디자인' },

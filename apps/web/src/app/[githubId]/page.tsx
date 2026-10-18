@@ -3,12 +3,12 @@ import { notFound } from 'next/navigation';
 import { memberApi } from '@/entities/member';
 import { MemberDetailClient } from './MemberDetailClient';
 
-interface Props {
+interface DetailPageProps {
   params: Promise<{ githubId: string }>;
   searchParams?: Promise<{ tab?: string; missionTab?: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: DetailPageProps): Promise<Metadata> {
   const { githubId } = await params;
   const member = await memberApi.detail(githubId).catch(() => null);
   if (!member) return {};
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function DetailPage({ params, searchParams }: Props) {
+export default async function DetailPage({ params, searchParams }: DetailPageProps) {
   const { githubId } = await params;
   const member = await memberApi.detail(githubId).catch(() => null);
   if (!member) notFound();
