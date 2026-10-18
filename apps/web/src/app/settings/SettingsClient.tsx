@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { GuideTab } from './tabs/GuideTab';
 import { PrivacyTab } from './tabs/PrivacyTab';
 import { ThemeTab } from './tabs/ThemeTab';
+import { PageContainer } from '@/shared/ui';
 
 type Tab = 'guide' | 'theme' | 'privacy';
 
@@ -43,7 +44,7 @@ export function SettingsClient() {
   };
 
   return (
-    <div className="mx-auto px-4 sm:px-6 py-8 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
+    <PageContainer>
       {/* 탭 헤더 */}
       <div className="mb-8 border-b border-border">
         <div className="flex gap-0">
@@ -64,6 +65,6 @@ export function SettingsClient() {
       </div>
 
       {renderTabContent()}
-    </div>
+    </PageContainer>
   );
 }

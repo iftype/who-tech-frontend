@@ -1,6 +1,8 @@
 'use client';
 
 import type { RoleGroup, Track } from '@/entities/member';
+import { cn } from '@/lib/utils';
+import { FilterRow, SegmentedControl, filterChipVariants, segmentVariants } from '@/shared/ui';
 
 const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
   { label: '전체', value: 'all' },
@@ -43,29 +45,29 @@ export function CohortFilterBar({
             우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
           </p>
         </div>
-        <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+        <SegmentedControl>
           <button
             onClick={() => applyFilters({ roleGroup: 'crew' })}
-            className={`rounded px-2.5 py-1.5 text-caption transition-colors cursor-pointer ${roleGroup === 'crew' ? 'bg-border text-text' : 'text-text-muted hover:text-text'}`}
+            className={cn(segmentVariants({ active: roleGroup === 'crew' }), 'transition-colors')}
           >
             크루 {counts.crew}
           </button>
           <button
             onClick={() => applyFilters({ roleGroup: 'staff' })}
-            className={`rounded px-2.5 py-1.5 text-caption transition-colors cursor-pointer ${roleGroup === 'staff' ? 'bg-border text-text' : 'text-text-muted hover:text-text'}`}
+            className={cn(segmentVariants({ active: roleGroup === 'staff' }), 'transition-colors')}
           >
             운영진 {counts.staff}
           </button>
-        </div>
+        </SegmentedControl>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
+      <FilterRow>
         <div className="flex items-center gap-0.5">
           {visibleTrackOptions.map(({ label, value }) => (
             <button
               key={value}
               onClick={() => applyFilters({ track: value })}
-              className={`cursor-pointer rounded-md px-2.5 py-1 text-label font-medium transition-colors ${track === value ? 'bg-accent-bg text-accent-dm' : 'text-text-muted hover:text-text'}`}
+              className={cn(filterChipVariants({ active: track === value }), 'transition-colors')}
             >
               {label}
             </button>
@@ -77,7 +79,7 @@ export function CohortFilterBar({
             {filteredCount !== totalCount && <span className="text-text-dim">/{totalCount}</span>}명
           </p>
         </div>
-      </div>
+      </FilterRow>
     </>
   );
 }

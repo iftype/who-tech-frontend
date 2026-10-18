@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Avatar } from '@/components/ui/Avatar';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { Avatar } from '@/shared/ui';
+import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 import { formatRelativeDate, getBlogSource } from '@/lib/utils';
 import type { FeedItem } from '@/entities/post';
 

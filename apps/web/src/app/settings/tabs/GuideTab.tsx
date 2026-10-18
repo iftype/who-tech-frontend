@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
+import { buttonVariants } from '@/shared/ui';
 
 const sections = [
   {
@@ -12,11 +14,11 @@ const sections = [
       <>
         홈 화면 중앙의 검색창에 <strong className="text-text">닉네임</strong> 또는{' '}
         <strong className="text-text">GitHub ID</strong>를 입력하면 실시간으로 크루를 검색할 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>입력 후 자동으로 드롭다운에 검색 결과가 나타납니다</li>
           <li>기수 번호, 역할(크루/코치/리뷰어), 트랙 정보가 함께 표시됩니다</li>
           <li>결과를 클릭하면 해당 크루의 상세 페이지로 이동합니다</li>
-        </ul>
+        </GuideList>
         <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-border-dim bg-surface px-3 py-2 text-label text-text-muted">
           <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-caption">⌘</kbd>
           <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-caption">K</kbd>
@@ -33,7 +35,7 @@ const sections = [
       <>
         크루의 <strong className="text-text">미션 PR 이력</strong>과 <strong className="text-text">블로그 글</strong>을
         한 페이지에서 확인할 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>기준 미션 / 공통 미션 / 프리코스 탭으로 구분되어 있어요</li>
           <li>레벨별 PR 링크를 직접 클릭해 제출 내역을 볼 수 있습니다</li>
           <li>미제출 항목도 함께 표시되어 전체 미션 현황을 파악할 수 있어요</li>
@@ -42,7 +44,7 @@ const sections = [
             있습니다
           </li>
           <li>여러 기수를 거친 크루라면 크루로 참여한 기수의 기록만 표시됩니다</li>
-        </ul>
+        </GuideList>
       </>
     ),
   },
@@ -53,14 +55,14 @@ const sections = [
     description: (
       <>
         기수별로 모든 크루, 코치, 리뷰어를 한눈에 볼 수 있습니다.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>상단 탭에서 전체 기수 또는 특정 기수를 선택할 수 있어요</li>
           <li>
             <strong className="text-text">크루 / 운영진</strong> 역할 토글로 구분해서 볼 수 있습니다
           </li>
           <li>트랙 필터(프론트엔드 / 백엔드 / 안드로이드)로 원하는 트랙만 볼 수 있어요</li>
           <li>크루 카드를 클릭하면 상세 페이지로 이동합니다</li>
-        </ul>
+        </GuideList>
       </>
     ),
   },
@@ -71,13 +73,13 @@ const sections = [
     description: (
       <>
         크루들이 최근에 올린 블로그 글을 모아볼 수 있습니다. 스터디 자료나 회고, 기술 글을 한 곳에서 탐색해보세요.
-        <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">
+        <GuideList>
           <li>전체 / 기수별 탭으로 범위를 좁힐 수 있어요</li>
           <li>7일 / 30일 기간 필터로 최신 글과 이달의 글을 구분할 수 있습니다</li>
           <li>트랙 필터로 원하는 트랙 크루의 글만 볼 수 있어요</li>
           <li>닉네임 클릭 시 크루 상세 페이지, 프로필 사진 클릭 시 GitHub으로 이동합니다</li>
           <li>Velog, Tistory, 브런치 등 다양한 플랫폼 블로그를 지원합니다</li>
-        </ul>
+        </GuideList>
       </>
     ),
   },
@@ -146,22 +148,13 @@ export function GuideTab() {
             크루를 검색하거나 기수별로 목록을 살펴보고, 블로그 피드로 최신 글을 확인해보세요.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-label text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <Link href="/" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
               홈으로 가기 →
             </Link>
-            <Link
-              href="/cohort"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-label text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <Link href="/cohort" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
               기수별 목록 보기 →
             </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-label text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <Link href="/" className={buttonVariants({ variant: 'secondary', size: 'md' })}>
               블로그 피드 보기 →
             </Link>
           </div>
@@ -196,4 +189,8 @@ export function GuideTab() {
       </div>
     </div>
   );
+}
+
+function GuideList({ children }: { children: ReactNode }) {
+  return <ul className="mt-3 flex flex-col gap-2 list-disc pl-4">{children}</ul>;
 }

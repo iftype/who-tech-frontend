@@ -16,3 +16,5 @@ export type {
 export { memberApi } from './api/member.api';
 export type { MemberSearchPageParams, MemberSearchParams } from './api/member.api';
 export { memberKeys } from './api/member.keys';
+export { CohortBadge, RoleBadge, TrackBadge } from './ui/MemberBadge';
+export { TecoTalkBadge } from './ui/TecoTalkBadge';

@@ -1,6 +1,7 @@
 import { memberApi } from '@/entities/member';
 import { postApi } from '@/entities/post';
 import { FeedClient } from '@/features/feed/FeedClient';
+import { PageContainer } from '@/shared/ui';
 
 export default async function HomePage(props: {
   searchParams?: Promise<{ cohort?: string; track?: string; range?: string }>;
@@ -19,7 +20,7 @@ export default async function HomePage(props: {
   ]);
 
   return (
-    <div className="mx-auto px-4 py-8 sm:px-6 sm:py-10" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
+    <PageContainer>
       <FeedClient
         initialItems={feed.posts}
         initialNextCursor={feed.nextCursor}
@@ -29,6 +30,6 @@ export default async function HomePage(props: {
         initialTrack={(searchParams?.track as 'frontend' | 'backend' | 'android' | null) ?? null}
         initialRange={(range as '30d' | 'all') ?? '30d'}
       />
-    </div>
+    </PageContainer>
   );
 }

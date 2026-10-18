@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import type { Member } from '@/entities/member';
-import { Avatar } from '@/components/ui/Avatar';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { Avatar } from '@/shared/ui';
+import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 
 interface Props {
   members: Member[];

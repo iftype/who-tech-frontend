@@ -1,5 +1,6 @@
 import { FeedList } from '@/features/feed/FeedRow';
 import type { FeedItem } from '@/entities/post';
+import { Divider, SectionLabel } from '@/shared/ui';
 
 interface Props {
   cohort: string | null;
@@ -21,10 +22,8 @@ export function FeedListSection({ cohort, cohorts, filtered, grouped }: Props) {
           return (
             <div key={c}>
               <div className="mb-2 flex items-center gap-2">
-                <span className="font-mono text-tiny font-semibold uppercase tracking-[0.06em] text-accent-dm">
-                  {c}기
-                </span>
-                <div className="h-px flex-1 bg-border-dim" />
+                <SectionLabel>{c}기</SectionLabel>
+                <Divider />
                 <span className="text-caption text-text-dim">{items.length}개</span>
               </div>
               <FeedList items={items} />

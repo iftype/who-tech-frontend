@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { memberApi, memberKeys } from '@/entities/member';
-import { Avatar } from '@/components/ui/Avatar';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/components/ui/Badge';
+import { Avatar } from '@/shared/ui';
+import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 import { cn } from '@/lib/utils';
 import type { Member } from '@/entities/member';
 
