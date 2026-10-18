@@ -15,6 +15,9 @@ updates:
       minor-and-patch:
         update-types: [minor, patch]
     ignore:
+      # major는 취약점과 무관한 한 백로그로 계획해서 수동으로 올린다 (IMPROVEMENT_PLAN 3-3)
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
       # Expo SDK가 버전을 정하므로 수동 관리 (루트 pnpm overrides로도 고정)
       - dependency-name: 'expo'
       - dependency-name: 'expo-*'
