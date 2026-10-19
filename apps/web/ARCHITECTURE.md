@@ -25,6 +25,16 @@ flowchart TD
 - 서버 호출은 `shared/api`(`requestJson`, `withQuery`, `ApiError`, `RateLimitError`)를 거쳐 엔티티의 API 함수(`memberApi`, `postApi`)로만 한다
 - 캐시 키는 엔티티의 팩토리(`memberKeys`, `postKeys`)만 쓴다. 서버 컴포넌트가 미리 받은 데이터(`initialData`·prefetch)와 클라이언트 쿼리가 같은 키를 쓰게 하기 위해서다
 
+### 이름 규칙
+
+| 이름             | 뜻                                                                                                                                           |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `*Client.tsx`    | 서버 `page.tsx`가 미리 받은 데이터를 넘겨 그리는 `'use client'` 뿌리. 페이지마다 하나 (`MemberDetailClient`, `SettingsClient`, `FeedClient`) |
+| `use*`           | 훅. 화면에서 데이터·URL 상태를 떼어 낸 것 (`useCohortUrlState`, `useFeedPosts`)                                                              |
+| `*Api` / `*Keys` | 엔티티의 서버 호출 함수 묶음 / 쿼리 키 팩토리                                                                                                |
+| `*Variants`      | `shared/ui`의 cva 클래스 함수. `button`·`a`·`Link` 어디에나 붙인다                                                                           |
+| `*Skeleton`      | 데이터가 오기 전 같은 자리를 차지하는 뼈대                                                                                                   |
+
 ## 디자인 시스템 (`shared/ui`)
 
 | 종류        | 부품                                                                                                                                                                      |
