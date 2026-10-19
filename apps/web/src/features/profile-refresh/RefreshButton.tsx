@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { memberApi, type MemberDetail } from '@/entities/member';
 import { RateLimitError } from '@/shared/api';
+import { chipButtonVariants } from '@/shared/ui';
 
 interface RefreshButtonProps {
   githubId: string;
@@ -75,11 +76,7 @@ export function RefreshButton({ githubId, onRefreshed }: RefreshButtonProps) {
       <button
         onClick={handleRefresh}
         disabled={disabled}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-caption transition-colors ${
-          disabled
-            ? 'border-border text-text-muted cursor-not-allowed opacity-50'
-            : 'border-border text-text-muted hover:text-text hover:bg-surface-alt cursor-pointer'
-        }`}
+        className={chipButtonVariants({ disabled })}
         title={countdown > 0 ? `${countdown}초 후 다시 시도` : '프로필 새로고침'}
       >
         <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
