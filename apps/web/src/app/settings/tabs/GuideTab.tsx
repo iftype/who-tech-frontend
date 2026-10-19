@@ -5,6 +5,9 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { buttonVariants } from '@/shared/ui';
 
+// 단축키 글자 (⌘·K)
+const KBD_CLASS = 'rounded border border-border px-1.5 py-0.5 font-mono text-caption';
+
 const sections = [
   {
     id: 'search',
@@ -20,8 +23,8 @@ const sections = [
           <li>결과를 클릭하면 해당 크루의 상세 페이지로 이동합니다</li>
         </GuideList>
         <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-border-dim bg-surface px-3 py-2 text-label text-text-muted">
-          <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-caption">⌘</kbd>
-          <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-caption">K</kbd>
+          <kbd className={KBD_CLASS}>⌘</kbd>
+          <kbd className={KBD_CLASS}>K</kbd>
           <span>단축키로 어디서든 검색창을 열 수 있어요</span>
         </div>
       </>
