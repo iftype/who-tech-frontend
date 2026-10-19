@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { Member, MemberSearchPage, RoleGroup, Track } from '@/entities/member';
 import { CohortMemberGrid, CohortMemberList } from '@/entities/member';
 import { CohortFilterBar, TRACK_OPTIONS } from '@/features/cohort-filter/CohortFilterBar';
@@ -58,14 +58,6 @@ export function CohortExplorer({
     return cohortMembers.filter((m) => isStaff(m));
   }, [cohortMembers, roleGroup]);
 
-  const visibleTrackOptions = TRACK_OPTIONS;
-
-  useEffect(() => {
-    if (track === 'all') return;
-    if (visibleTrackOptions.some((o) => o.value === track)) return;
-    applyFilters({ track: 'all' });
-  }, [track, visibleTrackOptions, applyFilters]);
-
   const filtered = useMemo(
     () => roleScopedMembers.filter((m) => track === 'all' || m.tracks.includes(track)),
     [roleScopedMembers, track],
@@ -81,7 +73,7 @@ export function CohortExplorer({
         <CohortExplorerSkeleton
           cohort={activeCohort ?? 0}
           counts={{ crew: crewCount, staff: staffCount }}
-          visibleTrackOptions={visibleTrackOptions}
+          visibleTrackOptions={TRACK_OPTIONS}
           filteredCount={filtered.length}
         />
       ) : (
@@ -91,7 +83,7 @@ export function CohortExplorer({
             filters={{ roleGroup, track }}
             applyFilters={applyFilters}
             counts={{ crew: crewCount, staff: staffCount }}
-            visibleTrackOptions={visibleTrackOptions}
+            visibleTrackOptions={TRACK_OPTIONS}
             filteredCount={filtered.length}
             totalCount={filteredTotalCount}
           />

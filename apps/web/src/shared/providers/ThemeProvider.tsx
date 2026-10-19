@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 export type Theme = 'dark' | 'light';
 export type DesignSystem = 'paper' | 'apple' | 'sentry';
@@ -60,18 +60,21 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(initialTheme);
   const [designSystem, setDesignSystem] = useState<DesignSystem>(initialDesign);
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     const next = theme === 'dark' ? 'light' : 'dark';
     applyTheme(next);
     setTheme(next);
     setCookie('theme', next);
-  };
+  }, [theme]);
 
-  const setDesign = (ds: DesignSystem) => {
+  const setDesign = useCallback((ds: DesignSystem) => {
     applyDesign(ds);
     setDesignSystem(ds);
     setCookie('designSystem', ds);
-  };
+  }, []);
 
-  return <ThemeContext.Provider value={{ theme, toggle, designSystem, setDesign }}>{children}</ThemeContext.Provider>;
+  // 값 객체를 렌더마다 새로 만들면 테마를 쓰는 모든 컴포넌트가 함께 다시 그려진다
+  const value = useMemo(() => ({ theme, toggle, designSystem, setDesign }), [theme, toggle, designSystem, setDesign]);
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

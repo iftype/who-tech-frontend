@@ -14,6 +14,8 @@ export function RoleBadge({ role }: { role: Role }) {
 const trackLabel: Record<Track, string> = { frontend: '프론트엔드', backend: '백엔드', android: '안드로이드' };
 const trackShortLabel: Record<Track, string> = { frontend: 'FE', backend: 'BE', android: 'AN' };
 
-export function TrackBadge({ track, compact }: { track: Track; compact?: boolean }) {
-  return <Badge tone={track}>{compact ? trackShortLabel[track] : trackLabel[track]}</Badge>;
+// track이 없을 때(트랙 없는 멤버의 첫 트랙)도 지금 화면 그대로 빈 배지를 그린다. 숨길지는 화면 변경으로 따로 판단
+export function TrackBadge({ track, compact }: { track: Track | undefined; compact?: boolean }) {
+  const label = track ? (compact ? trackShortLabel[track] : trackLabel[track]) : undefined;
+  return <Badge tone={track}>{label}</Badge>;
 }

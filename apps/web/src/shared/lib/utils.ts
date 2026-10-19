@@ -20,17 +20,6 @@ export function formatDate(dateStr: string): string {
   });
 }
 
-export function groupBy<T>(arr: T[], key: (item: T) => string): Record<string, T[]> {
-  return arr.reduce(
-    (acc, item) => {
-      const k = key(item);
-      (acc[k] ??= []).push(item);
-      return acc;
-    },
-    {} as Record<string, T[]>,
-  );
-}
-
 export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ');
 }

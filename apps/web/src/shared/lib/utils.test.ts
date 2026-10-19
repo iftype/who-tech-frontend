@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cn, decodeHtml, formatDate, formatRelativeDate, getBlogSource, groupBy } from './utils';
+import { cn, decodeHtml, formatDate, formatRelativeDate, getBlogSource } from './utils';
 
 describe('formatRelativeDate', () => {
   beforeEach(() => {
@@ -28,21 +28,6 @@ describe('formatRelativeDate', () => {
 describe('formatDate', () => {
   it('should format in Korean long form', () => {
     expect(formatDate('2026-03-05T12:00:00Z')).toBe('2026년 3월 5일');
-  });
-});
-
-describe('groupBy', () => {
-  it('should group items by key preserving order', () => {
-    const items = [
-      { cohort: '8', id: 1 },
-      { cohort: '7', id: 2 },
-      { cohort: '8', id: 3 },
-    ];
-    expect(groupBy(items, (i) => i.cohort)).toEqual({
-      '8': [items[0], items[2]],
-      '7': [items[1]],
-    });
-    expect(groupBy([], () => 'x')).toEqual({});
   });
 });
 
