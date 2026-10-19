@@ -5,8 +5,6 @@ import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
 import { makeQueryClient } from '@/shared/api/query-client';
 import { PageContainer } from '@/shared/ui';
 
-export const revalidate = 300;
-
 export const metadata: Metadata = { title: 'who.tech' };
 
 export default async function CohortAllPage({
