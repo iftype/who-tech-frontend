@@ -1,5 +1,6 @@
 import { MISSION_TAB_ITEMS } from '../constants';
 import type { MissionTab } from '../types';
+import { buttonVariants, segmentVariants } from '@/shared/ui';
 
 interface MissionArchiveHeaderProps {
   tab: MissionTab;
@@ -33,12 +34,7 @@ interface MissionTabButtonProps {
 
 function MissionTabButton({ label, selected, onClick }: MissionTabButtonProps) {
   return (
-    <button
-      onClick={onClick}
-      className={`cursor-pointer px-3 py-1.5 text-caption ${
-        selected ? 'bg-border text-text' : 'text-text-muted hover:text-text-secondary'
-      }`}
-    >
+    <button onClick={onClick} className={segmentVariants({ shape: 'flush', active: selected })}>
       {label}
     </button>
   );
@@ -51,10 +47,7 @@ interface CopyMarkdownButtonProps {
 
 function CopyMarkdownButton({ copied, onClick }: CopyMarkdownButtonProps) {
   return (
-    <button
-      onClick={onClick}
-      className="flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-caption text-text-muted hover:text-text"
-    >
+    <button onClick={onClick} className={buttonVariants({ variant: 'subtle', size: 'caption' })}>
       <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="9" y="9" width="13" height="13" rx="2" />
         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />

@@ -1,9 +1,11 @@
 export { Avatar } from './Avatar';
 export { Badge, badgeVariants } from './Badge';
-export { buttonVariants } from './buttonVariants';
+export { buttonVariants, chipButtonVariants } from './buttonVariants';
 export { Divider } from './Divider';
 export { FilterRow, filterChipVariants } from './FilterRow';
+export { listItemVariants } from './listItemVariants';
+export { navLinkVariants } from './navLinkVariants';
 export { PageContainer } from './PageContainer';
 export { SectionLabel } from './SectionLabel';
-export { SegmentedControl, segmentVariants } from './SegmentedControl';
-export { TabBar, tabVariants } from './TabBar';
+export { OptionGroup, SegmentedControl, optionVariants, segmentVariants } from './SegmentedControl';
+export { TabBar, pageTabVariants, tabVariants } from './TabBar';

@@ -14,6 +14,23 @@ export const tabVariants = cva(
   },
 );
 
+// 페이지 안의 큰 밑줄 탭 (설정·프로필). indicator는 선택된 탭의 밑줄 색
+export const pageTabVariants = cva('-mb-px cursor-pointer border-b-2 px-4 text-body font-medium', {
+  variants: {
+    size: { md: 'py-2.5', lg: 'py-3' },
+    indicator: { text: '', accent: '' },
+    active: {
+      true: 'text-text',
+      false: 'border-transparent text-text-muted hover:text-text-secondary',
+    },
+  },
+  compoundVariants: [
+    { active: true, indicator: 'text', className: 'border-text' },
+    { active: true, indicator: 'accent', className: 'border-accent-dm' },
+  ],
+  defaultVariants: { size: 'md', indicator: 'text' },
+});
+
 export function TabBar({ children }: { children: ReactNode }) {
   return (
     <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
