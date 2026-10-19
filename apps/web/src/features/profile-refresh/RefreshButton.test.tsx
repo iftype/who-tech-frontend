@@ -87,7 +87,7 @@ describe('RefreshButton', () => {
     expect(screen.queryByText('잠시 후에 시도해주세요')).not.toBeInTheDocument();
   });
 
-  it('should drop the cooldown on other failures', async () => {
+  it('should drop the cooldown on other failures and say so for 2.5s', async () => {
     refresh.mockRejectedValue(new Error('500'));
     setup();
 
@@ -96,6 +96,9 @@ describe('RefreshButton', () => {
     expect(button()).toHaveTextContent('새로고침');
     expect(button()).not.toBeDisabled();
     expect(localStorage.getItem('rateLimit_crew')).toBeNull();
+    expect(screen.getByText('새로고침에 실패했습니다')).toBeInTheDocument();
+    await tick(2600);
+    expect(screen.queryByText('새로고침에 실패했습니다')).not.toBeInTheDocument();
   });
 
   it('should resume a stored cooldown after reload and clear it when it ends', async () => {
