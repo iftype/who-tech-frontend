@@ -50,9 +50,11 @@ export function useRateLimitCountdown(githubId: string) {
     () => 0,
   );
 
-  // 끝난 카운트다운의 저장값은 지운다
+  // 끝난 카운트다운의 저장값은 지운다. remaining만 보면 안 된다: 하이드레이션 중에는 서버 스냅샷(0)이라
+  // 아직 유효한 카운트다운을 지워 버린다 → 저장된 만료 시각이 실제로 지났을 때만 지운다
   useEffect(() => {
-    if (remaining === 0 && readExpiresAt(githubId) !== null) {
+    const expiresAt = readExpiresAt(githubId);
+    if (remaining === 0 && expiresAt !== null && expiresAt <= Date.now()) {
       try {
         localStorage.removeItem(keyOf(githubId));
       } catch {

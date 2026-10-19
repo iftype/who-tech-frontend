@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderToString } from 'react-dom/server';
+import { hydrateRoot } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MemberDetail } from '@/entities/member';
 import { RateLimitError } from '@/shared/api';
@@ -118,5 +119,26 @@ describe('RefreshButton', () => {
     );
     expect(html).toContain('새로고침');
     expect(html).not.toContain('30초');
+  });
+
+  it('should resume a stored cooldown after hydrating server HTML (page reload)', async () => {
+    localStorage.setItem('rateLimit_crew', String(NOW.getTime() + 30_000));
+    const tree = (client: QueryClient) => (
+      <QueryClientProvider client={client}>
+        <RefreshButton githubId="crew" detailId="crew" />
+      </QueryClientProvider>
+    );
+    const container = document.createElement('div');
+    container.innerHTML = renderToString(tree(new QueryClient()));
+    document.body.appendChild(container);
+
+    await act(async () => {
+      hydrateRoot(container, tree(new QueryClient()));
+      await vi.advanceTimersByTimeAsync(0);
+    });
+
+    expect(container.querySelector('button')).toHaveTextContent('30초');
+    expect(localStorage.getItem('rateLimit_crew')).not.toBeNull();
+    container.remove();
   });
 });
