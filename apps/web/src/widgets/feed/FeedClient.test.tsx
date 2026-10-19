@@ -1,17 +1,20 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HydrationBoundary, QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Member } from '@/entities/member';
 import type { FeedItem } from '@/entities/post';
 
 const feed = vi.fn();
-vi.mock('@/entities/post', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/entities/post')>()),
+// 쿼리 옵션(post.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다
+vi.mock('@/entities/post/api/post.api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/post/api/post.api')>()),
   postApi: { feed: (...args: unknown[]) => feed(...args) },
 }));
 
 const { FeedClient } = await import('./FeedClient');
+const { feedQuery, rangeToDays } = await import('@/entities/post');
+const { cohortsQuery } = await import('@/entities/member');
 
 // jsdom에는 IntersectionObserver가 없다 → 콜백을 잡아 두고 직접 호출해 무한 스크롤을 흉내낸다
 let observerCallback: IntersectionObserverCallback | null = null;
@@ -63,21 +66,26 @@ const ITEMS = [
 ];
 
 type Props = Parameters<typeof FeedClient>[0];
+type FirstPage = { posts: FeedItem[]; nextCursor: string | null; totalCount: number | undefined };
 
-function renderFeed(props: Partial<Props> = {}) {
+// 서버 page.tsx처럼: 서버용 QueryClient에 첫 페이지를 넣고 dehydrate → HydrationBoundary로 화면 캐시에 붙인다
+function renderFeed({
+  firstPage = { posts: ITEMS, nextCursor: 'c1', totalCount: 40 },
+  ...props
+}: Partial<Props> & { firstPage?: FirstPage } = {}) {
+  const merged: Props = { initialCohort: null, initialTrack: null, initialRange: '30d', ...props };
+  const server = new QueryClient();
+  server.setQueryData(feedQuery(rangeToDays(merged.initialRange), merged.initialTrack, merged.initialCohort).queryKey, {
+    pages: [firstPage],
+    pageParams: [undefined],
+  });
+  server.setQueryData(cohortsQuery().queryKey, [8, 7]);
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <FeedClient
-        initialItems={ITEMS}
-        initialNextCursor="c1"
-        initialTotalCount={40}
-        initialCohorts={[8, 7]}
-        initialCohort={null}
-        initialTrack={null}
-        initialRange="30d"
-        {...props}
-      />
+      <HydrationBoundary state={dehydrate(server)}>
+        <FeedClient {...merged} />
+      </HydrationBoundary>
     </QueryClientProvider>,
   );
 }
@@ -179,7 +187,7 @@ describe('FeedClient', () => {
   });
 
   it('should show the empty state when there are no posts', async () => {
-    renderFeed({ initialItems: [], initialNextCursor: null, initialTotalCount: 0 });
+    renderFeed({ firstPage: { posts: [], nextCursor: null, totalCount: 0 } });
 
     expect(await screen.findByText('등록된 블로그 글이 없습니다')).toBeInTheDocument();
     expect(screen.getAllByText('데이터 없음')).toHaveLength(2);
