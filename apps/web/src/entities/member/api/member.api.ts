@@ -18,7 +18,8 @@ export const memberApi = {
   search: (params: MemberSearchParams, init?: RequestInit) =>
     requestJson<Member[]>(withQuery('/members', { ...params }), init),
 
-  searchPage: (params: MemberSearchPageParams, init?: RequestInit) =>
+  // 서버에서 부를 때 Next 데이터 캐시 5분 (브라우저는 next 옵션을 무시한다)
+  searchPage: (params: MemberSearchPageParams, init: RequestInit = { next: { revalidate: 300 } }) =>
     requestJson<MemberSearchPage>(withQuery('/members/search', { ...params }), init),
 
   cohorts: () => requestJson<number[]>('/members/cohorts'),
