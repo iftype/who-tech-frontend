@@ -3892,7 +3892,7 @@
       "nextOffset": 120
     }
   },
-  "GET /members/search?cohort=7&roleGroup=crew&limit=120": {
+  "GET /members/search?cohort=7&roleGroup=crew&limit=120&offset=0": {
     "status": 200,
     "body": {
       "members": [
@@ -9436,7 +9436,7 @@
       "nextOffset": 120
     }
   },
-  "GET /members/search?roleGroup=crew&limit=120": {
+  "GET /members/search?roleGroup=crew&limit=120&offset=0": {
     "status": 200,
     "body": {
       "members": [
