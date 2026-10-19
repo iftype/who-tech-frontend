@@ -1,7 +1,6 @@
 import type { Member } from '@/entities/member';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
-import { cn } from '@/shared/lib/utils';
-import { Avatar } from '@/shared/ui';
+import { Avatar, listItemVariants } from '@/shared/ui';
 
 interface SearchResultItemProps {
   member: Member;
@@ -12,13 +11,7 @@ interface SearchResultItemProps {
 // 검색 결과 한 줄: 아바타·닉네임·GitHub ID와 기수·역할·트랙 배지
 export function SearchResultItem({ member, active, onSelect }: SearchResultItemProps) {
   return (
-    <button
-      onClick={onSelect}
-      className={cn(
-        'flex w-full cursor-pointer items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors last:border-0',
-        active ? 'bg-surface-alt' : 'hover:bg-surface-alt',
-      )}
-    >
+    <button onClick={onSelect} className={listItemVariants({ active })}>
       <Avatar src={member.avatarUrl} alt={member.nickname} size={32} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">

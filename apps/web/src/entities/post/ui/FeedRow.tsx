@@ -6,6 +6,9 @@ import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 import { formatRelativeDate, getBlogSource } from '@/shared/lib/utils';
 import type { FeedItem } from '../model/types';
 
+// 카드 전체 링크 위에 올라가는 작은 링크(작성자·출처). z-10으로 카드 링크보다 위에 둔다
+const META_LINK_CLASS = 'relative z-10 text-body-sm text-text-secondary hover:underline';
+
 export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
   const source = getBlogSource(item.url);
   return (
@@ -47,15 +50,12 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
                 href={item.member.blog ?? item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative z-10 text-body-sm text-text-secondary hover:underline"
+                className={META_LINK_CLASS}
               >
                 {item.member.nickname}
               </a>
             ) : (
-              <Link
-                href={`/${item.member.githubId}`}
-                className="relative z-10 text-body-sm text-text-secondary hover:underline"
-              >
+              <Link href={`/${item.member.githubId}`} className={META_LINK_CLASS}>
                 {item.member.nickname}
               </Link>
             )}

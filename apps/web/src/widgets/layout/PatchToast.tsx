@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { buttonVariants } from '@/shared/ui';
 
 const PATCH_VERSION = '2026-10-02-team-blog';
 
@@ -35,7 +36,11 @@ export function PatchToast() {
           </a>{' '}
           RSS 피드가 추가됐어요.
         </p>
-        <button onClick={dismiss} className="shrink-0 px-1 text-text-muted hover:text-text" aria-label="패치내역 닫기">
+        <button
+          onClick={dismiss}
+          className={buttonVariants({ variant: 'plain', size: 'inline' })}
+          aria-label="패치내역 닫기"
+        >
           닫기
         </button>
       </div>
