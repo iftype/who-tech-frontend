@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { postApi, postKeys } from '@/entities/post';
 import type { FeedItem } from '@/entities/post';
@@ -52,25 +52,24 @@ export function useFeedPosts({
     refetchOnWindowFocus: false,
   });
 
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  // 옵저버는 sentinel 요소가 붙을 때 한 번 만들고 떨어질 때 정리한다(React 19 ref cleanup).
+  // 콜백은 ref로 최신 상태를 읽어, 페이지를 받을 때마다 옵저버를 다시 만들지 않는다
+  const onIntersectRef = useRef<() => void>(() => {});
+  onIntersectRef.current = () => {
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
+  };
 
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
-    },
-    [hasNextPage, isFetchingNextPage, fetchNextPage],
-  );
-
-  useEffect(() => {
-    const el = sentinelRef.current;
+  const sentinelRef = useCallback((el: HTMLDivElement | null) => {
     if (!el) return;
-    const observer = new IntersectionObserver(handleObserver, { rootMargin: '100px' });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) onIntersectRef.current();
+      },
+      { rootMargin: '100px' },
+    );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [handleObserver]);
+  }, []);
 
   const items = useMemo(() => {
     let posts = data?.pages ? data.pages.flatMap((page) => page.posts) : [];

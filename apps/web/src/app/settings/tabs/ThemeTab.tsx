@@ -1,5 +1,6 @@
 'use client';
 
+import { Fragment } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/shared/providers/ThemeProvider';
 import { OptionGroup, optionVariants } from '@/shared/ui';
@@ -48,17 +49,16 @@ export function ThemeTab() {
         </div>
         <OptionGroup>
           {DESIGN_OPTIONS.map((opt, i) => (
-            <>
-              {i > 0 && <div key={`sep-${opt.id}`} className="w-px bg-border flex-shrink-0" />}
+            <Fragment key={opt.id}>
+              {i > 0 && <div className="w-px bg-border flex-shrink-0" />}
               <button
-                key={opt.id}
                 onClick={() => setDesign(opt.id)}
                 className={optionVariants({ active: designSystem === opt.id, layout: 'stacked' })}
               >
                 <span className="font-semibold">{opt.label}</span>
                 <span className="text-caption mt-0.5 text-text-muted font-normal">{opt.sub}</span>
               </button>
-            </>
+            </Fragment>
           ))}
         </OptionGroup>
       </div>

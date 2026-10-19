@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
+import { parseTrack } from '@/entities/member';
 import type { Track } from '@/entities/member';
+import { parseRange, rangeToDays, type FeedRange } from '@/entities/post';
 
-export type Range = '30d' | 'all';
+export type Range = FeedRange;
 export type FeedFilters = { range: Range; cohort: string | null; track: Track | null };
 
 // 피드 필터(기간·기수·트랙). replaceState로 URL에 기록하고, 외부에서 URL이 바뀌면(popstate) URL 기준으로 되돌린다
@@ -21,7 +23,7 @@ export function useFeedFilters(initialRange: Range, initialCohort: string | null
   }, [initialRange, initialCohort, initialTrack]);
 
   const { range } = filters;
-  const days = range === '30d' ? 30 : undefined;
+  const days = rangeToDays(range);
 
   const applyFilters = useCallback((patch: Partial<{ range: Range; cohort: string | null; track: Track | null }>) => {
     setFilters((prev) => ({ ...prev, ...patch }));
@@ -43,9 +45,9 @@ export function useFeedFilters(initialRange: Range, initialCohort: string | null
     const syncFromUrl = () => {
       const params = new URLSearchParams(window.location.search);
       const next = {
-        range: (params.get('range') === 'all' ? 'all' : '30d') as Range,
+        range: parseRange(params.get('range')),
         cohort: params.get('cohort'),
-        track: (params.get('track') as Track | null) ?? null,
+        track: parseTrack(params.get('track')),
       };
       setFilters((prev) =>
         prev.range === next.range && prev.cohort === next.cohort && prev.track === next.track ? prev : next,

@@ -13,6 +13,7 @@ export type {
   TecoTalk,
   Track,
 } from './model/types';
+export { TRACKS, isTrack, parseRoleGroup, parseTrack, parseTrackOrAll } from './model/parse';
 export { memberApi } from './api/member.api';
 export type { MemberSearchPageParams, MemberSearchParams } from './api/member.api';
 export { memberKeys } from './api/member.keys';

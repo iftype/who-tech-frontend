@@ -1,3 +1,4 @@
+import { parseTrackOrAll } from '@/entities/member';
 import type { RoleGroup, Track } from '@/entities/member';
 
 export function getCohortFromPath(pathname: string): number | null {
@@ -8,11 +9,7 @@ export function getCohortFromPath(pathname: string): number | null {
 export function getFiltersFromSearch(search: string, initialRoleGroup: RoleGroup, initialTrack: Track | 'all') {
   const params = new URLSearchParams(search);
   const roleGroup: RoleGroup = params.get('roleGroup') === 'staff' ? 'staff' : initialRoleGroup;
-  const trackParam = params.get('track') as Track | 'all' | null;
-  const track: Track | 'all' =
-    trackParam === 'frontend' || trackParam === 'backend' || trackParam === 'android' || trackParam === 'all'
-      ? trackParam
-      : initialTrack;
+  const track = parseTrackOrAll(params.get('track'), initialTrack);
 
   return { roleGroup, track };
 }

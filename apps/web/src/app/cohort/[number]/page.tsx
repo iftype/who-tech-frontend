@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { memberApi } from '@/entities/member';
+import { memberApi, parseRoleGroup, parseTrackOrAll } from '@/entities/member';
 import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
 import { PageContainer } from '@/shared/ui';
 
@@ -18,8 +18,8 @@ export default async function CohortPage({ params, searchParams }: CohortPagePro
   const { number } = await params;
   const cohort = Number(number);
   const sp = await searchParams;
-  const roleGroup = sp?.roleGroup === 'staff' ? 'staff' : 'crew';
-  const track = (sp?.track as 'frontend' | 'backend' | 'android' | 'all' | undefined) ?? 'all';
+  const roleGroup = parseRoleGroup(sp?.roleGroup);
+  const track = parseTrackOrAll(sp?.track);
   const [memberPage, allCohorts] = await Promise.all([
     memberApi
       .searchPage(
