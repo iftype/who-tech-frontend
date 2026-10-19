@@ -6,7 +6,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const theme = { theme: 'dark', toggle: vi.fn(), designSystem: 'paper', setDesign: vi.fn() };
 vi.mock('@/shared/providers/ThemeProvider', () => ({ useTheme: () => theme }));
 
-const { SettingsClient } = await import('./SettingsClient');
+const { SettingsClient: Client } = await import('./SettingsClient');
+const { GuideTab } = await import('./tabs/GuideTab');
+const { PrivacyTab } = await import('./tabs/PrivacyTab');
+const SettingsClient = () => <Client guide={<GuideTab />} privacy={<PrivacyTab />} />;
 
 describe('SettingsClient', () => {
   beforeEach(() => {

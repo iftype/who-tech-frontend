@@ -5,8 +5,6 @@ import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
 import { makeQueryClient } from '@/shared/api/query-client';
 import { PageContainer } from '@/shared/ui';
 
-export const revalidate = 300;
-
 interface CohortPageProps {
   params: Promise<{ number: string }>;
   searchParams?: Promise<{ roleGroup?: string; track?: string }>;

@@ -2,8 +2,7 @@
 
 import { useMemo } from 'react';
 import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
-import { GuideTab } from './tabs/GuideTab';
-import { PrivacyTab } from './tabs/PrivacyTab';
+import type { ReactNode } from 'react';
 import { ThemeTab } from './tabs/ThemeTab';
 import { PageContainer, pageTabVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
@@ -22,8 +21,15 @@ function parseTab(value: string | null): Tab {
 
 const isSettingsPath = (pathname: string) => pathname === '/settings';
 
-// 탭은 URL(?tab=)에서 계산한다. 마운트 후 effect로 읽던 때는 테마 탭이 먼저 보였다가 바뀌었다
-export function SettingsClient() {
+interface SettingsClientProps {
+  /** 서버 컴포넌트로 그린 정적 탭 (상호작용이 없어 클라이언트 번들에 넣지 않는다) */
+  guide: ReactNode;
+  privacy: ReactNode;
+}
+
+// 탭은 URL(?tab=)에서 계산한다. 마운트 후 effect로 읽던 때는 테마 탭이 먼저 보였다가 바뀌었다.
+// 테마 탭만 상호작용(테마 전환)이 있어 클라이언트 컴포넌트다
+export function SettingsClient({ guide, privacy }: SettingsClientProps) {
   const url = useUrl('/settings', isSettingsPath);
   const activeTab = useMemo(() => parseTab(new URLSearchParams(splitUrl(url).search).get('tab')), [url]);
 
@@ -36,9 +42,9 @@ export function SettingsClient() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'guide':
-        return <GuideTab />;
+        return guide;
       case 'privacy':
-        return <PrivacyTab />;
+        return privacy;
       default:
         return <ThemeTab />;
     }
