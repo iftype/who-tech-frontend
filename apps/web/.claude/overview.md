@@ -25,7 +25,7 @@ app/
 - 상세/기수/피드: Server Component 기반
 - 검색 드롭다운, 필터(`CohortFilters`, `FeedClient`), 모바일 메뉴: `'use client'`
 - 기수 목록: TanStack Query `['members', 'cohort-explorer']` + `startTransition` + `useDeferredValue`
-- URL 동기화: `history.pushState()` + `popstate`
+- URL 동기화: `shared/lib/urlStore` (History API + popstate를 `useSyncExternalStore`로 구독)
 - 피드: 30일치 1회 fetch → 클라이언트 필터링 (기수/기간/트랙)
 - revalidate: 300 (5분)
 

@@ -10,7 +10,7 @@ src/entities/post/            블로그 글 타입, postApi(feed·byMember, 제�
 
 - 서버 환경: `NEXT_PUBLIC_API_URL` 직접 호출
 - 브라우저 환경: `/api` 프록시 경로 사용 (CORS 우회, `next.config.ts`의 rewrite로 백엔드로 전달)
-- 쿼리 키는 `memberKeys`·`postKeys`로만 만든다. 서버 렌더 `initialData`·prefetch와 맞물리므로 문자열로 직접 쓰지 않는다
+- 쿼리 키는 `memberKeys`·`postKeys`로만 만들고, 쿼리 옵션은 엔티티 `*.queries.ts`로만 만든다. 서버 prefetch(하이드레이션)와 화면 쿼리가 같은 옵션을 쓴다
 - 새로고침 429는 `RateLimitError`(`remainingSeconds`)로 던진다
 
 ## 환경변수 (.env.local)
