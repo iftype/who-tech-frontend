@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -32,6 +33,25 @@ describe('SettingsClient', () => {
 
     expect(screen.getByRole('heading', { name: 'who.tech 사용 가이드' })).toBeInTheDocument();
     expect(window.location.search).toBe('?tab=guide');
+  });
+
+  it('should add a history entry per tab and follow the back button', async () => {
+    render(<SettingsClient />);
+    const length = window.history.length;
+
+    await userEvent.click(screen.getByRole('button', { name: '가이드' }));
+    expect(window.history.length).toBe(length + 1);
+
+    await act(async () => {
+      window.history.replaceState(null, '', '/settings?tab=privacy');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    expect(screen.getByRole('heading', { name: '개인정보처리방침' })).toBeInTheDocument();
+  });
+
+  it('should render the theme tab on the server even when the URL has another tab (no hydration mismatch)', () => {
+    window.history.replaceState(null, '', '/settings?tab=guide');
+    expect(renderToString(<SettingsClient />)).toContain('화면 밝기를 선택합니다');
   });
 
   it('should toggle only when choosing the other theme and change the design system', async () => {
