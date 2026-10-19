@@ -64,7 +64,7 @@ describe('SearchDropdown', () => {
     search.mockResolvedValue([]);
     renderDropdown();
 
-    await userEvent.type(screen.getByRole('textbox'), 'zzz');
+    await userEvent.type(screen.getByRole('combobox'), 'zzz');
 
     expect(await screen.findByText('검색 결과가 없습니다')).toBeInTheDocument();
   });
@@ -72,7 +72,7 @@ describe('SearchDropdown', () => {
   it('should navigate to the clicked member and clear the input', async () => {
     search.mockResolvedValue([member('garam')]);
     renderDropdown();
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
 
     await userEvent.type(input, 'ga');
     await userEvent.click(await screen.findByText('garam-닉'));
@@ -85,7 +85,7 @@ describe('SearchDropdown', () => {
   it('should move the selection with arrow keys (wrapping) and select with Enter', async () => {
     search.mockResolvedValue([member('a'), member('b'), member('c')]);
     renderDropdown();
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
 
     await userEvent.type(input, 'x');
     await screen.findByText('a-닉');
@@ -102,7 +102,7 @@ describe('SearchDropdown', () => {
     search.mockResolvedValue([member('a')]);
     renderDropdown();
 
-    await userEvent.type(screen.getByRole('textbox'), 'x');
+    await userEvent.type(screen.getByRole('combobox'), 'x');
     await screen.findByText('a-닉');
     await userEvent.keyboard('{Enter}');
 
@@ -112,7 +112,7 @@ describe('SearchDropdown', () => {
   it('should close on Escape and outside clicks, and focus with Cmd+K', async () => {
     search.mockResolvedValue([member('a')]);
     renderDropdown();
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('combobox');
 
     await userEvent.type(input, 'x');
     await screen.findByText('a-닉');
@@ -131,7 +131,7 @@ describe('SearchDropdown', () => {
 
   it('should not search for an empty query', async () => {
     renderDropdown();
-    await userEvent.click(screen.getByRole('textbox'));
+    await userEvent.click(screen.getByRole('combobox'));
     expect(search).not.toHaveBeenCalled();
   });
 
@@ -143,5 +143,43 @@ describe('SearchDropdown', () => {
 
     renderDropdown({ compact: true, mobileHeader: true });
     expect(screen.getByPlaceholderText('검색')).toBeInTheDocument();
+  });
+
+  it('should expose the combobox pattern to assistive tech', async () => {
+    search.mockResolvedValue([member('a'), member('b')]);
+    renderDropdown();
+    const input = screen.getByRole('combobox', { name: '멤버 검색' });
+    expect(input).toHaveAttribute('aria-expanded', 'false');
+
+    await userEvent.type(input, 'x');
+    const listbox = await screen.findByRole('listbox');
+    expect(input).toHaveAttribute('aria-expanded', 'true');
+    expect(input).toHaveAttribute('aria-controls', listbox.id);
+    const options = screen.getAllByRole('option');
+    expect(options).toHaveLength(2);
+    expect(input).not.toHaveAttribute('aria-activedescendant');
+
+    await userEvent.keyboard('{ArrowDown}');
+    expect(input).toHaveAttribute('aria-activedescendant', options[0]!.id);
+    expect(options[0]).toHaveAttribute('aria-selected', 'true');
+    expect(options[1]).toHaveAttribute('aria-selected', 'false');
+  });
+
+  it('should let only the visible search box take Cmd+K when two are mounted', async () => {
+    const client = new QueryClient();
+    render(
+      <QueryClientProvider client={client}>
+        <SearchDropdown compact />
+        <SearchDropdown mobileHeader compact />
+      </QueryClientProvider>,
+    );
+    const [visible, hidden] = screen.getAllByRole('combobox') as HTMLInputElement[];
+    // 브라우저에서 sm:hidden 안의 입력은 checkVisibility()가 false
+    Object.defineProperty(hidden!, 'checkVisibility', { value: () => false });
+    Object.defineProperty(visible!, 'checkVisibility', { value: () => true });
+
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+
+    expect(visible).toHaveFocus();
   });
 });

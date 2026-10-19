@@ -34,7 +34,7 @@ interface MissionTabButtonProps {
 
 function MissionTabButton({ label, selected, onClick }: MissionTabButtonProps) {
   return (
-    <button onClick={onClick} className={segmentVariants({ shape: 'flush', active: selected })}>
+    <button aria-pressed={selected} onClick={onClick} className={segmentVariants({ shape: 'flush', active: selected })}>
       {label}
     </button>
   );

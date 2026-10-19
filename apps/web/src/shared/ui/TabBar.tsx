@@ -31,10 +31,12 @@ export const pageTabVariants = cva('-mb-px cursor-pointer border-b-2 px-4 text-b
   defaultVariants: { size: 'md', indicator: 'text' },
 });
 
-export function TabBar({ children }: { children: ReactNode }) {
+export function TabBar({ children, label }: { children: ReactNode; label?: string }) {
   return (
     <div className="mb-5 overflow-x-auto border-b border-border overscroll-x-contain overscroll-y-none [-ms-overflow-style:none] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden">
-      <div className="flex min-w-max items-center gap-1 sm:gap-0">{children}</div>
+      <div role="tablist" aria-label={label} className="flex min-w-max items-center gap-1 sm:gap-0">
+        {children}
+      </div>
     </div>
   );
 }

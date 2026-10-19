@@ -16,12 +16,23 @@ export function CohortTabBar({ activeCohort, cohorts = DEFAULT_COHORTS, onChange
   const tabClass = (active: boolean) => cn(tabVariants({ active }), 'transition-colors');
 
   return (
-    <TabBar>
-      <button onClick={() => onChange(null)} className={tabClass(activeCohort === null)}>
+    <TabBar label="기수">
+      <button
+        role="tab"
+        aria-selected={activeCohort === null}
+        onClick={() => onChange(null)}
+        className={tabClass(activeCohort === null)}
+      >
         전체
       </button>
       {cohorts.map((c) => (
-        <button key={c} onClick={() => onChange(c)} className={tabClass(activeCohort === c)}>
+        <button
+          key={c}
+          role="tab"
+          aria-selected={activeCohort === c}
+          onClick={() => onChange(c)}
+          className={tabClass(activeCohort === c)}
+        >
           {c}기
         </button>
       ))}

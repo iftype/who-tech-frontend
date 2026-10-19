@@ -127,7 +127,7 @@ describe('CohortExplorer', () => {
     renderExplorer();
     const historyLength = window.history.length;
 
-    await userEvent.click(screen.getByRole('button', { name: '7기' }));
+    await userEvent.click(screen.getByRole('tab', { name: '7기' }));
 
     expect(window.location.pathname).toBe('/cohort/7');
     expect(window.history.length).toBe(historyLength + 1);
@@ -135,7 +135,7 @@ describe('CohortExplorer', () => {
     expect(searchPage).toHaveBeenCalledWith({ cohort: 7, roleGroup: 'crew', limit: 120, offset: 0 });
 
     // "전체"는 기수 탭과 트랙 필터에 하나씩 있다 → 앞쪽이 기수 탭
-    await userEvent.click(screen.getAllByRole('button', { name: '전체' })[0]!);
+    await userEvent.click(screen.getByRole('tab', { name: '전체' }));
     expect(window.location.pathname).toBe('/cohort');
   });
 
@@ -220,7 +220,7 @@ describe('CohortExplorer', () => {
     await waitFor(() => expect(searchPage).toHaveBeenCalledWith(expect.objectContaining({ cohort: 7 })), {
       timeout: 2000,
     });
-    await userEvent.click(screen.getByRole('button', { name: '7기' }));
+    await userEvent.click(screen.getByRole('tab', { name: '7기' }));
 
     expect(await screen.findByRole('heading', { name: '7기 크루' })).toBeInTheDocument();
     await waitFor(() => expect(shown('m7')).toBe(true));
