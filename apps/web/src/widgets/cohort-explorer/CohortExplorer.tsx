@@ -8,6 +8,7 @@ import { CohortTabBar } from '@/features/cohort-filter/CohortTabBar';
 import { useCohortMembers } from './model/useCohortMembers';
 import { useCohortUrlState } from './model/useCohortUrlState';
 import { CohortExplorerSkeleton } from './ui/CohortExplorerSkeleton';
+import { buttonVariants } from '@/shared/ui';
 
 interface CohortExplorerProps {
   initialPage: MemberSearchPage;
@@ -105,7 +106,7 @@ export function CohortExplorer({
               <button
                 onClick={() => void fetchNextPage()}
                 disabled={isFetchingNextPage}
-                className="cursor-pointer rounded-md border border-border px-4 py-2 text-body-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text disabled:cursor-default disabled:opacity-60"
+                className={buttonVariants({ variant: 'more', size: 'lg' })}
               >
                 {isFetchingNextPage
                   ? '불러오는 중...'

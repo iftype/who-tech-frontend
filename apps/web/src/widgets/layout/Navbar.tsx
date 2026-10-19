@@ -6,6 +6,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { type MouseEvent, useEffect, useState, useTransition } from 'react';
 import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
+import { buttonVariants, navLinkVariants } from '@/shared/ui';
+import { cn } from '@/shared/lib/utils';
 
 const SearchDropdown = dynamic(
   () => import('@/features/member-search/SearchDropdown').then((mod) => ({ default: mod.SearchDropdown })),
@@ -52,14 +54,8 @@ export function Navbar() {
     window.scrollTo({ top: 0 });
   };
 
-  const linkClass = (href: string, mobile = false) => {
-    const active = (optimisticPath ?? pathname) === href;
-    return mobile
-      ? `px-6 py-3 text-body ${
-          active ? 'bg-surface text-text' : 'text-text-secondary hover:bg-surface hover:text-text'
-        }`
-      : `cursor-pointer whitespace-nowrap text-body-sm ${active ? 'text-text' : 'text-text-secondary hover:text-text'}`;
-  };
+  const linkClass = (href: string, mobile = false) =>
+    navLinkVariants({ placement: mobile ? 'menu' : 'bar', active: (optimisticPath ?? pathname) === href });
 
   const showHeaderSearch = true;
 
@@ -112,7 +108,7 @@ export function Navbar() {
 
           <button
             onClick={() => setOpen((v) => !v)}
-            className="sm:hidden flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border text-text-muted transition-colors hover:text-text"
+            className={cn(buttonVariants({ variant: 'toolbar', size: 'icon' }), 'sm:hidden')}
             aria-label="메뉴"
           >
             {open ? (
@@ -144,7 +140,10 @@ export function Navbar() {
                   >
                     <button
                       onClick={() => navigate(href)}
-                      className="flex min-w-0 flex-1 cursor-pointer items-center justify-start px-6 py-3 text-left text-body"
+                      className={navLinkVariants({
+                        placement: 'menu',
+                        className: 'flex min-w-0 flex-1 cursor-pointer items-center justify-start text-left',
+                      })}
                     >
                       {label}
                     </button>
@@ -157,7 +156,7 @@ export function Navbar() {
                 <button
                   key={href}
                   onClick={() => navigate(href)}
-                  className={`${linkClass(href, true)} flex items-center justify-start text-left`}
+                  className={cn(linkClass(href, true), 'flex items-center justify-start text-left')}
                 >
                   {label}
                 </button>
