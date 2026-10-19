@@ -204,4 +204,20 @@ describe('CohortExplorer', () => {
       { timeout: 2000 },
     );
   });
+
+  it('should show a prefetched adjacent cohort when moving to it', async () => {
+    searchPage.mockImplementation(async ({ cohort }: { cohort?: number }) =>
+      page([member(`m${cohort}`, ['crew'], ['backend'])], { counts: { crew: 1, staff: 0 } }),
+    );
+    renderExplorer();
+
+    // 8기에서 한가할 때 7기를 미리 받는다 → 7기 탭은 그 캐시로 바로 그려야 한다
+    await waitFor(() => expect(searchPage).toHaveBeenCalledWith(expect.objectContaining({ cohort: 7 })), {
+      timeout: 2000,
+    });
+    await userEvent.click(screen.getByRole('button', { name: '7기' }));
+
+    expect(await screen.findByRole('heading', { name: '7기 크루' })).toBeInTheDocument();
+    await waitFor(() => expect(shown('m7')).toBe(true));
+  });
 });
