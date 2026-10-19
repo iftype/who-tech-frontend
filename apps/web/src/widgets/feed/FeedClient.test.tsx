@@ -199,4 +199,17 @@ describe('FeedClient', () => {
       expect(feed).toHaveBeenLastCalledWith({ cohort: 7, track: 'frontend', cursor: undefined, limit: 50 }),
     );
   });
+
+  it('should reset the filters when the logo writes / to the URL store', async () => {
+    const { urlStore } = await import('@/shared/lib/urlStore');
+    feed.mockResolvedValue({ posts: [ITEMS[1]], nextCursor: null, totalCount: 1 });
+    window.history.replaceState(null, '', '/?cohort=7');
+    renderFeed();
+    expect(await screen.findByRole('heading', { name: '7기 피드' })).toBeInTheDocument();
+
+    act(() => urlStore.replace('/'));
+
+    expect(screen.queryByRole('heading', { name: '7기 피드' })).not.toBeInTheDocument();
+    expect(window.location.search).toBe('');
+  });
 });

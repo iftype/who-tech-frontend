@@ -8,6 +8,7 @@ import { type MouseEvent, useEffect, useState, useTransition } from 'react';
 import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
 import { buttonVariants, navLinkVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
+import { urlStore } from '@/shared/lib/urlStore';
 
 const SearchDropdown = dynamic(
   () => import('@/features/member-search/SearchDropdown').then((mod) => ({ default: mod.SearchDropdown })),
@@ -44,13 +45,12 @@ export function Navbar() {
     });
   };
 
-  // 홈(피드)에선 필터가 replaceState로만 URL에 남아 Next 라우터가 같은 경로로 인식한다.
-  // 이미 홈이면 <Link>의 소프트 내비게이션 대신 직접 URL을 비우고 popstate로 피드를 초기화한다.
+  // 홈(피드)에선 필터가 URL 쿼리에만 있어 Next 라우터가 같은 경로로 인식한다.
+  // 이미 홈이면 <Link> 이동 대신 URL 저장소를 '/'로 바꿔 피드 필터를 초기화한다 (가짜 popstate 없이)
   const handleLogoClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (pathname !== '/') return;
     e.preventDefault();
-    window.history.replaceState(null, '', '/');
-    window.dispatchEvent(new PopStateEvent('popstate'));
+    urlStore.replace('/');
     window.scrollTo({ top: 0 });
   };
 
