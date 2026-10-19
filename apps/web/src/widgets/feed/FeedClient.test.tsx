@@ -15,9 +15,11 @@ const { FeedClient } = await import('./FeedClient');
 
 // jsdom에는 IntersectionObserver가 없다 → 콜백을 잡아 두고 직접 호출해 무한 스크롤을 흉내낸다
 let observerCallback: IntersectionObserverCallback | null = null;
+let observersCreated = 0;
 class FakeIntersectionObserver {
   constructor(cb: IntersectionObserverCallback) {
     observerCallback = cb;
+    observersCreated++;
   }
   observe() {}
   disconnect() {}
@@ -159,6 +161,21 @@ describe('FeedClient', () => {
 
     await waitFor(() => expect(feed).toHaveBeenCalledWith(expect.objectContaining({ cursor: 'c1', days: 30 })));
     expect(await screen.findAllByText('글 9')).not.toHaveLength(0);
+  });
+
+  it('should keep one observer while pages are loading', async () => {
+    feed.mockResolvedValue({ posts: [item(9, {})], nextCursor: null, totalCount: 5 });
+    observersCreated = 0;
+    renderFeed();
+    const createdOnMount = observersCreated;
+
+    await act(async () => {
+      observerCallback?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+    expect(await screen.findAllByText('글 9')).not.toHaveLength(0);
+
+    expect(createdOnMount).toBeGreaterThan(0);
+    expect(observersCreated).toBe(createdOnMount);
   });
 
   it('should show the empty state when there are no posts', async () => {

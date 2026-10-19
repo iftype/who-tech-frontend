@@ -121,7 +121,7 @@ export function FeedList({ items }: { items: FeedItem[] }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-surface">
       {items.map((item, i) => (
-        <FeedRow key={`${item.url}-${item.publishedAt}`} item={item} index={i} />
+        <FeedRow key={item.id} item={item} index={i} />
       ))}
     </div>
   );

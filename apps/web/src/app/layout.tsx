@@ -8,7 +8,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/widgets/layout/Navbar';
 import { PatchToast } from '@/widgets/layout/PatchToast';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
-import { ThemeProvider } from '@/shared/providers/ThemeProvider';
+import { ThemeProvider, type DesignSystem, type Theme } from '@/shared/providers/ThemeProvider';
 
 const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 
@@ -21,18 +21,15 @@ export const metadata: Metadata = {
   },
 };
 
-type Theme = 'dark' | 'light';
-type DesignSystem = 'paper' | 'apple' | 'sentry';
-
 const VALID_THEMES = ['dark', 'light'] as const;
 const VALID_DESIGNS = ['paper', 'apple', 'sentry'] as const;
 
 function isTheme(v: unknown): v is Theme {
-  return VALID_THEMES.includes(v as Theme);
+  return typeof v === 'string' && (VALID_THEMES as readonly string[]).includes(v);
 }
 
 function isDesign(v: unknown): v is DesignSystem {
-  return VALID_DESIGNS.includes(v as DesignSystem);
+  return typeof v === 'string' && (VALID_DESIGNS as readonly string[]).includes(v);
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

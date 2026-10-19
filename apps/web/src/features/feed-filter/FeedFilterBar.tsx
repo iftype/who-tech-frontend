@@ -1,9 +1,8 @@
 'use client';
 
 import type { Track } from '@/entities/member';
+import type { FeedRange as Range } from '@/entities/post';
 import { FilterRow, SegmentedControl, TabBar, filterChipVariants, segmentVariants, tabVariants } from '@/shared/ui';
-
-type Range = '30d' | 'all';
 
 interface FeedFilterBarProps {
   filters: { range: Range; cohort: string | null; track: Track | null };
