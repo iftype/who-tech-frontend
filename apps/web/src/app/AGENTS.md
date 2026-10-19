@@ -2,23 +2,25 @@
 
 ## 역할
 
-Next.js App Router 페이지 진입점. 서버 컴포넌트 전용.
+Next.js App Router 페이지 진입점. 데이터를 서버에서 미리 받고(prefetch) 위젯을 조립한다.
 
 ## 경계
 
-- ✅ 서버에서 데이터 fetch 후 feature 컴포넌트에 props로 전달
-- ✅ `revalidate: 300` 표준
-- ❌ `'use client'` 금지 (not-found.tsx 예외)
-- ❌ 비즈니스 로직 금지 — features/에 위임
-- ❌ feature 컴포넌트 내부 구현 직접 참조 금지
+- ✅ `page.tsx`: 요청마다 `makeQueryClient()`로 `prefetchQuery`/`prefetchInfiniteQuery` → `<HydrationBoundary state={dehydrate(qc)}>`로 위젯을 감싼다. 쿼리 옵션은 엔티티의 `*.queries.ts`(`feedQuery`, `cohortMembersQuery`, `cohortsQuery`, `memberDetailQuery`)만 쓴다
+- ✅ URL 값(`searchParams`)은 엔티티 파서(`parseTrack`, `parseTrackOrAll`, `parseRoleGroup`, `parseRange`)로 읽는다. `as` 단언 금지
+- ✅ `'use client'`는 `error.tsx`·`global-error.tsx`와 페이지마다 하나인 `*Client.tsx`만
+- ❌ 데이터를 props(`initialItems` 등)로 내려보내지 않는다 — 캐시로 넘긴다
+- ❌ 비즈니스 로직 금지 — 위젯·기능·엔티티에 둔다
 
 ## 컨벤션
 
-- fetch 실패 시 `.catch(() => [])` 또는 빈 배열 기본값
-- 각 page.tsx는 feature 컴포넌트 하나를 import해서 렌더
-- API는 서버: `NEXT_PUBLIC_API_URL` 직접, 브라우저: `/api` 프록시 (`api.ts`가 분기 처리)
+- prefetch는 실패해도 throw하지 않고, 실패한 쿼리는 dehydrate에 실리지 않는다 → 화면이 마운트 후 다시 받는다 (`.catch(() => 빈 값)`을 쓰지 않는다)
+- 같은 요청 안에서 `generateMetadata`와 페이지가 같은 데이터를 쓰면 `React.cache(makeQueryClient)`로 클라이언트를 공유한다 (`[githubId]/page.tsx`)
+- 정적인 내용(설정의 가이드·개인정보 탭)은 서버 컴포넌트로 그려 `*Client`에 슬롯(`ReactNode`)으로 넘긴다
+- API는 서버: `NEXT_PUBLIC_API_URL` 직접, 브라우저: `/api` 프록시 (`shared/api/http.ts`가 분기)
 
-## 주의
+## 렌더링과 캐시
 
-- `searchParams`를 읽으면 `revalidate` 캐시 키가 URL별로 달라짐 — 현재 미사용, 도입 시 캐시 전략 재검토 필요
-- `app/` 하위 폴더에 `page.tsx`만 있고 컴포넌트가 없어야 함 (컴포넌트는 `features/`에)
+- 루트 레이아웃이 테마 쿠키(`cookies()`)를 읽으므로 **모든 라우트가 동적 렌더링**이다. 라우트 단위 `export const revalidate`는 효과가 없어 쓰지 않는다
+- 캐시는 fetch 단위 데이터 캐시(`next: { revalidate: 300 }`, 엔티티 API 함수 안)와 브라우저의 TanStack Query 캐시 두 곳
+- 결정 기록: [ADR 0004](../../docs/adr/0004-rendering-and-hydration.md)

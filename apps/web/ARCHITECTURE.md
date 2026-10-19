@@ -23,7 +23,9 @@ flowchart TD
 ### 데이터
 
 - 서버 호출은 `shared/api`(`requestJson`, `withQuery`, `ApiError`, `RateLimitError`)를 거쳐 엔티티의 API 함수(`memberApi`, `postApi`)로만 한다
-- 캐시 키는 엔티티의 팩토리(`memberKeys`, `postKeys`)만 쓴다. 서버 컴포넌트가 미리 받은 데이터(`initialData`·prefetch)와 클라이언트 쿼리가 같은 키를 쓰게 하기 위해서다
+- 쿼리 옵션은 엔티티의 `*.queries.ts`(`feedQuery`, `cohortMembersQuery`, `cohortsQuery`, `memberDetailQuery`)에 한 번만 정의한다. 서버 `page.tsx`의 prefetch, 화면의 `useQuery`, 미리 받기가 같은 옵션을 써서 키·캐시 모양이 어긋날 수 없다
+- 첫 데이터는 props가 아니라 캐시로 넘긴다: 요청마다 새 `QueryClient` → prefetch → `dehydrate` → `<HydrationBoundary>`. 실패한 prefetch는 넘어가지 않아 화면이 다시 받는다 → [ADR 0004](docs/adr/0004-rendering-and-hydration.md)
+- URL 상태(필터·탭)는 `shared/lib/urlStore`(`useSyncExternalStore`)로 URL에서 계산한다 → [ADR 0005](docs/adr/0005-url-as-external-store.md)
 
 ### 이름 규칙
 
@@ -89,3 +91,5 @@ flowchart TD
 - [0001 계층 구조 (app → widgets → features → entities → shared)](docs/adr/0001-layers.md)
 - [0002 스크린샷 비교를 구조 변경의 안전망으로](docs/adr/0002-visual-regression.md)
 - [0003 디자인 시스템: cva variant와 토큰, 누르는 요소는 모두 shared/ui](docs/adr/0003-design-system.md)
+- [0004 렌더링·캐시: 동적 렌더링 + 서버 prefetch 하이드레이션](docs/adr/0004-rendering-and-hydration.md)
+- [0005 URL은 외부 저장소 (useSyncExternalStore)](docs/adr/0005-url-as-external-store.md)
