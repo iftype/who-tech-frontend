@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { RoleGroup, Track } from '@/entities/member';
-import { buildCohortPath, getCohortFromPath, getFiltersFromSearch, readStateFromLocation } from './cohortLocation';
+import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
+import { buildCohortPath, getCohortFromPath, getFiltersFromSearch, isCohortPath } from './cohortLocation';
 
 interface InitialState {
   initialCohort: number | null;
@@ -8,55 +9,30 @@ interface InitialState {
   initialTrack: Track | 'all';
 }
 
-// 기수·구분·트랙 선택 상태. URL을 단일 소스로 삼아 뒤로가기(popstate)와 탭 전환(pushState)을 맞춘다
+// 기수·구분·트랙 선택 상태. URL이 단일 소스다: 상태를 따로 들고 있지 않고 URL에서 계산한다.
+// 기수 탭은 push(뒤로가기로 돌아옴), 구분·트랙은 replace. 뒤로가기(popstate)는 urlStore 구독으로 들어온다.
+// 서버 렌더·하이드레이션은 페이지가 받은 값으로 만든 URL을 쓴다
 export function useCohortUrlState({ initialCohort, initialRoleGroup, initialTrack }: InitialState) {
-  const [activeCohort, setActiveCohort] = useState<number | null>(
-    () => readStateFromLocation(initialCohort, initialRoleGroup, initialTrack).cohort,
-  );
-  const [roleGroup, setRoleGroup] = useState<RoleGroup>(
-    () => readStateFromLocation(initialCohort, initialRoleGroup, initialTrack).roleGroup,
-  );
-  const [track, setTrack] = useState<Track | 'all'>(
-    () => readStateFromLocation(initialCohort, initialRoleGroup, initialTrack).track,
-  );
+  const url = useUrl(buildCohortPath(initialCohort, initialRoleGroup, initialTrack), isCohortPath);
 
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveCohort(getCohortFromPath(window.location.pathname));
-      const next = getFiltersFromSearch(window.location.search, initialRoleGroup, initialTrack);
-      setRoleGroup(next.roleGroup);
-      setTrack(next.track);
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [initialRoleGroup, initialTrack]);
-
-  const replaceUrl = useCallback((cohort: number | null, nextRoleGroup: RoleGroup, nextTrack: Track | 'all') => {
-    window.history.replaceState(null, '', buildCohortPath(cohort, nextRoleGroup, nextTrack));
-  }, []);
-
-  const pushUrl = useCallback((cohort: number | null, nextRoleGroup: RoleGroup, nextTrack: Track | 'all') => {
-    window.history.pushState(null, '', buildCohortPath(cohort, nextRoleGroup, nextTrack));
-  }, []);
+  const { activeCohort, roleGroup, track } = useMemo(() => {
+    const { pathname, search } = splitUrl(url);
+    return { activeCohort: getCohortFromPath(pathname), ...getFiltersFromSearch(search) };
+  }, [url]);
 
   const applyFilters = useCallback(
     (patch: Partial<{ roleGroup: RoleGroup; track: Track | 'all' }>) => {
-      const nextRoleGroup = patch.roleGroup ?? roleGroup;
-      const nextTrack = patch.track ?? track;
-      setRoleGroup(nextRoleGroup);
-      setTrack(nextTrack);
-      replaceUrl(activeCohort, nextRoleGroup, nextTrack);
+      urlStore.replace(buildCohortPath(activeCohort, patch.roleGroup ?? roleGroup, patch.track ?? track));
     },
-    [activeCohort, replaceUrl, roleGroup, track],
+    [activeCohort, roleGroup, track],
   );
 
   const selectCohort = useCallback(
     (cohort: number | null) => {
       if (cohort === activeCohort) return;
-      setActiveCohort(cohort);
-      pushUrl(cohort, roleGroup, track);
+      urlStore.push(buildCohortPath(cohort, roleGroup, track));
     },
-    [activeCohort, pushUrl, roleGroup, track],
+    [activeCohort, roleGroup, track],
   );
 
   return { activeCohort, roleGroup, track, applyFilters, selectCohort };
