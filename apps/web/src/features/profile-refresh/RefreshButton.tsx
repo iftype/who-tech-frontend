@@ -16,7 +16,7 @@ interface RefreshButtonProps {
 }
 
 const COOLDOWN_SECONDS = 60;
-const RATE_LIMIT_MESSAGE_MS = 2500;
+const MESSAGE_MS = 2500;
 
 // 프로필 새로고침. 누르는 순간 60초 카운트다운을 시작하고(서버도 1분 제한),
 // 결과는 상세 캐시에 직접 넣는다(setQueryData) → 화면이 다시 요청하지 않고 바로 바뀐다
@@ -26,12 +26,14 @@ export function RefreshButton({ githubId, detailId }: RefreshButtonProps) {
   const [error, setError] = useState<string | null>(null);
   const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  // 카운트다운이 끝나면 안내 문구도 지운다
-  useEffect(() => {
-    if (countdown <= 0) setError(null);
-  }, [countdown]);
-
   useEffect(() => () => clearTimeout(messageTimer.current), []);
+
+  // 안내 문구는 2.5초 보여 주고 지운다 (예전에는 실패 문구를 카운트다운 0 효과가 곧바로 지워 보이지 않았다)
+  const showMessage = (message: string) => {
+    setError(message);
+    clearTimeout(messageTimer.current);
+    messageTimer.current = setTimeout(() => setError(null), MESSAGE_MS);
+  };
 
   const refresh = useMutation({
     mutationFn: () => memberApi.refresh(githubId),
@@ -45,12 +47,10 @@ export function RefreshButton({ githubId, detailId }: RefreshButtonProps) {
     onError: (e) => {
       if (e instanceof RateLimitError) {
         start(e.remainingSeconds);
-        setError('잠시 후에 시도해주세요');
-        clearTimeout(messageTimer.current);
-        messageTimer.current = setTimeout(() => setError(null), RATE_LIMIT_MESSAGE_MS);
+        showMessage('잠시 후에 시도해주세요');
       } else {
-        setError('새로고침에 실패했습니다');
         clear();
+        showMessage('새로고침에 실패했습니다');
       }
     },
   });
