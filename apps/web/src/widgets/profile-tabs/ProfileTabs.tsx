@@ -6,6 +6,7 @@ import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { postApi, postKeys } from '@/entities/post';
 import type { CohortArchive } from '@/entities/member';
+import { pageTabVariants } from '@/shared/ui';
 
 interface ProfileTabsProps {
   archive: CohortArchive[];
@@ -41,11 +42,7 @@ export function ProfileTabs({
             <button
               key={t}
               onClick={() => handleTabChange(t)}
-              className={`px-4 py-3 text-body font-medium border-b-2 -mb-px cursor-pointer ${
-                tab === t
-                  ? 'border-accent-dm text-text'
-                  : 'border-transparent text-text-muted hover:text-text-secondary'
-              }`}
+              className={pageTabVariants({ active: tab === t, size: 'lg', indicator: 'accent' })}
             >
               {t === 'mission' ? '미션 아카이브' : '블로그 글'}
             </button>

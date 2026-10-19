@@ -7,6 +7,9 @@ interface SkeletonProps {
   filteredCount: number;
 }
 
+// 크루/운영진 선택 버튼 자리 (누를 수 없는 뼈대)
+const SEGMENT_PLACEHOLDER_CLASS = 'rounded px-2.5 py-1.5 text-caption text-text-muted';
+
 function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filteredCount }: SkeletonProps) {
   return (
     <>
@@ -20,8 +23,8 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
           </p>
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
-          <div className="rounded px-2.5 py-1.5 text-caption text-text-muted">크루 {counts.crew}</div>
-          <div className="rounded px-2.5 py-1.5 text-caption text-text-muted">운영진 {counts.staff}</div>
+          <div className={SEGMENT_PLACEHOLDER_CLASS}>크루 {counts.crew}</div>
+          <div className={SEGMENT_PLACEHOLDER_CLASS}>운영진 {counts.staff}</div>
         </div>
       </div>
       <div className="pointer-events-none mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border pb-4">
