@@ -1,35 +1,31 @@
-import { memberApi, parseTrack } from '@/entities/member';
-import { parseRange, postApi, rangeToDays } from '@/entities/post';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { cohortsQuery, parseTrack } from '@/entities/member';
+import { feedQuery, parseRange, rangeToDays } from '@/entities/post';
 import { FeedClient } from '@/widgets/feed/FeedClient';
+import { makeQueryClient } from '@/shared/api/query-client';
 import { PageContainer } from '@/shared/ui';
 
+// 피드 첫 페이지와 기수 목록을 서버에서 미리 받아 캐시째(dehydrate) 내려 준다.
+// prefetch는 실패해도 throw하지 않고, 실패한 쿼리는 dehydrate에 실리지 않는다 → 화면이 마운트 후 다시 받는다
 export default async function HomePage(props: {
   searchParams?: Promise<{ cohort?: string; track?: string; range?: string }>;
 }) {
   const searchParams = await props.searchParams;
-  const cohort = searchParams?.cohort ? Number(searchParams.cohort) : undefined;
+  const cohort = searchParams?.cohort ?? null;
   const track = parseTrack(searchParams?.track);
   const range = parseRange(searchParams?.range);
-  const days = rangeToDays(range);
 
-  const [feed, allCohorts] = await Promise.all([
-    postApi
-      .feed({ ...(days ? { days } : {}), ...(cohort ? { cohort } : {}), ...(track ? { track } : {}), limit: 50 })
-      .catch(() => ({ posts: [], nextCursor: null, totalCount: 0 })),
-    memberApi.cohorts().catch(() => []),
+  const queryClient = makeQueryClient();
+  await Promise.all([
+    queryClient.prefetchInfiniteQuery(feedQuery(rangeToDays(range), track, cohort)),
+    queryClient.prefetchQuery(cohortsQuery()),
   ]);
 
   return (
     <PageContainer>
-      <FeedClient
-        initialItems={feed.posts}
-        initialNextCursor={feed.nextCursor}
-        initialTotalCount={feed.totalCount}
-        initialCohorts={allCohorts}
-        initialCohort={searchParams?.cohort ?? null}
-        initialTrack={track}
-        initialRange={range}
-      />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <FeedClient initialCohort={cohort} initialTrack={track} initialRange={range} />
+      </HydrationBoundary>
     </PageContainer>
   );
 }

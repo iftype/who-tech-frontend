@@ -1,7 +1,8 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { lazy, Suspense, useState } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { lazy, Suspense } from 'react';
+import { getQueryClient } from '@/shared/api/query-client';
 
 const ReactQueryDevtools = lazy(() =>
   process.env.NODE_ENV === 'development'
@@ -12,14 +13,7 @@ const ReactQueryDevtools = lazy(() =>
 );
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { staleTime: 60 * 1000, retry: 1 },
-        },
-      }),
-  );
+  const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

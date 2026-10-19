@@ -1,56 +1,21 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { postApi, postKeys } from '@/entities/post';
-import type { FeedItem } from '@/entities/post';
-import type { FeedFilters, Range } from './useFeedFilters';
+import { feedQuery } from '@/entities/post';
+import type { FeedFilters } from './useFeedFilters';
 
 interface Params {
   filters: FeedFilters;
   days: number | undefined;
-  initialItems: FeedItem[];
-  initialNextCursor: string | null;
-  initialTotalCount?: number;
-  initialCohort: string | null;
-  initialTrack: FeedFilters['track'];
-  initialRange: Range;
 }
 
-// 필터에 맞는 피드 글. 서버에서 받은 첫 페이지를 initialData로 쓰고, 목록 끝(sentinel)이 보이면 다음 페이지를 불러온다
-export function useFeedPosts({
-  filters,
-  days,
-  initialItems,
-  initialNextCursor,
-  initialTotalCount,
-  initialCohort,
-  initialTrack,
-  initialRange,
-}: Params) {
-  const { range, cohort, track } = filters;
-  const filtersMatchSSR = range === initialRange && cohort === initialCohort && track === initialTrack;
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } = useInfiniteQuery({
-    queryKey: postKeys.feed(days, track, cohort),
-    queryFn: ({ pageParam }) =>
-      postApi.feed({
-        ...(days ? { days } : {}),
-        track: track ?? undefined,
-        cohort: cohort ? Number(cohort) : undefined,
-        cursor: pageParam,
-        limit: 50,
-      }),
-    initialPageParam: undefined as string | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    initialData:
-      filtersMatchSSR && initialItems.length > 0
-        ? {
-            pages: [{ posts: initialItems, nextCursor: initialNextCursor, totalCount: initialTotalCount }],
-            pageParams: [undefined],
-          }
-        : undefined,
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-  });
+// 필터에 맞는 피드 글. 첫 페이지는 서버 page.tsx가 같은 옵션(feedQuery)으로 prefetch해 HydrationBoundary로
+// 캐시에 넣어 둔다 → 키가 맞으면 바로 그리고, 다르면(뒤로가기로 다른 필터 URL에 재마운트 등) 여기서 받는다.
+// 목록 끝(sentinel)이 보이면 다음 페이지를 불러온다
+export function useFeedPosts({ filters, days }: Params) {
+  const { cohort, track } = filters;
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } = useInfiniteQuery(
+    feedQuery(days, track, cohort),
+  );
 
   // 옵저버는 sentinel 요소가 붙을 때 한 번 만들고 떨어질 때 정리한다(React 19 ref cleanup).
   // 콜백은 ref로 최신 상태를 읽어, 페이지를 받을 때마다 옵저버를 다시 만들지 않는다
@@ -71,20 +36,13 @@ export function useFeedPosts({
     return () => observer.disconnect();
   }, []);
 
+  // 서버는 대표 트랙(Member.track)으로 거르고 화면은 멤버의 모든 트랙(tracks)으로 한 번 더 거른다 (의도된 이중 필터)
   const items = useMemo(() => {
-    let posts = data?.pages ? data.pages.flatMap((page) => page.posts) : [];
-    if (!data?.pages) {
-      if (isFetching && !filtersMatchSSR) return [];
-      posts = initialItems;
-    }
-    if (track) {
-      posts = posts.filter((item) => item.member.tracks.includes(track));
-    }
+    const posts = data?.pages.flatMap((page) => page.posts) ?? [];
+    return track ? posts.filter((item) => item.member.tracks.includes(track)) : posts;
+  }, [data, track]);
 
-    return posts;
-  }, [data, isFetching, initialItems, filtersMatchSSR, track]);
-
-  const totalCount = data?.pages?.[0]?.totalCount ?? items.length;
+  const totalCount = data?.pages[0]?.totalCount ?? items.length;
 
   return { items, totalCount, isFetching, isFetchingNextPage, sentinelRef };
 }

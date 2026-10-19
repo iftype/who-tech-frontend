@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
-import { memberApi, parseRoleGroup, parseTrackOrAll } from '@/entities/member';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { cohortMembersQuery, cohortsQuery, parseRoleGroup, parseTrackOrAll } from '@/entities/member';
 import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
+import { makeQueryClient } from '@/shared/api/query-client';
 import { PageContainer } from '@/shared/ui';
 
 export const revalidate = 300;
@@ -20,25 +22,18 @@ export default async function CohortPage({ params, searchParams }: CohortPagePro
   const sp = await searchParams;
   const roleGroup = parseRoleGroup(sp?.roleGroup);
   const track = parseTrackOrAll(sp?.track);
-  const [memberPage, allCohorts] = await Promise.all([
-    memberApi
-      .searchPage(
-        { cohort, ...(track !== 'all' ? { track } : {}), roleGroup, limit: 120 },
-        { next: { revalidate: 300 } },
-      )
-      .catch(() => ({ members: [], totalCount: 0, counts: { crew: 0, staff: 0 }, nextOffset: null })),
-    memberApi.cohorts().catch(() => []),
+
+  const queryClient = makeQueryClient();
+  await Promise.all([
+    queryClient.prefetchInfiniteQuery(cohortMembersQuery(cohort, track, roleGroup)),
+    queryClient.prefetchQuery(cohortsQuery()),
   ]);
 
   return (
     <PageContainer>
-      <CohortExplorer
-        initialPage={memberPage}
-        allCohorts={allCohorts}
-        initialCohort={cohort}
-        initialRoleGroup={roleGroup}
-        initialTrack={track}
-      />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <CohortExplorer initialCohort={cohort} initialRoleGroup={roleGroup} initialTrack={track} />
+      </HydrationBoundary>
     </PageContainer>
   );
 }

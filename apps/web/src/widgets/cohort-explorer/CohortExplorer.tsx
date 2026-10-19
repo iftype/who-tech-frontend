@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { Member, MemberSearchPage, RoleGroup, Track } from '@/entities/member';
+import type { Member, RoleGroup, Track } from '@/entities/member';
 import { CohortMemberGrid, CohortMemberList } from '@/entities/member';
 import { CohortFilterBar, TRACK_OPTIONS } from '@/features/cohort-filter/CohortFilterBar';
 import { CohortTabBar } from '@/features/cohort-filter/CohortTabBar';
@@ -10,9 +10,8 @@ import { useCohortUrlState } from './model/useCohortUrlState';
 import { CohortExplorerSkeleton } from './ui/CohortExplorerSkeleton';
 import { buttonVariants } from '@/shared/ui';
 
+// 데이터는 서버가 HydrationBoundary로 캐시에 넣어 준다. props는 URL 상태의 서버 스냅샷용
 interface CohortExplorerProps {
-  initialPage: MemberSearchPage;
-  allCohorts: number[];
   initialCohort: number | null;
   initialRoleGroup: RoleGroup;
   initialTrack: Track | 'all';
@@ -20,13 +19,7 @@ interface CohortExplorerProps {
 
 const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
 
-export function CohortExplorer({
-  initialPage,
-  allCohorts,
-  initialCohort,
-  initialRoleGroup,
-  initialTrack,
-}: CohortExplorerProps) {
+export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }: CohortExplorerProps) {
   const { activeCohort, roleGroup, track, applyFilters, selectCohort } = useCohortUrlState({
     initialCohort,
     initialRoleGroup,
@@ -42,16 +35,7 @@ export function CohortExplorer({
     hasNextPage,
     isFetchingNextPage,
     isMembersPending,
-  } = useCohortMembers({
-    activeCohort,
-    roleGroup,
-    track,
-    initialPage,
-    allCohorts,
-    initialCohort,
-    initialRoleGroup,
-    initialTrack,
-  });
+  } = useCohortMembers({ activeCohort, roleGroup, track });
 
   const roleScopedMembers = useMemo(() => {
     if (roleGroup === 'crew') return cohortMembers.filter((m) => m.roles.includes('crew') && !isStaff(m));

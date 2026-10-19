@@ -1,14 +1,15 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HydrationBoundary, QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-query';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Member } from '@/entities/member';
 import type { MemberSearchPage } from '@/entities/member';
 
 const cohorts = vi.fn();
 const searchPage = vi.fn();
-vi.mock('@/entities/member', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/entities/member')>()),
+// 쿼리 옵션(member.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다
+vi.mock('@/entities/member/api/member.api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/member/api/member.api')>()),
   memberApi: {
     cohorts: (...args: unknown[]) => cohorts(...args),
     searchPage: (...args: unknown[]) => searchPage(...args),
@@ -19,6 +20,7 @@ vi.mock('@/entities/member', async (importOriginal) => ({
 vi.mock('next/navigation', () => ({ useSearchParams: () => new URLSearchParams(window.location.search) }));
 
 const { CohortExplorer } = await import('./CohortExplorer');
+const { cohortMembersQuery, cohortsQuery } = await import('@/entities/member');
 
 function member(githubId: string, roles: string[], tracks: string[]): Member {
   return {
@@ -47,18 +49,21 @@ const INITIAL = page([
 
 type Props = Parameters<typeof CohortExplorer>[0];
 
-function renderExplorer(props: Partial<Props> = {}) {
+// 서버 page.tsx처럼: 서버용 QueryClient에 첫 페이지·기수 목록을 넣고 dehydrate → HydrationBoundary
+function renderExplorer({ initialPage = INITIAL, ...props }: Partial<Props> & { initialPage?: MemberSearchPage } = {}) {
+  const merged: Props = { initialCohort: 8, initialRoleGroup: 'crew', initialTrack: 'all', ...props };
+  const server = new QueryClient();
+  server.setQueryData(cohortMembersQuery(merged.initialCohort, merged.initialTrack, merged.initialRoleGroup).queryKey, {
+    pages: [initialPage],
+    pageParams: [0],
+  });
+  server.setQueryData(cohortsQuery().queryKey, [8, 7, 6]);
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <CohortExplorer
-        initialPage={INITIAL}
-        allCohorts={[8, 7, 6]}
-        initialCohort={8}
-        initialRoleGroup="crew"
-        initialTrack="all"
-        {...props}
-      />
+      <HydrationBoundary state={dehydrate(server)}>
+        <CohortExplorer {...merged} />
+      </HydrationBoundary>
     </QueryClientProvider>,
   );
 }

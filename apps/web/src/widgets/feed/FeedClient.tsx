@@ -1,7 +1,8 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
+import { cohortsQuery } from '@/entities/member';
 import type { Track } from '@/entities/member';
-import type { FeedItem } from '@/entities/post';
 import { FeedFilterBar } from '@/features/feed-filter/FeedFilterBar';
 import { FeedListSection } from '@/widgets/feed/FeedListSection';
 import { FeedSidebar } from '@/widgets/feed/FeedSidebar';
@@ -10,39 +11,21 @@ import { useFeedPosts } from './model/useFeedPosts';
 import { useFeedSummary } from './model/useFeedSummary';
 import { FeedSkeleton } from './ui/FeedSkeleton';
 
+const EMPTY_COHORTS: number[] = [];
+
 interface FeedClientProps {
-  initialItems: FeedItem[];
-  initialNextCursor: string | null;
-  initialTotalCount?: number;
-  initialCohorts: number[];
   initialCohort: string | null;
   initialTrack: Track | null;
   initialRange: Range;
 }
 
-export function FeedClient({
-  initialItems,
-  initialNextCursor,
-  initialTotalCount,
-  initialCohorts,
-  initialCohort,
-  initialTrack,
-  initialRange,
-}: FeedClientProps) {
+// 데이터(피드 첫 페이지·기수 목록)는 서버가 HydrationBoundary로 캐시에 넣어 준다. props는 URL 상태의 서버 스냅샷용
+export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedClientProps) {
   const { filters, applyFilters, days } = useFeedFilters(initialRange, initialCohort, initialTrack);
   const { cohort } = filters;
-  const { items, totalCount, isFetching, isFetchingNextPage, sentinelRef } = useFeedPosts({
-    filters,
-    days,
-    initialItems,
-    initialNextCursor,
-    initialTotalCount,
-    initialCohort,
-    initialTrack,
-    initialRange,
-  });
+  const { items, totalCount, isFetching, isFetchingNextPage, sentinelRef } = useFeedPosts({ filters, days });
+  const { data: cohorts = EMPTY_COHORTS } = useQuery(cohortsQuery());
   const { staffPosts, grouped, platformStats } = useFeedSummary(items);
-  const cohorts = initialCohorts;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
