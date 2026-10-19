@@ -3,7 +3,7 @@
     "name": "who-tech",
     "slug": "who-tech",
     "scheme": "whotech",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
