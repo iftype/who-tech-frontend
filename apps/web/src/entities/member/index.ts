@@ -17,7 +17,13 @@ export { TRACKS, isTrack, parseRoleGroup, parseTrack, parseTrackOrAll } from './
 export { memberApi } from './api/member.api';
 export type { MemberSearchPageParams, MemberSearchParams } from './api/member.api';
 export { memberKeys } from './api/member.keys';
-export { MEMBER_PAGE_SIZE, cohortMembersQuery, cohortsQuery } from './api/member.queries';
+export {
+  MEMBER_PAGE_SIZE,
+  cohortMembersQuery,
+  cohortsQuery,
+  memberDetailQuery,
+  mergeRefreshedMember,
+} from './api/member.queries';
 export { CohortBadge, RoleBadge, TrackBadge } from './ui/MemberBadges';
 export { TecoTalkBadge } from './ui/TecoTalkBadge';
 export { CohortMemberGrid } from './ui/CohortMemberGrid';
