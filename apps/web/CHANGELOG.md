@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.5](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.4...web-v0.0.5) (2026-10-19)
+
+
+### 버그 수정
+
+* **web:** 인접 기수 미리 받기를 무한 쿼리 모양으로 맞춘다 ([#94](https://github.com/iftype/who-tech-frontend/issues/94)) ([834234d](https://github.com/iftype/who-tech-frontend/commit/834234de85e86f9a91c0664fdcf9c5278ae7f667))
+
 ## [0.0.4](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.3...web-v0.0.4) (2026-10-19)
 
 
