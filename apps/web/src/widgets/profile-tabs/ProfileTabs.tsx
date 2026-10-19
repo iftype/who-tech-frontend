@@ -7,6 +7,7 @@ import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { postApi, postKeys } from '@/entities/post';
 import type { CohortArchive } from '@/entities/member';
 import { pageTabVariants } from '@/shared/ui';
+import { urlStore } from '@/shared/lib/urlStore';
 
 interface ProfileTabsProps {
   archive: CohortArchive[];
@@ -29,9 +30,7 @@ export function ProfileTabs({
 
   const handleTabChange = (t: 'mission' | 'blog') => {
     setTab(t);
-    const params = new URLSearchParams(window.location.search);
-    params.set('tab', t);
-    window.history.replaceState(null, '', `${window.location.pathname}?${params}`);
+    urlStore.replaceParam('tab', t);
   };
 
   return (

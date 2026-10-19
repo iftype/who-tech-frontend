@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
+import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
 import { GuideTab } from './tabs/GuideTab';
 import { PrivacyTab } from './tabs/PrivacyTab';
 import { ThemeTab } from './tabs/ThemeTab';
@@ -15,22 +16,21 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'privacy', label: '개인정보처리방침' },
 ];
 
-export function SettingsClient() {
-  const [activeTab, setActiveTab] = useState<Tab>('theme');
+function parseTab(value: string | null): Tab {
+  return value === 'guide' || value === 'privacy' ? value : 'theme';
+}
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get('tab');
-    if (tab === 'guide' || tab === 'theme' || tab === 'privacy') {
-      setActiveTab(tab);
-    }
-  }, []);
+const isSettingsPath = (pathname: string) => pathname === '/settings';
+
+// 탭은 URL(?tab=)에서 계산한다. 마운트 후 effect로 읽던 때는 테마 탭이 먼저 보였다가 바뀌었다
+export function SettingsClient() {
+  const url = useUrl('/settings', isSettingsPath);
+  const activeTab = useMemo(() => parseTab(new URLSearchParams(splitUrl(url).search).get('tab')), [url]);
 
   const handleTabChange = (tab: Tab) => {
-    setActiveTab(tab);
-    const url = new URL(window.location.href);
-    url.searchParams.set('tab', tab);
-    window.history.pushState(null, '', url.pathname + url.search);
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', tab);
+    urlStore.push(`${window.location.pathname}?${params}`);
   };
 
   const renderTabContent = () => {

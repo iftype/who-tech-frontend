@@ -1,61 +1,48 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { parseTrack } from '@/entities/member';
 import type { Track } from '@/entities/member';
 import { parseRange, rangeToDays, type FeedRange } from '@/entities/post';
+import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
 
 export type Range = FeedRange;
 export type FeedFilters = { range: Range; cohort: string | null; track: Track | null };
 
-// 피드 필터(기간·기수·트랙). replaceState로 URL에 기록하고, 외부에서 URL이 바뀌면(popstate) URL 기준으로 되돌린다
+export function parseFeedSearch(search: string): FeedFilters {
+  const params = new URLSearchParams(search);
+  return {
+    range: parseRange(params.get('range')),
+    cohort: params.get('cohort'),
+    track: parseTrack(params.get('track')),
+  };
+}
+
+// 기본값(30일·기수 없음·트랙 없음)은 쿼리에 쓰지 않는다
+export function buildFeedSearch({ range, cohort, track }: FeedFilters): string {
+  const params = new URLSearchParams();
+  if (cohort) params.set('cohort', cohort);
+  if (track) params.set('track', track);
+  if (range !== '30d') params.set('range', range);
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
+
+const isFeedPath = (pathname: string) => pathname === '/';
+
+// 피드 필터(기간·기수·트랙). URL이 단일 소스다: 필터 변경은 replace로 URL에 쓰고, 화면은 URL에서 계산한다.
+// 로고 클릭(urlStore.replace('/'))·뒤로가기(popstate)도 같은 구독으로 반영된다
 export function useFeedFilters(initialRange: Range, initialCohort: string | null, initialTrack: Track | null) {
-  const [filters, setFilters] = useState({
-    range: initialRange,
-    cohort: initialCohort,
-    track: initialTrack,
-  });
+  const url = useUrl(
+    `/${buildFeedSearch({ range: initialRange, cohort: initialCohort, track: initialTrack })}`,
+    isFeedPath,
+  );
+  const filters = useMemo(() => parseFeedSearch(splitUrl(url).search), [url]);
 
-  useEffect(() => {
-    setFilters((prev) => {
-      const next = { range: initialRange, cohort: initialCohort, track: initialTrack };
-      if (prev.range === next.range && prev.cohort === next.cohort && prev.track === next.track) return prev;
-      return next;
-    });
-  }, [initialRange, initialCohort, initialTrack]);
+  const applyFilters = useCallback(
+    (patch: Partial<FeedFilters>) => {
+      urlStore.replace(`${window.location.pathname}${buildFeedSearch({ ...filters, ...patch })}`);
+    },
+    [filters],
+  );
 
-  const { range } = filters;
-  const days = rangeToDays(range);
-
-  const applyFilters = useCallback((patch: Partial<{ range: Range; cohort: string | null; track: Track | null }>) => {
-    setFilters((prev) => ({ ...prev, ...patch }));
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (filters.cohort) params.set('cohort', filters.cohort);
-    if (filters.track) params.set('track', filters.track);
-    if (filters.range !== '30d') params.set('range', filters.range);
-    const query = params.toString();
-    const url = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-    window.history.replaceState(null, '', url);
-  }, [filters]);
-
-  // 필터는 replaceState로만 URL에 기록되어 Next 라우터가 추적하지 않는다.
-  // 로고 클릭 등으로 URL이 외부에서 바뀌면(popstate) window.location 기준으로 필터를 되돌린다.
-  useEffect(() => {
-    const syncFromUrl = () => {
-      const params = new URLSearchParams(window.location.search);
-      const next = {
-        range: parseRange(params.get('range')),
-        cohort: params.get('cohort'),
-        track: parseTrack(params.get('track')),
-      };
-      setFilters((prev) =>
-        prev.range === next.range && prev.cohort === next.cohort && prev.track === next.track ? prev : next,
-      );
-    };
-    window.addEventListener('popstate', syncFromUrl);
-    return () => window.removeEventListener('popstate', syncFromUrl);
-  }, []);
-
-  return { filters, applyFilters, days };
+  return { filters, applyFilters, days: rangeToDays(filters.range) };
 }

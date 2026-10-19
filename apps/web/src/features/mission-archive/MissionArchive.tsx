@@ -6,6 +6,7 @@ import { MissionArchiveHeader } from './components/MissionArchiveHeader';
 import { UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
 import { buildMarkdown, getFilteredArchives } from './utils';
+import { urlStore } from '@/shared/lib/urlStore';
 import type { CohortArchive } from '@/entities/member';
 
 interface MissionArchiveProps {
@@ -19,13 +20,10 @@ export function MissionArchive({ archive = [], memberTracks, githubId, initialMi
   const [tab, setTab] = useState<MissionTab>(initialMissionTab);
   const [copied, setCopied] = useState(false);
 
+  // URL 기록은 setState 갱신 함수 밖에서 한다 (갱신 함수는 순수해야 한다 — StrictMode에서 두 번 불린다)
   const applyFilters = (next: MissionTab) => {
-    setTab((prev) => {
-      const params = new URLSearchParams(window.location.search);
-      params.set('missionTab', next);
-      window.history.replaceState(null, '', `${window.location.pathname}?${params}`);
-      return next ?? prev;
-    });
+    setTab(next);
+    urlStore.replaceParam('missionTab', next);
   };
 
   const handleCopy = () => {
