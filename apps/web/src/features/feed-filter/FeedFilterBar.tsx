@@ -17,13 +17,20 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
 
   return (
     <>
-      <TabBar>
-        <button onClick={() => applyFilters({ cohort: null })} className={tabVariants({ active: cohort === null })}>
+      <TabBar label="기수">
+        <button
+          role="tab"
+          aria-selected={cohort === null}
+          onClick={() => applyFilters({ cohort: null })}
+          className={tabVariants({ active: cohort === null })}
+        >
           전체
         </button>
         {cohorts.map((c) => (
           <button
             key={c}
+            role="tab"
+            aria-selected={cohort === String(c)}
             onClick={() => applyFilters({ cohort: String(c) })}
             className={tabVariants({ active: cohort === String(c) })}
           >

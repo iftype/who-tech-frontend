@@ -1,5 +1,6 @@
 'use client';
 
+import { useId } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { useMemberSearch } from './model/useMemberSearch';
 import { SearchResultItem } from './ui/SearchResultItem';
@@ -30,6 +31,10 @@ export function SearchDropdown({
     handleKeyDown,
   } = useMemberSearch();
 
+  const listboxId = useId();
+  const optionId = (index: number) => `${listboxId}-option-${index}`;
+  const hasOptions = showDropdown && results.length > 0;
+
   const placeholder = mobileHeader ? '검색' : compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...';
   const mobileHeaderInputScale = 0.86;
 
@@ -50,6 +55,7 @@ export function SearchDropdown({
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
+          aria-hidden="true"
         >
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
@@ -58,6 +64,12 @@ export function SearchDropdown({
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-label="멤버 검색"
+            aria-autocomplete="list"
+            aria-expanded={showDropdown}
+            aria-controls={hasOptions ? listboxId : undefined}
+            aria-activedescendant={hasOptions && activeIndex >= 0 ? optionId(activeIndex) : undefined}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -102,10 +114,11 @@ export function SearchDropdown({
           {results.length === 0 ? (
             <div className="px-4 py-6 text-center text-body-sm text-text-muted">검색 결과가 없습니다</div>
           ) : (
-            <ul>
+            <ul id={listboxId} role="listbox" aria-label="검색 결과">
               {results.map((member, idx) => (
-                <li key={member.githubId}>
+                <li key={member.githubId} role="none">
                   <SearchResultItem
+                    id={optionId(idx)}
                     member={member}
                     active={idx === activeIndex}
                     onSelect={() => handleSelect(member)}

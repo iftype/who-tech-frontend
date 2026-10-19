@@ -49,7 +49,7 @@ for (const theme of THEMES) {
   test(`member blog tab (${theme})`, async ({ page, context, baseURL }) => {
     await open(page, context, baseURL!, theme, '/iftype');
     const loaded = page.waitForResponse((res) => res.url().includes('/blog-posts') && res.ok());
-    await page.getByRole('button', { name: '블로그 글' }).click();
+    await page.getByRole('tab', { name: '블로그 글' }).click();
     await loaded;
     await expect(page.getByText('블로그 글을 불러오는 중')).toHaveCount(0);
     await expect(page).toHaveScreenshot(`member-blog-${theme}.png`, { fullPage: true });
