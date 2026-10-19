@@ -1,5 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
-import type { MemberSearchPage, RoleGroup, Track } from '../model/types';
+import type { MemberDetail, MemberSearchPage, RoleGroup, Track } from '../model/types';
 import { memberApi } from './member.api';
 import { memberKeys } from './member.keys';
 
@@ -29,4 +29,21 @@ export function cohortMembersQuery(cohort: number | null, track: Track | 'all', 
     getNextPageParam: (lastPage: MemberSearchPage) => lastPage.nextOffset ?? undefined,
     staleTime: 60_000,
   });
+}
+
+// 멤버 상세. 서버 page.tsx가 prefetch해 HydrationBoundary로 넘긴다.
+// 예전처럼 화면에서는 다시 받지 않는다(새로고침 버튼이 결과를 캐시에 직접 넣는다)
+export function memberDetailQuery(githubId: string) {
+  return queryOptions({
+    queryKey: memberKeys.detail(githubId),
+    queryFn: () => memberApi.detail(githubId),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+}
+
+// 새로고침 결과에 미션 아카이브가 비어 있으면(GitHub 응답이 덜 온 경우) 이전 아카이브를 유지한다
+export function mergeRefreshedMember(prev: MemberDetail | undefined, next: MemberDetail): MemberDetail {
+  if (prev && next.archive.length === 0 && prev.archive.length > 0) return { ...next, archive: prev.archive };
+  return next;
 }

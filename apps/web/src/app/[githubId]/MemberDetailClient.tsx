@@ -1,31 +1,24 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Avatar } from '@/shared/ui';
 import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
 import { TecoTalkBadge } from '@/entities/member';
 import { ProfileTabs } from '@/widgets/profile-tabs/ProfileTabs';
 import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
-import type { MemberDetail } from '@/entities/member';
+import { memberDetailQuery } from '@/entities/member';
 import { PageContainer, buttonVariants } from '@/shared/ui';
 
 interface MemberDetailClientProps {
-  initialMember: MemberDetail;
+  githubId: string;
   initialTab: 'mission' | 'blog';
   initialMissionTab: 'mission' | 'common' | 'pending';
 }
 
-export function MemberDetailClient({ initialMember, initialTab, initialMissionTab }: MemberDetailClientProps) {
-  const [member, setMember] = useState(initialMember);
-
-  const handleRefreshed = useCallback((newMember: MemberDetail) => {
-    setMember((prev) => {
-      if (newMember.archive.length === 0 && prev.archive.length > 0) {
-        return { ...newMember, archive: prev.archive };
-      }
-      return newMember;
-    });
-  }, []);
+// 멤버 데이터는 서버가 HydrationBoundary로 캐시에 넣어 준다. 새로고침 버튼이 같은 캐시를 갱신한다
+export function MemberDetailClient({ githubId, initialTab, initialMissionTab }: MemberDetailClientProps) {
+  const { data: member } = useQuery(memberDetailQuery(githubId));
+  if (!member) return null;
 
   const profileLinks = (className: string) => (
     <div className={`shrink-0 items-center gap-1 ${className}`}>
@@ -77,7 +70,7 @@ export function MemberDetailClient({ initialMember, initialTab, initialMissionTa
               <span className="font-mono text-caption sm:text-body text-text-muted truncate max-w-[140px] sm:max-w-none">
                 @{member.githubId}
               </span>
-              <RefreshButton githubId={member.githubId} onRefreshed={handleRefreshed} />
+              <RefreshButton githubId={member.githubId} detailId={githubId} />
             </div>
             {profileLinks('inline-flex sm:hidden')}
           </div>
