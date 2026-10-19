@@ -29,6 +29,9 @@ export function useMemberSearch() {
   // ⌘K / Ctrl+K shortcut
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      // 헤더에 검색창이 두 개(모바일·데스크톱) 붙어 있다. 화면에 안 보이는 쪽은 단축키를 무시한다
+      // (checkVisibility가 없는 환경은 보이는 것으로 본다)
+      if (inputRef.current?.checkVisibility?.() === false) return;
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         inputRef.current?.focus();

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { type MouseEvent, useEffect, useState, useTransition } from 'react';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
 import { buttonVariants, navLinkVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
@@ -24,7 +24,6 @@ const NAV_LINKS = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
-  const [, startTransition] = useTransition();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -37,13 +36,12 @@ export function Navbar() {
     NAV_LINKS.forEach(({ href }) => router.prefetch(href));
   }, [router]);
 
-  const navigate = (href: string) => {
+  // 메뉴는 <Link>(진짜 링크: 가운데 클릭·새 탭·크롤링). 누르는 즉시 활성 표시를 옮기고 모바일 메뉴를 닫는다
+  const onNavigate = (href: string) => {
     setOptimisticPath(href);
     setOpen(false);
-    startTransition(() => {
-      router.push(href);
-    });
   };
+  const isActive = (href: string) => (optimisticPath ?? pathname) === href;
 
   // 홈(피드)에선 필터가 URL 쿼리에만 있어 Next 라우터가 같은 경로로 인식한다.
   // 이미 홈이면 <Link> 이동 대신 URL 저장소를 '/'로 바꿔 피드 필터를 초기화한다 (가짜 popstate 없이)
@@ -55,7 +53,7 @@ export function Navbar() {
   };
 
   const linkClass = (href: string, mobile = false) =>
-    navLinkVariants({ placement: mobile ? 'menu' : 'bar', active: (optimisticPath ?? pathname) === href });
+    navLinkVariants({ placement: mobile ? 'menu' : 'bar', active: isActive(href) });
 
   const showHeaderSearch = true;
 
@@ -98,9 +96,15 @@ export function Navbar() {
             )}
             <div className="flex items-center gap-4 sm:gap-6">
               {NAV_LINKS.map(({ href, label }) => (
-                <button key={href} onClick={() => navigate(href)} className={linkClass(href)}>
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => onNavigate(href)}
+                  aria-current={isActive(href) ? 'page' : undefined}
+                  className={linkClass(href)}
+                >
                   {label}
-                </button>
+                </Link>
               ))}
             </div>
             <ThemeToggle />
@@ -130,7 +134,7 @@ export function Navbar() {
           <div className="flex flex-col py-1">
             {NAV_LINKS.map(({ href, label }) => {
               if (href === '/settings') {
-                const active = (optimisticPath ?? pathname) === href;
+                const active = isActive(href);
                 return (
                   <div
                     key={href}
@@ -138,28 +142,32 @@ export function Navbar() {
                       active ? 'bg-surface text-text' : 'text-text-secondary hover:bg-surface hover:text-text'
                     }`}
                   >
-                    <button
-                      onClick={() => navigate(href)}
+                    <Link
+                      href={href}
+                      onClick={() => onNavigate(href)}
+                      aria-current={active ? 'page' : undefined}
                       className={navLinkVariants({
                         placement: 'menu',
                         className: 'flex min-w-0 flex-1 cursor-pointer items-center justify-start text-left',
                       })}
                     >
                       {label}
-                    </button>
+                    </Link>
                     <ThemeToggle />
                   </div>
                 );
               }
 
               return (
-                <button
+                <Link
                   key={href}
-                  onClick={() => navigate(href)}
+                  href={href}
+                  onClick={() => onNavigate(href)}
+                  aria-current={isActive(href) ? 'page' : undefined}
                   className={cn(linkClass(href, true), 'flex items-center justify-start text-left')}
                 >
                   {label}
-                </button>
+                </Link>
               );
             })}
           </div>

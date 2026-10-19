@@ -36,10 +36,12 @@ export function ProfileTabs({
   return (
     <>
       <div className="border-b border-border mb-6">
-        <div className="flex">
+        <div role="tablist" aria-label="프로필" className="flex">
           {(['mission', 'blog'] as const).map((t) => (
             <button
               key={t}
+              role="tab"
+              aria-selected={tab === t}
               onClick={() => handleTabChange(t)}
               className={pageTabVariants({ active: tab === t, size: 'lg', indicator: 'accent' })}
             >

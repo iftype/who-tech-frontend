@@ -130,7 +130,7 @@ describe('FeedClient', () => {
     feed.mockResolvedValue({ posts: [ITEMS[0]], nextCursor: null, totalCount: 1 });
     renderFeed();
 
-    await userEvent.click(screen.getByRole('button', { name: '8기' }));
+    await userEvent.click(screen.getByRole('tab', { name: '8기' }));
 
     await waitFor(() =>
       expect(feed).toHaveBeenLastCalledWith({ days: 30, cohort: 8, track: undefined, cursor: undefined, limit: 50 }),

@@ -54,10 +54,12 @@ export function SettingsClient({ guide, privacy }: SettingsClientProps) {
     <PageContainer>
       {/* 탭 헤더 */}
       <div className="mb-8 border-b border-border">
-        <div className="flex gap-0">
+        <div role="tablist" aria-label="설정" className="flex gap-0">
           {TABS.map((tab) => (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={cn(pageTabVariants({ active: activeTab === tab.id }), 'transition-colors')}
             >

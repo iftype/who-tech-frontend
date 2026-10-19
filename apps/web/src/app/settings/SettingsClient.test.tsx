@@ -32,7 +32,7 @@ describe('SettingsClient', () => {
   it('should switch tabs and record the tab in the URL', async () => {
     render(<SettingsClient />);
 
-    await userEvent.click(screen.getByRole('button', { name: '가이드' }));
+    await userEvent.click(screen.getByRole('tab', { name: '가이드' }));
 
     expect(screen.getByRole('heading', { name: 'who.tech 사용 가이드' })).toBeInTheDocument();
     expect(window.location.search).toBe('?tab=guide');
@@ -42,7 +42,7 @@ describe('SettingsClient', () => {
     render(<SettingsClient />);
     const length = window.history.length;
 
-    await userEvent.click(screen.getByRole('button', { name: '가이드' }));
+    await userEvent.click(screen.getByRole('tab', { name: '가이드' }));
     expect(window.history.length).toBe(length + 1);
 
     await act(async () => {
