@@ -11,8 +11,8 @@ describe('post queries', () => {
   });
 
   it('feedQuery never refetches the hydrated first page by itself', () => {
-    const options = feedQuery(30, 'frontend', '8');
-    expect(options.queryKey).toEqual(postKeys.feed(30, 'frontend', '8'));
+    const options = feedQuery(30, 'frontend', 8);
+    expect(options.queryKey).toEqual(postKeys.feed(30, 'frontend', 8));
     expect(options.staleTime).toBe(Infinity);
     expect(options.refetchOnWindowFocus).toBe(false);
     expect(options.initialPageParam).toBeUndefined();

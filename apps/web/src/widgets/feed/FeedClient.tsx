@@ -11,7 +11,7 @@ import { useFeedSummary } from './model/useFeedSummary';
 import { FeedSkeleton } from './ui/FeedSkeleton';
 
 interface FeedClientProps {
-  initialCohort: string | null;
+  initialCohort: number | null;
   initialTrack: Track | null;
   initialRange: Range;
 }

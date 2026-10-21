@@ -6,8 +6,8 @@ import type { FeedRange as Range } from '@/entities/post';
 import { FilterRow, SegmentedControl, TabBar, filterChipVariants, segmentVariants, tabVariants } from '@/shared/ui';
 
 interface FeedFilterBarProps {
-  filters: { range: Range; cohort: string | null; track: Track | null };
-  applyFilters: (patch: Partial<{ range: Range; cohort: string | null; track: Track | null }>) => void;
+  filters: { range: Range; cohort: number | null; track: Track | null };
+  applyFilters: (patch: Partial<{ range: Range; cohort: number | null; track: Track | null }>) => void;
   cohorts: number[];
   filteredCount: number;
   totalCount?: number;
@@ -31,9 +31,9 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
           <button
             key={c}
             role="tab"
-            aria-selected={cohort === String(c)}
-            onClick={() => applyFilters({ cohort: String(c) })}
-            className={tabVariants({ active: cohort === String(c) })}
+            aria-selected={cohort === c}
+            onClick={() => applyFilters({ cohort: c })}
+            className={tabVariants({ active: cohort === c })}
           >
             {c}기
           </button>
@@ -43,10 +43,10 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-title-lg font-bold tracking-tight text-text sm:text-headline-sm">
-            {cohort ? `${cohort}기 피드` : '피드'}
+            {cohort !== null ? `${cohort}기 피드` : '피드'}
           </h1>
           <p className="mt-1 text-label text-text-secondary">
-            {cohort ? `${cohort}기 크루의 최신 블로그 글` : '모든 크루의 최신 블로그 글'}
+            {cohort !== null ? `${cohort}기 크루의 최신 블로그 글` : '모든 크루의 최신 블로그 글'}
           </p>
         </div>
         <SegmentedControl>

@@ -1,5 +1,5 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { cohortsQuery, parseTrack } from '@/entities/member';
+import { cohortsQuery, parseCohortNumber, parseTrack } from '@/entities/member';
 import { feedQuery, parseRange, rangeToDays } from '@/entities/post';
 import { FeedClient } from '@/widgets/feed/FeedClient';
 import { makeQueryClient } from '@/shared/api';
@@ -11,7 +11,7 @@ export default async function HomePage(props: {
   searchParams?: Promise<{ cohort?: string; track?: string; range?: string }>;
 }) {
   const searchParams = await props.searchParams;
-  const cohort = searchParams?.cohort ?? null;
+  const cohort = parseCohortNumber(searchParams?.cohort);
   const track = parseTrack(searchParams?.track);
   const range = parseRange(searchParams?.range);
 
