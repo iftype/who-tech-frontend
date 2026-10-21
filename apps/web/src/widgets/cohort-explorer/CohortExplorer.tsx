@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { RoleGroup, Track } from '@/entities/member';
-import { CohortMemberGrid, CohortMemberList, TRACK_OPTIONS, isStaff } from '@/entities/member';
+import { CohortMemberGrid, CohortMemberList, TRACK_OPTIONS, matchesRoleGroup } from '@/entities/member';
 import { CohortFilterBar } from '@/features/cohort-filter';
 import { CohortTabBar } from '@/features/cohort-filter';
 import { buttonVariants } from '@/shared/ui';
@@ -35,10 +35,10 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
     isMembersPending,
   } = useCohortMembers({ activeCohort, roleGroup, track });
 
-  const roleScopedMembers = useMemo(() => {
-    if (roleGroup === 'crew') return cohortMembers.filter((m) => m.roles.includes('crew') && !isStaff(m.roles));
-    return cohortMembers.filter((m) => isStaff(m.roles));
-  }, [cohortMembers, roleGroup]);
+  const roleScopedMembers = useMemo(
+    () => cohortMembers.filter((m) => matchesRoleGroup(m.roles, roleGroup)),
+    [cohortMembers, roleGroup],
+  );
 
   const filtered = useMemo(
     () => roleScopedMembers.filter((m) => track === 'all' || m.tracks.includes(track)),

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cn, decodeHtml, formatDate, formatRelativeDate, getBlogSource } from './utils';
+import { cn, decodeHtml, formatDate, formatRelativeDate } from './utils';
 
 describe('formatRelativeDate', () => {
   beforeEach(() => {
@@ -48,20 +48,5 @@ describe('decodeHtml', () => {
   // &amp;를 먼저 풀어 RSS에서 흔한 이중 인코딩(&amp;lt;)까지 해제한다
   it('should also decode double-encoded entities', () => {
     expect(decodeHtml('&amp;lt;')).toBe('<');
-  });
-});
-
-describe('getBlogSource', () => {
-  it.each([
-    ['https://velog.io/@crew/post', 'Velog'],
-    ['https://crew.tistory.com/1', 'Tistory'],
-    ['https://medium.com/@crew/x', 'Medium'],
-    ['https://crew.github.io/blog', 'GitHub'],
-    ['https://brunch.co.kr/@crew/1', 'Brunch'],
-    ['https://crew.notion.site/page', 'Notion'],
-    ['https://www.notion.so/page', 'Notion'],
-    ['https://example.com', null],
-  ])('should detect %s as %s', (url, expected) => {
-    expect(getBlogSource(url)).toBe(expected);
   });
 });

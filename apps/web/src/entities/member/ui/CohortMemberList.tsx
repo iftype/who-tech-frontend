@@ -3,6 +3,7 @@ import { staggerFadeIn } from '@/shared/lib/animation';
 import { Avatar, EmptyState, ListCard } from '@/shared/ui';
 import { CohortBadge, TrackBadge } from './MemberBadges';
 import { RoleBadges } from './RoleBadges';
+import { memberPath } from '../model/links';
 import type { Member } from '../model/types';
 
 interface CohortMemberListProps {
@@ -21,7 +22,7 @@ export function CohortMemberList({ members, emptyMessage }: CohortMemberListProp
           {members.map((member, i) => (
             <Link
               key={member.githubId}
-              href={`/${member.githubId}`}
+              href={memberPath(member.githubId)}
               className="flex items-center gap-3 border-b border-border-dim px-4 py-3 hover:bg-surface-alt last:border-0"
               style={staggerFadeIn(i)}
             >

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CURRENT_COHORT, isStaff } from '@/entities/member';
+import { getBlogSource } from '@/entities/post';
 import type { FeedItem } from '@/entities/post';
-import { getBlogSource } from '@/shared/lib/utils';
 
 // 화면 옆 요약: 최근 1주 운영진 글, 블로그 플랫폼 비율
 export function useFeedSummary(items: FeedItem[]) {
