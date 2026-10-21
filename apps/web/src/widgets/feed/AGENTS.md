@@ -10,7 +10,8 @@
 widgets/feed/
   index.ts                 공개 진입점: FeedClient
   FeedClient.tsx           화면 조합
-  model/useFeedFilters.ts  기간·기수·트랙 필터 (URL에서 계산, 바꿀 때 urlStore.replace). parseFeedSearch/buildFeedSearch
+  model/feedLocation.ts    parseFeedSearch/buildFeedSearch/isFeedPath — 피드 URL의 모양
+  model/useFeedFilters.ts  기간·기수·트랙 필터 (URL에서 계산, 바꿀 때 urlStore.replace)
   model/useFeedPosts.ts    피드 무한 쿼리(feedQuery, 서버가 첫 페이지를 하이드레이션) + 목록 끝(sentinel) 감시
   model/useFeedSummary.ts  운영진 최신 글·플랫폼 통계
   FeedListSection.tsx      목록 (기수 선택 시 그 기수 제목 + 개수, 없으면 평탄)
