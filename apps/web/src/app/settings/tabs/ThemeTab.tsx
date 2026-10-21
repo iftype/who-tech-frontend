@@ -3,13 +3,17 @@
 import { Fragment } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/shared/providers/ThemeProvider';
+import { DESIGN_SYSTEMS, type DesignSystem } from '@/shared/providers/theme';
 import { OptionGroup, optionVariants } from '@/shared/ui';
 
-const DESIGN_OPTIONS = [
-  { id: 'paper' as const, label: 'Next', sub: '기본 디자인' },
-  { id: 'apple' as const, label: ' Apple', sub: 'Apple 스타일' },
-  { id: 'sentry' as const, label: ' Sentry', sub: 'Sentry 스타일' },
-];
+const DESIGN_TEXT: Record<DesignSystem, { label: string; sub: string }> = {
+  paper: { label: 'Next', sub: '기본 디자인' },
+  apple: { label: ' Apple', sub: 'Apple 스타일' },
+  sentry: { label: ' Sentry', sub: 'Sentry 스타일' },
+};
+
+// 순서는 DESIGN_SYSTEMS(단일 정의)를 따른다
+const DESIGN_OPTIONS = DESIGN_SYSTEMS.map((id) => ({ id, ...DESIGN_TEXT[id] }));
 
 export function ThemeTab() {
   const { theme, toggle, designSystem, setDesign } = useTheme();

@@ -1,9 +1,9 @@
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { DEFAULT_DESIGN, DEFAULT_THEME, type DesignSystem, type Theme } from './theme';
 
-export type Theme = 'dark' | 'light';
-export type DesignSystem = 'paper' | 'apple' | 'sentry';
+export type { DesignSystem, Theme } from './theme';
 
 const ThemeContext = createContext<{
   theme: Theme;
@@ -11,9 +11,9 @@ const ThemeContext = createContext<{
   designSystem: DesignSystem;
   setDesign: (ds: DesignSystem) => void;
 }>({
-  theme: 'dark',
+  theme: DEFAULT_THEME,
   toggle: () => {},
-  designSystem: 'paper',
+  designSystem: DEFAULT_DESIGN,
   setDesign: () => {},
 });
 
@@ -50,8 +50,8 @@ export function useTheme() {
 
 export function ThemeProvider({
   children,
-  initialTheme = 'dark',
-  initialDesign = 'paper',
+  initialTheme = DEFAULT_THEME,
+  initialDesign = DEFAULT_DESIGN,
 }: {
   children: React.ReactNode;
   initialTheme?: Theme;

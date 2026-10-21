@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isTrack, parseRoleGroup, parseTrack, parseTrackOrAll } from './parse';
+import { isTrack, parseCohortNumber, parseRoleGroup, parseTrack, parseTrackOrAll } from './parse';
 
 describe('member parse', () => {
   it('parseTrack keeps known tracks and drops anything else', () => {
@@ -23,6 +23,17 @@ describe('member parse', () => {
     expect(parseRoleGroup('crew', 'staff')).toBe('crew');
     expect(parseRoleGroup('coach')).toBe('crew');
     expect(parseRoleGroup(undefined, 'staff')).toBe('staff');
+  });
+
+  it('parseCohortNumber accepts digit strings only', () => {
+    expect(parseCohortNumber('8')).toBe(8);
+    expect(parseCohortNumber('12')).toBe(12);
+    expect(parseCohortNumber('abc')).toBeNull();
+    expect(parseCohortNumber('1.5')).toBeNull();
+    expect(parseCohortNumber('-1')).toBeNull();
+    expect(parseCohortNumber('')).toBeNull();
+    expect(parseCohortNumber(undefined)).toBeNull();
+    expect(parseCohortNumber(null)).toBeNull();
   });
 
   it('isTrack narrows unknown values', () => {

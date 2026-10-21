@@ -6,25 +6,19 @@ import { MissionArchiveHeader } from './components/MissionArchiveHeader';
 import { UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
 import { buildMarkdown, getFilteredArchives } from './utils';
-import { urlStore } from '@/shared/lib/urlStore';
 import type { CohortArchive, Track } from '@/entities/member';
 
+// 탭은 부모가 가진다 (URL에서 읽는 위젯). 이 피처는 URL을 모른다
 interface MissionArchiveProps {
   archive: CohortArchive[];
   memberTracks: Track[];
   githubId: string;
-  initialMissionTab: MissionTab;
+  tab: MissionTab;
+  onTabChange: (tab: MissionTab) => void;
 }
 
-export function MissionArchive({ archive = [], memberTracks, githubId, initialMissionTab }: MissionArchiveProps) {
-  const [tab, setTab] = useState<MissionTab>(initialMissionTab);
+export function MissionArchive({ archive, memberTracks, githubId, tab, onTabChange }: MissionArchiveProps) {
   const [copied, setCopied] = useState(false);
-
-  // URL 기록은 setState 갱신 함수 밖에서 한다 (갱신 함수는 순수해야 한다 — StrictMode에서 두 번 불린다)
-  const applyFilters = (next: MissionTab) => {
-    setTab(next);
-    urlStore.replaceParam('missionTab', next);
-  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(buildMarkdown(archive, tab, githubId, memberTracks));
@@ -36,7 +30,7 @@ export function MissionArchive({ archive = [], memberTracks, githubId, initialMi
 
   return (
     <div className="flex flex-col gap-5">
-      <MissionArchiveHeader tab={tab} copied={copied} onTabChange={applyFilters} onCopy={handleCopy} />
+      <MissionArchiveHeader tab={tab} copied={copied} onTabChange={onTabChange} onCopy={handleCopy} />
 
       {filteredArchives.length === 0 ? (
         <p className="py-8 text-left text-body-sm text-text-muted">미션 제출 기록이 없습니다</p>
