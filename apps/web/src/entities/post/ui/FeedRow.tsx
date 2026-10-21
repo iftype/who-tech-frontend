@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { MemberBadgeSet, githubProfileUrl, memberPath } from '@/entities/member';
 import { staggerFadeIn } from '@/shared/lib/animation';
 import { formatRelativeDate } from '@/shared/lib/utils';
-import { Avatar } from '@/shared/ui';
+import { cn } from '@/shared/lib/utils';
+import { Avatar, linkVariants } from '@/shared/ui';
 import { postVisitPath } from '../model/links';
 import { getBlogSource } from '../model/source';
 import type { FeedItem } from '../model/types';
 
 // 카드 전체 링크 위에 올라가는 작은 링크(작성자·출처). z-10으로 카드 링크보다 위에 둔다
-const META_LINK_CLASS = 'relative z-10 text-body-sm text-text-secondary hover:underline';
+const META_LINK_CLASS = cn(linkVariants({ variant: 'muted', size: 'bodySm' }), 'relative z-10');
 
 // 피드 한 줄: 아바타 · 제목(카드 전체 링크) · 작성자와 배지 · 날짜 · 출처 칩
 export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
@@ -29,7 +30,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
             href={postVisitPath(item.id)}
             target="_blank"
             rel="noopener noreferrer"
-            className="break-all text-body text-text hover:underline after:absolute after:inset-0 after:content-['']"
+            className={cn(linkVariants({ variant: 'text', size: 'body', stretched: true }), 'break-all')}
           >
             {item.title}
           </a>
@@ -49,7 +50,10 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative z-10 mt-0.5 hidden flex-shrink-0 rounded-md border border-border px-1.5 py-0.5 text-tiny text-text-muted hover:bg-surface-alt sm:inline-flex"
+          className={cn(
+            linkVariants({ variant: 'chip', size: 'tiny' }),
+            'relative z-10 mt-0.5 hidden flex-shrink-0 sm:inline-flex',
+          )}
         >
           {source}
         </a>

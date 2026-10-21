@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { memberPostsQuery } from '@/entities/post';
-import { formatDate, formatRelativeDate } from '@/shared/lib/utils';
-import { ClockIcon } from '@/shared/ui';
+import { cn, formatDate, formatRelativeDate } from '@/shared/lib/utils';
+import { ClockIcon, linkVariants } from '@/shared/ui';
 
 interface BlogSectionProps {
   githubId: string;
@@ -35,7 +35,10 @@ export function BlogSection({ githubId, lastPostedAt }: BlogSectionProps) {
                 href={post.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 px-4 py-3 hover:bg-surface-alt"
+                className={cn(
+                  linkVariants({ variant: 'row' }),
+                  'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1',
+                )}
               >
                 <p className="text-body-sm font-medium text-text line-clamp-2">{post.title}</p>
                 <p className="text-caption text-text-dim sm:shrink-0">{formatDate(post.publishedAt)}</p>
