@@ -13,9 +13,8 @@ interface Params {
 // 목록 끝(sentinel)이 보이면 다음 페이지를 불러온다
 export function useFeedPosts({ filters, days }: Params) {
   const { cohort, track } = filters;
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, isError, refetch } = useInfiniteQuery(
-    feedQuery(days, track, cohort),
-  );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, isError, isFetchNextPageError, refetch } =
+    useInfiniteQuery(feedQuery(days, track, cohort));
 
   // 옵저버는 sentinel 요소가 붙을 때 한 번 만들고 떨어질 때 정리한다(React 19 ref cleanup).
   // 콜백은 ref로 최신 상태를 읽어, 페이지를 받을 때마다 옵저버를 다시 만들지 않는다
@@ -44,5 +43,15 @@ export function useFeedPosts({ filters, days }: Params) {
 
   const totalCount = data?.pages[0]?.totalCount ?? items.length;
 
-  return { items, totalCount, isFetching, isFetchingNextPage, isError, refetch, sentinelRef };
+  return {
+    items,
+    totalCount,
+    isFetching,
+    isFetchingNextPage,
+    isError,
+    isFetchNextPageError,
+    refetch,
+    fetchNextPage,
+    sentinelRef,
+  };
 }

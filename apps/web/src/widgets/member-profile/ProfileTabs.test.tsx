@@ -83,7 +83,7 @@ describe('ProfileTabs', () => {
     byMember.mockReturnValue(new Promise(() => undefined));
     setUrl('/crew?tab=blog');
     renderTabs({ initialTab: 'blog' });
-    expect(screen.getByText('블로그 글을 불러오는 중...')).toBeInTheDocument();
+    expect(screen.getByText('불러오는 중...')).toBeInTheDocument();
   });
 
   it('should explain an empty blog archive and hide the last-posted line', async () => {
