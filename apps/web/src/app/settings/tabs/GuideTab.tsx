@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { buttonVariants } from '@/shared/ui';
+import { buttonVariants, linkVariants } from '@/shared/ui';
 
 // 단축키 글자 (⌘·K)
 const KBD_CLASS = 'rounded border border-border px-1.5 py-0.5 font-mono text-caption';
@@ -129,11 +129,7 @@ export function GuideTab() {
         <nav className="sticky top-8 flex flex-col gap-0.5">
           <p className="text-caption font-semibold text-text-muted uppercase tracking-wider mb-3 px-2">목차</p>
           {guideNavItems.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="block px-2 py-1.5 rounded text-body-sm text-text-secondary hover:text-text hover:bg-surface-alt transition-colors"
-            >
+            <a key={item.id} href={`#${item.id}`} className={linkVariants({ variant: 'toc', size: 'bodySm' })}>
               {item.label}
             </a>
           ))}

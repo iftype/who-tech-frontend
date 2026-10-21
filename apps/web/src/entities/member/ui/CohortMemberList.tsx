@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { staggerFadeIn } from '@/shared/lib/animation';
+import { cn } from '@/shared/lib/utils';
+import { linkVariants } from '@/shared/ui';
 import { Avatar, EmptyState, ListCard } from '@/shared/ui';
 import { CohortBadge, TrackBadge } from './MemberBadges';
 import { RoleBadges } from './RoleBadges';
@@ -23,7 +25,10 @@ export function CohortMemberList({ members, emptyMessage }: CohortMemberListProp
             <Link
               key={member.githubId}
               href={memberPath(member.githubId)}
-              className="flex items-center gap-3 border-b border-border-dim px-4 py-3 hover:bg-surface-alt last:border-0"
+              className={cn(
+                linkVariants({ variant: 'row' }),
+                'flex items-center gap-3 border-b border-border-dim last:border-0',
+              )}
               style={staggerFadeIn(i)}
             >
               <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />

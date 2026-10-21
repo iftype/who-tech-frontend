@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { badgeVariants } from './Badge';
 import { buttonVariants, chipButtonVariants } from './buttonVariants';
 import { emptyStateVariants } from './EmptyState';
+import { linkVariants } from './linkVariants';
 import { listCardVariants } from './ListCard';
 import { listItemVariants } from './listItemVariants';
 import { navLinkVariants, navMenuRowVariants } from './navLinkVariants';
@@ -57,6 +58,57 @@ describe('shared/ui variants', () => {
       [listCardVariants(), 'overflow-hidden rounded-xl border border-border bg-surface'],
       // CohortMemberList·스켈레톤 카드
       [listCardVariants({ stack: true }), 'flex flex-col overflow-hidden rounded-xl border border-border bg-surface'],
+    ];
+    for (const [actual, expected] of cases) expect(set(actual)).toEqual(set(expected));
+  });
+
+  // 링크 모양도 variant로 옮겼다 (라운드 4). 배치 클래스는 호출부의 cn()에 남는다
+  it('should match the links that used to be styled in place', () => {
+    const cases: [string, string][] = [
+      // not-found 홈으로
+      [
+        linkVariants({ variant: 'accent', size: 'bodySm' }),
+        'text-body-sm text-accent-dm hover:opacity-80 transition-opacity',
+      ],
+      // GuideTab 목차
+      [
+        linkVariants({ variant: 'toc', size: 'bodySm' }),
+        'block px-2 py-1.5 rounded text-body-sm text-text-secondary hover:text-text hover:bg-surface-alt transition-colors',
+      ],
+      // CohortMemberGrid 카드 (배치: group flex min-h-[148px] flex-col items-center justify-center gap-2.5 p-4)
+      [
+        linkVariants({ variant: 'card' }),
+        'rounded-xl border border-border bg-surface hover:border-accent/30 hover:bg-surface-alt',
+      ],
+      // CohortMemberList·BlogSection 줄 (배치·구분선은 호출부)
+      [linkVariants({ variant: 'row' }), 'px-4 py-3 hover:bg-surface-alt'],
+      // FeedRow 제목 (배치: break-all)
+      [
+        linkVariants({ variant: 'text', size: 'body', stretched: true }),
+        "text-body text-text hover:underline after:absolute after:inset-0 after:content-['']",
+      ],
+      // FeedRow 출처 칩 (배치: relative z-10 mt-0.5 hidden flex-shrink-0 sm:inline-flex)
+      [
+        linkVariants({ variant: 'chip', size: 'tiny' }),
+        'rounded-md border border-border px-1.5 py-0.5 text-tiny text-text-muted hover:bg-surface-alt',
+      ],
+      // FeedRow 작성자 (배치: relative z-10)
+      [linkVariants({ variant: 'muted', size: 'bodySm' }), 'text-body-sm text-text-secondary hover:underline'],
+      // ArchiveRepoList 레포·PR 제목
+      [
+        linkVariants({ variant: 'title', size: 'bodySm' }),
+        'text-body-sm font-medium text-text hover:text-accent-dm hover:underline',
+      ],
+      [
+        linkVariants({ variant: 'title', size: 'label' }),
+        'text-label font-medium text-text hover:text-accent-dm hover:underline',
+      ],
+      // ArchiveRepoList PR 상태 (색은 호출부: text-danger | text-accent-dm)
+      [linkVariants({ variant: 'mono', size: 'caption' }), 'font-mono text-caption font-medium hover:opacity-80'],
+      // PatchToast 본문
+      [linkVariants({ variant: 'text', weight: 'medium' }), 'font-medium text-text hover:underline'],
+      // ProfileHeader 아바타
+      [linkVariants({ variant: 'avatar' }), 'block shrink-0 transition-transform duration-200 hover:scale-105'],
     ];
     for (const [actual, expected] of cases) expect(set(actual)).toEqual(set(expected));
   });
