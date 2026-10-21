@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { classSet as set } from '@/test/classes';
 import { TecoTalkBadge, tecoTalkBadgeVariants } from './TecoTalkBadge';
-
-const set = (s: string) => new Set(s.split(/\s+/).filter(Boolean));
 
 describe('TecoTalkBadge', () => {
   it('should keep the video chip classes and strip the bracket label from the title', () => {

@@ -3,7 +3,7 @@ import { requestJson, serverCache, withQuery } from '@/shared/api';
 import { decodeHtml } from '@/shared/lib/utils';
 import type { BlogPostDetail, FeedResponse } from '../model/types';
 
-export interface FeedParams {
+interface FeedParams {
   cohort?: number;
   track?: Track;
   days?: number;

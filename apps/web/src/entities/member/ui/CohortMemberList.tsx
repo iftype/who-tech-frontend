@@ -31,7 +31,7 @@ export function CohortMemberList({ members, emptyMessage }: CohortMemberListProp
               )}
               style={staggerFadeIn(i)}
             >
-              <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />
+              <Avatar src={member.avatarUrl} alt={member.nickname} size={36} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <p className="min-w-0 truncate text-body font-semibold text-text">

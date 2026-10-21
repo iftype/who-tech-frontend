@@ -2,13 +2,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { optionVariants } from '@/shared/ui';
+import { classSet as set } from '@/test/classes';
 
 const theme = { theme: 'dark', toggle: vi.fn(), designSystem: 'paper', setDesign: vi.fn() };
 vi.mock('@/shared/providers/ThemeProvider', () => ({ useTheme: () => theme }));
 
 const { ThemeTab } = await import('./ThemeTab');
-
-const set = (s: string) => new Set(s.split(/\s+/).filter(Boolean));
 
 describe('ThemeTab', () => {
   beforeEach(() => {

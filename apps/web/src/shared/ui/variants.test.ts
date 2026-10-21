@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { classSet as set } from '@/test/classes';
 import { badgeVariants } from './Badge';
 import { buttonVariants, chipButtonVariants } from './buttonVariants';
 import { emptyStateVariants } from './EmptyState';
@@ -10,7 +11,6 @@ import { optionVariants, segmentVariants } from './SegmentedControl';
 import { pageTabVariants } from './TabBar';
 
 // 화면에 손으로 쓰던 클래스를 공용 variant로 옮겼다. 클래스 집합이 그대로여야 화면도 그대로다
-const set = (s: string) => new Set(s.split(/\s+/).filter(Boolean));
 
 describe('shared/ui variants', () => {
   it('should keep the existing button and segment classes', () => {
@@ -196,12 +196,24 @@ describe('shared/ui variants', () => {
         navLinkVariants({ active: false }),
         'cursor-pointer whitespace-nowrap text-body-sm text-text-secondary hover:text-text',
       ],
-      [navLinkVariants({ placement: 'menu', active: true }), 'px-6 py-3 text-body bg-surface text-text'],
+      // 모바일 메뉴 줄 (MobileMenu가 className으로 덧붙이던 flex 배치까지)
+      [
+        navLinkVariants({ placement: 'menu', active: true }),
+        'px-6 py-3 text-body flex items-center justify-start text-left bg-surface text-text',
+      ],
       [
         navLinkVariants({ placement: 'menu', active: false }),
-        'px-6 py-3 text-body text-text-secondary hover:bg-surface hover:text-text',
+        'px-6 py-3 text-body flex items-center justify-start text-left text-text-secondary hover:bg-surface hover:text-text',
       ],
-      [navLinkVariants({ placement: 'menu' }), 'px-6 py-3 text-body'],
+      // 설정 줄의 링크: 색은 줄이 정하므로 active와 무관
+      [
+        navLinkVariants({ placement: 'menuInRow', active: true }),
+        'px-6 py-3 text-body flex min-w-0 flex-1 cursor-pointer items-center justify-start text-left',
+      ],
+      [
+        navLinkVariants({ placement: 'menuInRow', active: false }),
+        'px-6 py-3 text-body flex min-w-0 flex-1 cursor-pointer items-center justify-start text-left',
+      ],
       // Navbar 모바일 메뉴의 설정 행 (링크 + 테마 토글)
       [navMenuRowVariants({ active: true }), 'flex items-center gap-3 pr-4 bg-surface text-text'],
       [

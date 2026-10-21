@@ -3,7 +3,7 @@ import type { Track } from '@/entities/member';
 import { postApi } from './post.api';
 import { postKeys } from './post.keys';
 
-export const FEED_PAGE_SIZE = 50;
+const FEED_PAGE_SIZE = 50;
 
 // 멤버 상세의 블로그 글 탭. 상세 페이지 안에서만 쓰여 5분 동안 다시 받지 않는다
 export function memberPostsQuery(githubId: string) {
