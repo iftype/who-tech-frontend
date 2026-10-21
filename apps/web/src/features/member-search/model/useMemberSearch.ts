@@ -17,7 +17,7 @@ export function useMemberSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: results = [] } = useQuery(memberSearchQuery(debouncedQuery));
+  const { data: results = [], isError } = useQuery(memberSearchQuery(debouncedQuery));
   const showDropdown = open && debouncedQuery.length >= 1;
 
   const handleSelect = useCallback(
@@ -49,6 +49,7 @@ export function useMemberSearch() {
     setOpen,
     activeIndex,
     results,
+    isError,
     showDropdown,
     inputRef,
     containerRef,

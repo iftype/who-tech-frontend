@@ -62,6 +62,16 @@ describe('SearchDropdown', () => {
     expect(search).toHaveBeenLastCalledWith({ q: '가람' });
   });
 
+  it('should say the search failed instead of "no results" when the request errors', async () => {
+    search.mockRejectedValue(new Error('down'));
+    renderDropdown();
+
+    await userEvent.type(screen.getByRole('combobox'), 'ga');
+
+    expect(await screen.findByText('검색에 실패했습니다')).toBeInTheDocument();
+    expect(screen.queryByText('검색 결과가 없습니다')).not.toBeInTheDocument();
+  });
+
   it('should show an empty state when nothing matches', async () => {
     search.mockResolvedValue([]);
     renderDropdown();

@@ -3,7 +3,7 @@
 import { useCohorts } from '@/entities/member';
 import type { Track } from '@/entities/member';
 import { FeedFilterBar } from '@/features/feed-filter';
-import { EmptyState } from '@/shared/ui';
+import { EmptyState, ErrorState } from '@/shared/ui';
 import { FeedListSection } from './FeedListSection';
 import { FeedSidebar } from './FeedSidebar';
 import { useFeedFilters, type Range } from './model/useFeedFilters';
@@ -21,7 +21,10 @@ interface FeedClientProps {
 export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedClientProps) {
   const { filters, applyFilters, days } = useFeedFilters({ initialRange, initialCohort, initialTrack });
   const { cohort } = filters;
-  const { items, totalCount, isFetching, isFetchingNextPage, sentinelRef } = useFeedPosts({ filters, days });
+  const { items, totalCount, isFetching, isFetchingNextPage, isError, refetch, sentinelRef } = useFeedPosts({
+    filters,
+    days,
+  });
   const cohorts = useCohorts();
   const { staffPosts, platformStats } = useFeedSummary(items);
 
@@ -41,6 +44,8 @@ export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedCl
             <div ref={sentinelRef} className="h-10" />
             {isFetchingNextPage && <div className="py-4 text-center text-body-sm text-text-muted">로딩 중...</div>}
           </>
+        ) : isError ? (
+          <ErrorState frame="plain" size="tall" onRetry={() => void refetch()} />
         ) : isFetching ? (
           <FeedSkeleton />
         ) : (

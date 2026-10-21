@@ -3,6 +3,7 @@ export { BADGE_BASE_CLASS, Badge } from './Badge';
 export { buttonVariants, chipButtonVariants } from './buttonVariants';
 export { Divider } from './Divider';
 export { EmptyState } from './EmptyState';
+export { ErrorState } from './ErrorState';
 export { ListCard } from './ListCard';
 export { FilterRow, filterChipVariants } from './FilterRow';
 export { linkVariants } from './linkVariants';
