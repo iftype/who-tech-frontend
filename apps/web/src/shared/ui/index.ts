@@ -5,6 +5,7 @@ export { Divider } from './Divider';
 export { EmptyState } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export { ListCard } from './ListCard';
+export { LOADING_TEXT } from './messages';
 export { FilterRow, filterChipVariants } from './FilterRow';
 export { linkVariants } from './linkVariants';
 export { listItemVariants } from './listItemVariants';
