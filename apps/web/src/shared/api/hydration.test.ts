@@ -12,6 +12,19 @@ describe('server prefetch and hydration', () => {
     expect(cohortsQuery().queryKey).toEqual(memberKeys.cohorts());
   });
 
+  it('should start every key with its entity namespace so one invalidation clears the entity', () => {
+    const memberKeysList = [
+      memberKeys.cohorts(),
+      memberKeys.detail('a'),
+      memberKeys.search('q'),
+      memberKeys.cohortExplorer(8, 'all', 'crew'),
+    ];
+    const postKeysList = [postKeys.feed(30, null, null), postKeys.byMember('a')];
+    memberKeysList.forEach((key) => expect(key[0]).toBe(memberKeys.all[0]));
+    postKeysList.forEach((key) => expect(key[0]).toBe(postKeys.all[0]));
+    expect(memberKeys.all).not.toEqual(postKeys.all);
+  });
+
   it('should store the infinite shape when prefetched (the #94 bug: prefetchQuery stored a plain page)', async () => {
     const server = new QueryClient();
     const options = cohortMembersQuery(8, 'all', 'crew');

@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { memberDetailQuery } from '@/entities/member';
-import { makeQueryClient } from '@/shared/api/query-client';
+import { makeQueryClient } from '@/shared/api';
 import { MemberDetailClient } from './MemberDetailClient';
 
 interface DetailPageProps {

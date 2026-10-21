@@ -1,11 +1,11 @@
-import { ApiError, RateLimitError, requestJson, send, withQuery } from '@/shared/api';
-import type { Member, MemberDetail, MemberSearchPage, RoleGroup } from '../model/types';
+import { ApiError, RateLimitError, readBody, requestJson, send, serverCache, withQuery } from '@/shared/api';
+import type { Member, MemberDetail, MemberSearchPage, Role, RoleGroup, Track } from '../model/types';
 
 export interface MemberSearchParams {
   q?: string;
   cohort?: number;
-  track?: string;
-  role?: string;
+  track?: Track;
+  role?: Role;
 }
 
 export interface MemberSearchPageParams extends MemberSearchParams {
@@ -14,17 +14,19 @@ export interface MemberSearchPageParams extends MemberSearchParams {
   offset?: number;
 }
 
+// 서버 데이터 캐시 시간 (서버 prefetch 경로만 해당)
+const CACHE_SECONDS = 300;
+
 export const memberApi = {
   search: (params: MemberSearchParams, init?: RequestInit) =>
     requestJson<Member[]>(withQuery('/members', { ...params }), init),
 
-  // 서버에서 부를 때 Next 데이터 캐시 5분 (브라우저는 next 옵션을 무시한다)
-  searchPage: (params: MemberSearchPageParams, init: RequestInit = { next: { revalidate: 300 } }) =>
+  searchPage: (params: MemberSearchPageParams, init: RequestInit = serverCache(CACHE_SECONDS)) =>
     requestJson<MemberSearchPage>(withQuery('/members/search', { ...params }), init),
 
   cohorts: () => requestJson<number[]>('/members/cohorts'),
 
-  detail: (githubId: string) => requestJson<MemberDetail>(`/members/${githubId}`, { next: { revalidate: 300 } }),
+  detail: (githubId: string) => requestJson<MemberDetail>(`/members/${githubId}`, serverCache(CACHE_SECONDS)),
 
   /** 프로필 새로고침. 너무 자주 부르면 RateLimitError(남은 초 포함) */
   refresh: async (githubId: string): Promise<MemberDetail> => {
@@ -34,8 +36,8 @@ export const memberApi = {
       throw new RateLimitError(body.remainingSeconds, body.message);
     }
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      throw new ApiError(res.status, `API error: ${res.status} ${text}`);
+      const text = await readBody(res);
+      throw new ApiError(res.status, `API error: ${res.status} ${text}`, text);
     }
     return res.json() as Promise<MemberDetail>;
   },

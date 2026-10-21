@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
-import { postApi, postKeys } from '@/entities/post';
+import { memberPostsQuery } from '@/entities/post';
 import type { CohortArchive } from '@/entities/member';
 import { pageTabVariants } from '@/shared/ui';
 import { urlStore } from '@/shared/lib/urlStore';
@@ -68,12 +68,7 @@ export function ProfileTabs({
 }
 
 function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedAt: string | null }) {
-  const { data: blogPosts, isLoading } = useQuery({
-    queryKey: postKeys.byMember(githubId),
-    queryFn: () => postApi.byMember(githubId),
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  const { data: blogPosts, isLoading } = useQuery(memberPostsQuery(githubId));
 
   if (isLoading) {
     return <p className="py-8 text-body-sm text-text-muted">블로그 글을 불러오는 중...</p>;

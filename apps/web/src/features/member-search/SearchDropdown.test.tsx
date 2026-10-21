@@ -8,8 +8,9 @@ const push = vi.fn();
 const search = vi.fn();
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
-vi.mock('@/entities/member', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/entities/member')>()),
+// 쿼리 옵션(member.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다
+vi.mock('@/entities/member/api/member.api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/member/api/member.api')>()),
   memberApi: { search: (...args: unknown[]) => search(...args) },
 }));
 

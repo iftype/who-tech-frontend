@@ -2,7 +2,7 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { cohortsQuery, parseTrack } from '@/entities/member';
 import { feedQuery, parseRange, rangeToDays } from '@/entities/post';
 import { FeedClient } from '@/widgets/feed/FeedClient';
-import { makeQueryClient } from '@/shared/api/query-client';
+import { makeQueryClient } from '@/shared/api';
 import { PageContainer } from '@/shared/ui';
 
 // 피드 첫 페이지와 기수 목록을 서버에서 미리 받아 캐시째(dehydrate) 내려 준다.

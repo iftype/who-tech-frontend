@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { memberApi, memberKeys } from '@/entities/member';
+import { memberSearchQuery } from '@/entities/member';
 import type { Member } from '@/entities/member';
 import { useDebounce } from '@/shared/lib/useDebounce';
 
@@ -15,11 +15,7 @@ export function useMemberSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: results = [] } = useQuery({
-    queryKey: memberKeys.search(debouncedQuery),
-    queryFn: () => memberApi.search({ q: debouncedQuery }),
-    enabled: debouncedQuery.length >= 1,
-  });
+  const { data: results = [] } = useQuery(memberSearchQuery(debouncedQuery));
 
   // 쿼리 바뀔 때 activeIndex 초기화
   useEffect(() => {

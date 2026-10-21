@@ -31,6 +31,15 @@ export function cohortMembersQuery(cohort: number | null, track: Track | 'all', 
   });
 }
 
+// 헤더 검색. 빈 문자열이면 요청하지 않는다 (enabled). 키에 검색어가 들어가 같은 검색어는 캐시에서 바로 나온다
+export function memberSearchQuery(query: string) {
+  return queryOptions({
+    queryKey: memberKeys.search(query),
+    queryFn: () => memberApi.search({ q: query }),
+    enabled: query.length >= 1,
+  });
+}
+
 // 멤버 상세. 서버 page.tsx가 prefetch해 HydrationBoundary로 넘긴다.
 // 예전처럼 화면에서는 다시 받지 않는다(새로고침 버튼이 결과를 캐시에 직접 넣는다)
 export function memberDetailQuery(githubId: string) {

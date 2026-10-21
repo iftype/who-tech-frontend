@@ -6,6 +6,8 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     message: string,
+    /** 서버가 보낸 응답 본문 (있으면). 화면 문구가 아니라 로그·디버깅용 */
+    readonly body: string = '',
   ) {
     super(message);
     this.name = 'ApiError';
@@ -25,6 +27,16 @@ export class RateLimitError extends ApiError {
   }
 }
 
+/** 서버(SSR)에서 부를 때 Next 데이터 캐시를 seconds 동안 쓴다. 브라우저 fetch는 next 옵션을 무시한다 */
+export function serverCache(seconds: number): RequestInit {
+  return { next: { revalidate: seconds } };
+}
+
+/** 응답 본문을 읽되, 읽을 수 없으면 빈 문자열 (에러 경로에서 또 다른 예외를 만들지 않게) */
+export function readBody(res: Response): Promise<string> {
+  return res.text().catch(() => '');
+}
+
 /** API로 요청을 보낸다. 상태 코드 처리는 호출하는 쪽이 한다 */
 export function send(path: string, init?: RequestInit): Promise<Response> {
   return fetch(`${API_BASE_URL}${path}`, {
@@ -33,10 +45,13 @@ export function send(path: string, init?: RequestInit): Promise<Response> {
   });
 }
 
-/** JSON 응답을 받는다. 2xx가 아니면 ApiError */
+/**
+ * JSON 응답을 받는다. 2xx가 아니면 ApiError.
+ * 응답 모양은 런타임에 검증하지 않는다 — 백엔드 계약 스냅샷(who-tech-backend)이 모양을 고정하므로 여기서는 타입만 믿는다
+ */
 export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await send(path, init);
-  if (!res.ok) throw new ApiError(res.status, `API error: ${res.status} ${path}`);
+  if (!res.ok) throw new ApiError(res.status, `API error: ${res.status} ${path}`, await readBody(res));
   return res.json() as Promise<T>;
 }
 
