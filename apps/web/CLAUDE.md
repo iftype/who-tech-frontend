@@ -44,6 +44,7 @@ src/app/
 - 누르는 요소(버튼·링크)의 모양은 `shared/ui`의 cva variant로만, `className`은 배치만 — `pnpm lint:tokens`가 `<button>`·`<a>`·`Link`를 검사한다 (ADR 0003·0010). **`transition-colors` 전역 사용 금지** — 테마 전환 잔상 방지 (기수 화면의 예외는 ADR 0003)
 - 테마·디자인은 **쿠키**(`theme`, `designSystem`)로. 서버 `layout.tsx`가 읽어 `<html>` 클래스를 정하므로 첫 화면이 깜빡이지 않는다 (그래서 모든 경로가 동적 렌더링)
 - 리팩토링 PR은 동작 고정 테스트를 먼저 쓰고, 스크린샷 fixture·baseline은 바꾸지 않는다 (ADR 0009)
+- 요청 실패는 `shared/ui/ErrorState`(다시 시도)로 보여 준다. 빈 상태(`EmptyState`)로 숨기지 않는다. 응답 DTO의 "있을 수도 없을 수도" 필드는 `entities/*/api`에서 한 번 채운다 (ADR 0011)
 - 모바일 앱(`apps/mobile`)이 읽는 셀렉터는 바꾸지 않는다: `header[data-nav]`, `button[aria-label="메뉴"]`, 로고 `a[href="/"]`, `html.dark/.apple/.sentry`
 
 ## 환경변수 (apps/web/.env.local)
