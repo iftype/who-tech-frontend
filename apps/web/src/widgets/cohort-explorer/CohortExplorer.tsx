@@ -14,7 +14,7 @@ import { CohortExplorerSkeleton } from './ui/CohortExplorerSkeleton';
 interface CohortExplorerProps {
   initialCohort: number | null;
   initialRoleGroup: RoleGroup;
-  initialTrack: Track | 'all';
+  initialTrack: Track | null;
 }
 
 export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }: CohortExplorerProps) {
@@ -43,7 +43,7 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
   );
 
   const filtered = useMemo(
-    () => roleScopedMembers.filter((m) => track === 'all' || m.tracks.includes(track)),
+    () => roleScopedMembers.filter((m) => track === null || m.tracks.includes(track)),
     [roleScopedMembers, track],
   );
 

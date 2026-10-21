@@ -7,7 +7,7 @@ import { makeQueryClient } from './query-client';
 // 서버 page.tsx의 prefetch → dehydrate → 브라우저 hydrate 경로를 고정한다
 describe('server prefetch and hydration', () => {
   it('should share keys between page prefetch and widget queries', () => {
-    expect(cohortMembersQuery(8, 'all', 'crew').queryKey).toEqual(memberKeys.cohortExplorer(8, 'all', 'crew'));
+    expect(cohortMembersQuery(8, null, 'crew').queryKey).toEqual(memberKeys.cohortExplorer(8, null, 'crew'));
     expect(feedQuery(30, null, 8).queryKey).toEqual(postKeys.feed(30, null, 8));
     expect(cohortsQuery().queryKey).toEqual(memberKeys.cohorts());
   });
@@ -17,7 +17,7 @@ describe('server prefetch and hydration', () => {
       memberKeys.cohorts(),
       memberKeys.detail('a'),
       memberKeys.search('q'),
-      memberKeys.cohortExplorer(8, 'all', 'crew'),
+      memberKeys.cohortExplorer(8, null, 'crew'),
     ];
     const postKeysList = [postKeys.feed(30, null, null), postKeys.byMember('a')];
     memberKeysList.forEach((key) => expect(key[0]).toBe(memberKeys.all[0]));
@@ -27,7 +27,7 @@ describe('server prefetch and hydration', () => {
 
   it('should store the infinite shape when prefetched (the #94 bug: prefetchQuery stored a plain page)', async () => {
     const server = new QueryClient();
-    const options = cohortMembersQuery(8, 'all', 'crew');
+    const options = cohortMembersQuery(8, null, 'crew');
     await server.prefetchInfiniteQuery({
       ...options,
       queryFn: async () => ({ members: [], totalCount: 0, counts: { crew: 0, staff: 0 }, nextOffset: null }),
