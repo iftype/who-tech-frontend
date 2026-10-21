@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { memberDetailQuery } from '@/entities/member';
 import { parseMissionTab } from '@/features/mission-archive/parse';
-import { parseProfileTab } from '@/widgets/profile-tabs/model/profileTab';
+import { parseProfileTab } from '@/widgets/member-profile/model/profileTab';
 import { ApiError, makeQueryClient } from '@/shared/api';
 import { MemberDetailClient } from './MemberDetailClient';
 

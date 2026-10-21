@@ -11,8 +11,8 @@ import {
   memberDetailQuery,
   visibleArchive,
 } from '@/entities/member';
-import { ProfileTabs } from '@/widgets/profile-tabs/ProfileTabs';
-import type { ProfileTab } from '@/widgets/profile-tabs/model/profileTab';
+import { ProfileTabs } from '@/widgets/member-profile/ProfileTabs';
+import type { ProfileTab } from '@/widgets/member-profile/model/profileTab';
 import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
 import type { MissionTab } from '@/features/mission-archive/types';
 import { GitHubIcon, LinkIcon, PageContainer, buttonVariants } from '@/shared/ui';
