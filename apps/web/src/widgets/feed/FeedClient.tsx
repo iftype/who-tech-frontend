@@ -19,7 +19,7 @@ interface FeedClientProps {
 
 // 데이터(피드 첫 페이지·기수 목록)는 서버가 HydrationBoundary로 캐시에 넣어 준다. props는 URL 상태의 서버 스냅샷용
 export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedClientProps) {
-  const { filters, applyFilters, days } = useFeedFilters(initialRange, initialCohort, initialTrack);
+  const { filters, applyFilters, days } = useFeedFilters({ initialRange, initialCohort, initialTrack });
   const { cohort } = filters;
   const { items, totalCount, isFetching, isFetchingNextPage, sentinelRef } = useFeedPosts({ filters, days });
   const cohorts = useCohorts();
