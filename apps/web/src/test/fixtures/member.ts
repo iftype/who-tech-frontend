@@ -1,7 +1,10 @@
 import type { CohortArchive, Member, MemberDetail, MemberSearchPage } from '@/entities/member';
 
+/** 테스트가 "이 필드가 없는 응답"을 흉내내려고 undefined를 넘길 수 있게 (exactOptionalPropertyTypes) */
+export type MemberOverrides = { [K in keyof Member]?: Member[K] | undefined };
+
 /** 8기 백엔드 크루 한 명. 테스트가 신경 쓰는 필드만 overrides로 바꾼다 */
-export function makeMember(githubId: string, overrides: Partial<Member> = {}): Member {
+export function makeMember(githubId: string, overrides: MemberOverrides = {}): Member {
   return {
     githubId,
     nickname: `${githubId}-닉`,
@@ -13,7 +16,7 @@ export function makeMember(githubId: string, overrides: Partial<Member> = {}): M
     blog: null,
     lastPostedAt: null,
     ...overrides,
-  };
+  } as Member;
 }
 
 export function makeMemberDetail(githubId: string, overrides: Partial<MemberDetail> = {}): MemberDetail {

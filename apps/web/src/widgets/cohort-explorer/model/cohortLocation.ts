@@ -1,7 +1,7 @@
 import { parseCohortNumber, parseRoleGroup, parseTrackOrAll } from '@/entities/member';
 import type { RoleGroup, Track } from '@/entities/member';
 
-export type CohortFilters = { roleGroup: RoleGroup; track: Track | 'all' };
+type CohortFilters = { roleGroup: RoleGroup; track: Track | 'all' };
 
 /** `/cohort/<숫자>`의 기수. 목록(`/cohort`)이나 다른 경로면 null */
 export function parseCohortPath(pathname: string): number | null {
