@@ -6,7 +6,7 @@ export { EmptyState, emptyStateVariants } from './EmptyState';
 export { ListCard, listCardVariants } from './ListCard';
 export { FilterRow, filterChipVariants } from './FilterRow';
 export { listItemVariants } from './listItemVariants';
-export { navLinkVariants } from './navLinkVariants';
+export { navLinkVariants, navMenuRowVariants } from './navLinkVariants';
 export { CONTAINER_MAX_STYLE, PageContainer } from './PageContainer';
 export { SectionLabel } from './SectionLabel';
 export { OptionGroup, SegmentedControl, optionVariants, segmentVariants } from './SegmentedControl';

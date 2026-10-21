@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buttonVariants, chipButtonVariants } from './buttonVariants';
 import { listItemVariants } from './listItemVariants';
-import { navLinkVariants } from './navLinkVariants';
+import { navLinkVariants, navMenuRowVariants } from './navLinkVariants';
 import { optionVariants, segmentVariants } from './SegmentedControl';
 import { pageTabVariants } from './TabBar';
 import { emptyStateVariants } from './EmptyState';
@@ -141,6 +141,12 @@ describe('shared/ui variants', () => {
         'px-6 py-3 text-body text-text-secondary hover:bg-surface hover:text-text',
       ],
       [navLinkVariants({ placement: 'menu' }), 'px-6 py-3 text-body'],
+      // Navbar 모바일 메뉴의 설정 행 (링크 + 테마 토글)
+      [navMenuRowVariants({ active: true }), 'flex items-center gap-3 pr-4 bg-surface text-text'],
+      [
+        navMenuRowVariants({ active: false }),
+        'flex items-center gap-3 pr-4 text-text-secondary hover:bg-surface hover:text-text',
+      ],
     ];
     for (const [actual, expected] of cases) expect(set(actual)).toEqual(set(expected));
   });
