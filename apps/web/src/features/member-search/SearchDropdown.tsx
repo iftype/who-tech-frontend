@@ -5,20 +5,26 @@ import { cn } from '@/shared/lib/utils';
 import { SearchIcon } from '@/shared/ui';
 import { useMemberSearch } from './model/useMemberSearch';
 import { SearchResultItem } from './ui/SearchResultItem';
+import {
+  SEARCH_PLACEHOLDER,
+  searchBoxVariants,
+  searchDropdownVariants,
+  searchIconVariants,
+  searchInputVariants,
+  type SearchVariant,
+} from './ui/searchBoxVariants';
 
 interface SearchDropdownProps {
+  variant?: SearchVariant;
   className?: string;
-  compact?: boolean;
+  /** 드롭다운의 위치만 (모바일 헤더는 화면에 고정) */
   dropdownClassName?: string;
-  mobileHeader?: boolean;
 }
 
-export function SearchDropdown({
-  className,
-  compact = false,
-  dropdownClassName,
-  mobileHeader = false,
-}: SearchDropdownProps) {
+// 모바일 헤더의 입력은 iOS 자동 확대를 피하려고 16px로 두고 scale로 줄인다 (폭은 그만큼 늘려 자리를 맞춘다)
+const MOBILE_HEADER_INPUT_SCALE = 0.86;
+
+export function SearchDropdown({ variant = 'full', className, dropdownClassName }: SearchDropdownProps) {
   const {
     query,
     setQuery,
@@ -35,26 +41,13 @@ export function SearchDropdown({
   const listboxId = useId();
   const optionId = (index: number) => `${listboxId}-option-${index}`;
   const hasOptions = showDropdown && results.length > 0;
-
-  const placeholder = mobileHeader ? '검색' : compact ? '닉네임 / ID 검색' : '닉네임 또는 GitHub ID로 검색...';
-  const mobileHeaderInputScale = 0.86;
+  const isMobileHeader = variant === 'mobileHeader';
 
   return (
     <div ref={containerRef} className={cn('relative w-full max-w-[560px]', className)}>
-      <div
-        className={cn(
-          'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50',
-          compact ? (mobileHeader ? 'gap-2 px-2 py-1.5' : 'px-2.5 py-2') : 'px-4 py-3',
-        )}
-      >
-        <SearchIcon
-          className={cn(
-            'text-text-muted flex-shrink-0',
-            compact ? (mobileHeader ? 'h-3 w-3' : 'h-3.5 w-3.5') : 'h-4 w-4',
-          )}
-          aria-hidden="true"
-        />
-        <div className={cn('min-w-0 flex-1', mobileHeader && 'overflow-hidden')}>
+      <div className={searchBoxVariants({ variant })}>
+        <SearchIcon className={searchIconVariants({ variant })} aria-hidden="true" />
+        <div className={cn('min-w-0 flex-1', isMobileHeader && 'overflow-hidden')}>
           <input
             ref={inputRef}
             type="text"
@@ -71,26 +64,16 @@ export function SearchDropdown({
             }}
             onKeyDown={handleKeyDown}
             onFocus={() => setOpen(true)}
-            placeholder={placeholder}
-            className={cn(
-              'w-full bg-transparent text-text placeholder:text-text-muted outline-none',
-              compact
-                ? mobileHeader
-                  ? 'origin-left text-body-lg placeholder:text-label sm:text-body-sm'
-                  : 'text-body-sm'
-                : 'text-body-lg sm:text-body',
-            )}
+            placeholder={SEARCH_PLACEHOLDER[variant]}
+            className={searchInputVariants({ variant })}
             style={
-              mobileHeader
-                ? {
-                    transform: `scale(${mobileHeaderInputScale})`,
-                    width: `${100 / mobileHeaderInputScale}%`,
-                  }
+              isMobileHeader
+                ? { transform: `scale(${MOBILE_HEADER_INPUT_SCALE})`, width: `${100 / MOBILE_HEADER_INPUT_SCALE}%` }
                 : undefined
             }
           />
         </div>
-        {!compact && (
+        {variant === 'full' && (
           <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-tiny font-mono text-text-muted">
             ⌘K
           </kbd>
@@ -98,13 +81,7 @@ export function SearchDropdown({
       </div>
 
       {showDropdown && (
-        <div
-          className={cn(
-            'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-border bg-surface shadow-xl',
-            mobileHeader && 'max-h-[min(60vh,24rem)] overflow-y-auto overscroll-contain',
-            dropdownClassName,
-          )}
-        >
+        <div className={cn(searchDropdownVariants({ variant }), dropdownClassName)}>
           {results.length === 0 ? (
             <div className="px-4 py-6 text-center text-body-sm text-text-muted">검색 결과가 없습니다</div>
           ) : (
