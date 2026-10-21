@@ -8,7 +8,8 @@ import { Analytics } from '@vercel/analytics/next';
 import { Navbar } from '@/widgets/layout/Navbar';
 import { PatchToast } from '@/widgets/layout/PatchToast';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
-import { ThemeProvider, type DesignSystem, type Theme } from '@/shared/providers/ThemeProvider';
+import { ThemeProvider } from '@/shared/providers/ThemeProvider';
+import { parseDesign, parseTheme } from '@/shared/providers/theme';
 
 const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 
@@ -21,25 +22,12 @@ export const metadata: Metadata = {
   },
 };
 
-const VALID_THEMES = ['dark', 'light'] as const;
-const VALID_DESIGNS = ['paper', 'apple', 'sentry'] as const;
-
-function isTheme(v: unknown): v is Theme {
-  return typeof v === 'string' && (VALID_THEMES as readonly string[]).includes(v);
-}
-
-function isDesign(v: unknown): v is DesignSystem {
-  return typeof v === 'string' && (VALID_DESIGNS as readonly string[]).includes(v);
-}
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
 
-  const rawTheme = cookieStore.get('theme')?.value;
-  const rawDesign = cookieStore.get('designSystem')?.value;
-
-  const theme: Theme = isTheme(rawTheme) ? rawTheme : 'dark';
-  const design: DesignSystem = isDesign(rawDesign) ? rawDesign : 'paper';
+  // 쿠키의 테마를 서버에서 읽어 <html>에 바로 올린다 → 첫 그림에 깜빡임이 없다 (그 대가로 모든 경로가 동적 렌더링, ADR 0004)
+  const theme = parseTheme(cookieStore.get('theme')?.value);
+  const design = parseDesign(cookieStore.get('designSystem')?.value);
 
   const htmlClass = [
     GeistSans.variable,

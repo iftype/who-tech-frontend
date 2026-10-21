@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { makeArchive } from '@/test/fixtures/member';
 import { makeBlogPost } from '@/test/fixtures/post';
 import { renderWithQuery } from '@/test/render';
-import { currentUrl, setUrl } from '@/test/url';
+import { currentUrl, popstateTo, setUrl } from '@/test/url';
 
 const byMember = vi.fn();
 vi.mock('@/entities/post/api/post.api', async (importOriginal) => ({
@@ -21,6 +21,7 @@ function renderTabs(props: Partial<Props> = {}) {
     archive: [makeArchive(8)],
     memberTracks: ['backend'],
     githubId: 'crew',
+    detailId: 'crew',
     lastPostedAt: null,
     initialTab: 'mission',
     initialMissionTab: 'mission',
@@ -68,6 +69,7 @@ describe('ProfileTabs', () => {
   });
 
   it('should write the default tab explicitly when going back to missions', async () => {
+    setUrl('/crew?tab=blog');
     renderTabs({ initialTab: 'blog' });
 
     await userEvent.click(tab('미션 아카이브'));
@@ -76,13 +78,16 @@ describe('ProfileTabs', () => {
     expect(screen.getByRole('heading', { name: '미션 PR 아카이브' })).toBeInTheDocument();
   });
 
+  // 클라이언트 마운트 뒤에는 실제 URL이 소스다 → 블로그 탭으로 시작하려면 URL에도 ?tab=blog가 있어야 한다
   it('should show the loading text while the posts are on their way', () => {
     byMember.mockReturnValue(new Promise(() => undefined));
+    setUrl('/crew?tab=blog');
     renderTabs({ initialTab: 'blog' });
     expect(screen.getByText('블로그 글을 불러오는 중...')).toBeInTheDocument();
   });
 
   it('should explain an empty blog archive and hide the last-posted line', async () => {
+    setUrl('/crew?tab=blog');
     renderTabs({ initialTab: 'blog', lastPostedAt: '2026-10-17T12:00:00Z' });
 
     expect(await screen.findByText('등록된 블로그 글이 없습니다')).toBeInTheDocument();
@@ -91,9 +96,26 @@ describe('ProfileTabs', () => {
 
   it('should show the empty text when the posts request fails', async () => {
     byMember.mockRejectedValue(new Error('down'));
+    setUrl('/crew?tab=blog');
     renderTabs({ initialTab: 'blog' });
 
     expect(await screen.findByText('등록된 블로그 글이 없습니다')).toBeInTheDocument();
+  });
+
+  it('should follow the URL when history moves (back/forward) instead of a stale copy', async () => {
+    renderTabs();
+    expect(tab('미션 아카이브')).toHaveAttribute('aria-selected', 'true');
+
+    await popstateTo('/crew?tab=blog');
+
+    expect(tab('블로그 글')).toHaveAttribute('aria-selected', 'true');
+    expect(await screen.findByText('등록된 블로그 글이 없습니다')).toBeInTheDocument();
+  });
+
+  it('should ignore URLs of other pages while this one is leaving', async () => {
+    renderTabs();
+    await popstateTo('/other?tab=blog');
+    expect(tab('미션 아카이브')).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should keep the mission sub-tab in the URL next to the profile tab', async () => {

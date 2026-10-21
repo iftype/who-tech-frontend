@@ -10,7 +10,7 @@ export type {
   TecoTalk,
   Track,
 } from './model/types';
-export { TRACKS, parseRoleGroup, parseTrack, parseTrackOrAll } from './model/parse';
+export { TRACKS, parseCohortNumber, parseRoleGroup, parseTrack, parseTrackOrAll } from './model/parse';
 export { CURRENT_COHORT, UNREGISTERED_COHORT } from './model/constants';
 export { ROLE_LABEL, TRACK_LABEL, TRACK_OPTIONS, TRACK_SHORT_LABEL } from './model/labels';
 export type { TrackOption } from './model/labels';

@@ -4,20 +4,9 @@ import { useMemo } from 'react';
 import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
 import type { ReactNode } from 'react';
 import { ThemeTab } from './tabs/ThemeTab';
+import { SETTINGS_TABS, parseSettingsTab } from './settingsTab';
 import { PageContainer, pageTabVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
-
-type Tab = 'guide' | 'theme' | 'privacy';
-
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'theme', label: '테마' },
-  { id: 'guide', label: '가이드' },
-  { id: 'privacy', label: '개인정보처리방침' },
-];
-
-function parseTab(value: string | null): Tab {
-  return value === 'guide' || value === 'privacy' ? value : 'theme';
-}
 
 const isSettingsPath = (pathname: string) => pathname === '/settings';
 
@@ -31,13 +20,7 @@ interface SettingsClientProps {
 // 테마 탭만 상호작용(테마 전환)이 있어 클라이언트 컴포넌트다
 export function SettingsClient({ guide, privacy }: SettingsClientProps) {
   const url = useUrl('/settings', isSettingsPath);
-  const activeTab = useMemo(() => parseTab(new URLSearchParams(splitUrl(url).search).get('tab')), [url]);
-
-  const handleTabChange = (tab: Tab) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set('tab', tab);
-    urlStore.push(`${window.location.pathname}?${params}`);
-  };
+  const activeTab = useMemo(() => parseSettingsTab(new URLSearchParams(splitUrl(url).search).get('tab')), [url]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -55,12 +38,12 @@ export function SettingsClient({ guide, privacy }: SettingsClientProps) {
       {/* 탭 헤더 */}
       <div className="mb-8 border-b border-border">
         <div role="tablist" aria-label="설정" className="flex gap-0">
-          {TABS.map((tab) => (
+          {SETTINGS_TABS.map((tab) => (
             <button
               key={tab.id}
               role="tab"
               aria-selected={activeTab === tab.id}
-              onClick={() => handleTabChange(tab.id)}
+              onClick={() => urlStore.pushParam('tab', tab.id)}
               className={cn(pageTabVariants({ active: activeTab === tab.id }), 'transition-colors')}
             >
               {tab.label}

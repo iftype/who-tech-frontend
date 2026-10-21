@@ -40,13 +40,21 @@ export const urlStore = {
     window.history.replaceState(null, '', url);
     emit();
   },
-  /** 지금 URL의 쿼리 하나만 바꿔 replace 한다 */
+  /** 지금 URL의 쿼리 하나만 바꿔 replace 한다 (필터·보기 전환) */
   replaceParam(key: string, value: string): void {
-    const params = new URLSearchParams(window.location.search);
-    params.set(key, value);
-    urlStore.replace(`${window.location.pathname}?${params}`);
+    urlStore.replace(withParam(key, value));
+  },
+  /** 지금 URL의 쿼리 하나만 바꿔 push 한다 (뒤로가기로 돌아올 탭) */
+  pushParam(key: string, value: string): void {
+    urlStore.push(withParam(key, value));
   },
 };
+
+function withParam(key: string, value: string): string {
+  const params = new URLSearchParams(window.location.search);
+  params.set(key, value);
+  return `${window.location.pathname}?${params}`;
+}
 
 /**
  * 지금 URL(pathname+search). 서버 렌더와 하이드레이션 중에는 serverUrl(페이지가 받은 값으로 만든 URL)을 쓰고,

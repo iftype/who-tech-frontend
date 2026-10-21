@@ -18,6 +18,11 @@ export function parseTrackOrAll(value: string | null | undefined, fallback: Trac
   return parseTrack(value) ?? fallback;
 }
 
+/** URL의 기수 값. 양의 정수 문자열만 받고 나머지("abc", "", "1.5")는 null (기수 없음) */
+export function parseCohortNumber(value: string | null | undefined): number | null {
+  return value != null && /^\d+$/.test(value) ? Number(value) : null;
+}
+
 export function parseRoleGroup(value: string | null | undefined, fallback: RoleGroup = 'crew'): RoleGroup {
   if (value === 'staff' || value === 'crew') return value;
   return fallback;

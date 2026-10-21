@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
@@ -94,6 +95,28 @@ const archive: CohortArchive[] = [
 
 type MissionTab = 'mission' | 'common' | 'pending';
 
+// 탭은 부모(ProfileTabs)가 URL에서 읽어 넘긴다. 여기서는 상태를 가진 껍데기로 흉내낸다
+function Controlled({
+  customArchive,
+  initialMissionTab,
+  memberTracks,
+}: {
+  customArchive: CohortArchive[];
+  initialMissionTab: MissionTab;
+  memberTracks: Track[];
+}) {
+  const [tab, setTab] = useState<MissionTab>(initialMissionTab);
+  return (
+    <MissionArchive
+      archive={customArchive}
+      memberTracks={memberTracks}
+      githubId="woody"
+      tab={tab}
+      onTabChange={setTab}
+    />
+  );
+}
+
 function renderMissionArchive({
   customArchive = archive,
   initialMissionTab = 'mission',
@@ -104,12 +127,7 @@ function renderMissionArchive({
   memberTracks?: Track[];
 } = {}) {
   return render(
-    <MissionArchive
-      archive={customArchive}
-      memberTracks={memberTracks}
-      githubId="woody"
-      initialMissionTab={initialMissionTab}
-    />,
+    <Controlled customArchive={customArchive} initialMissionTab={initialMissionTab} memberTracks={memberTracks} />,
   );
 }
 
@@ -242,14 +260,13 @@ describe('MissionArchive', () => {
     ]);
   });
 
-  it('탭을 바꾸면 URL의 missionTab query와 목록이 함께 갱신된다', async () => {
+  it('탭을 바꾸면 부모에게 알리고 목록이 갱신된다 (URL 기록은 ProfileTabs 테스트가 맡는다)', async () => {
     const user = userEvent.setup({ writeToClipboard: false });
     renderMissionArchive();
 
     await user.click(screen.getByRole('button', { name: '공통' }));
 
-    expect(window.location.pathname).toBe('/woody');
-    expect(window.location.search).toBe('?missionTab=common');
+    expect(screen.getByRole('button', { name: '공통' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('link', { name: 'common-mission' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'javascript-calculator' })).not.toBeInTheDocument();
   });
