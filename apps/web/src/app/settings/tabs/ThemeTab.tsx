@@ -1,9 +1,9 @@
 'use client';
 
-import { Fragment } from 'react';
 import { Moon, Sun } from 'lucide-react';
-import { useTheme } from '@/shared/providers/ThemeProvider';
+import { Fragment } from 'react';
 import { DESIGN_SYSTEMS, type DesignSystem } from '@/shared/providers/theme';
+import { useTheme } from '@/shared/providers/ThemeProvider';
 import { OptionGroup, optionVariants } from '@/shared/ui';
 
 const DESIGN_TEXT: Record<DesignSystem, { label: string; sub: string }> = {

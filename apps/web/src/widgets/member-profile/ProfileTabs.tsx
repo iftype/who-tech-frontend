@@ -1,9 +1,9 @@
 'use client';
 
-import { MissionArchive } from '@/features/mission-archive/MissionArchive';
-import type { MissionTab } from '@/features/mission-archive/types';
 import { visibleArchive } from '@/entities/member';
 import type { MemberDetail } from '@/entities/member';
+import { MissionArchive } from '@/features/mission-archive';
+import type { MissionTab } from '@/features/mission-archive';
 import { pageTabVariants } from '@/shared/ui';
 import { PROFILE_TABS, type ProfileTab } from './model/profileTab';
 import { useProfileTabs } from './model/useProfileTabs';

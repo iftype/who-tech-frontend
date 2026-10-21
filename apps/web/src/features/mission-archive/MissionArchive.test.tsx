@@ -1,11 +1,11 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
-import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
+import type { CohortArchive, Track } from '@/entities/member';
 import { MissionArchive } from './MissionArchive';
 import { getFilteredArchives } from './utils';
-import type { CohortArchive, Track } from '@/entities/member';
 
 const archive: CohortArchive[] = [
   {

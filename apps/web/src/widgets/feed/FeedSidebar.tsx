@@ -1,7 +1,7 @@
-import { Avatar } from '@/shared/ui';
 import { CURRENT_COHORT } from '@/entities/member';
-import { formatRelativeDate } from '@/shared/lib/utils';
 import type { FeedItem } from '@/entities/post';
+import { formatRelativeDate } from '@/shared/lib/utils';
+import { Avatar } from '@/shared/ui';
 
 interface FeedSidebarProps {
   staffPosts: FeedItem[];

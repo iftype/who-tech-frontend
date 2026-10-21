@@ -1,15 +1,14 @@
-import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
+import { Analytics } from '@vercel/analytics/next';
 import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
+import type { Metadata } from 'next';
 import { Rubik } from 'next/font/google';
 import { cookies } from 'next/headers';
-import './globals.css';
-import { Analytics } from '@vercel/analytics/next';
-import { Navbar } from '@/widgets/layout/Navbar';
-import { PatchToast } from '@/widgets/layout/PatchToast';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
-import { ThemeProvider } from '@/shared/providers/ThemeProvider';
 import { parseDesign, parseTheme } from '@/shared/providers/theme';
+import { ThemeProvider } from '@/shared/providers/ThemeProvider';
+import { Navbar, PatchToast } from '@/widgets/layout';
+import './globals.css';
 
 const rubik = Rubik({ subsets: ['latin'], variable: '--font-rubik' });
 

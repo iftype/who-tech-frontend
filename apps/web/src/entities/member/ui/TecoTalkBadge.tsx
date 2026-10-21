@@ -1,5 +1,5 @@
-import type { TecoTalk } from '../model/types';
 import { PlayIcon } from '@/shared/ui';
+import type { TecoTalk } from '../model/types';
 
 // 제목 앞 대괄호 라벨("[10분 테코톡] ")을 제거해 주제만 노출
 function talkLabel(title: string): string {

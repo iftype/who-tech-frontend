@@ -1,12 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
 import type { ReactNode } from 'react';
-import { ThemeTab } from './tabs/ThemeTab';
-import { SETTINGS_TABS, parseSettingsTab } from './settingsTab';
-import { PageContainer, pageTabVariants } from '@/shared/ui';
+import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
 import { cn } from '@/shared/lib/utils';
+import { PageContainer, pageTabVariants } from '@/shared/ui';
+import { SETTINGS_TABS, parseSettingsTab } from './settingsTab';
+import { ThemeTab } from './tabs/ThemeTab';
 
 const isSettingsPath = (pathname: string) => pathname === '/settings';
 

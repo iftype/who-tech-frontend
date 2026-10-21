@@ -2,14 +2,14 @@
 
 import { useCohorts } from '@/entities/member';
 import type { Track } from '@/entities/member';
-import { FeedFilterBar } from '@/features/feed-filter/FeedFilterBar';
-import { FeedListSection } from '@/widgets/feed/FeedListSection';
-import { FeedSidebar } from '@/widgets/feed/FeedSidebar';
+import { FeedFilterBar } from '@/features/feed-filter';
+import { EmptyState } from '@/shared/ui';
+import { FeedListSection } from './FeedListSection';
+import { FeedSidebar } from './FeedSidebar';
 import { useFeedFilters, type Range } from './model/useFeedFilters';
 import { useFeedPosts } from './model/useFeedPosts';
 import { useFeedSummary } from './model/useFeedSummary';
 import { FeedSkeleton } from './ui/FeedSkeleton';
-import { EmptyState } from '@/shared/ui';
 
 interface FeedClientProps {
   initialCohort: number | null;

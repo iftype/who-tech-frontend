@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
-import { renderToString } from 'react-dom/server';
 import userEvent from '@testing-library/user-event';
+import { renderToString } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const theme = { theme: 'dark', toggle: vi.fn(), designSystem: 'paper', setDesign: vi.fn() };

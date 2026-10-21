@@ -1,13 +1,13 @@
 'use client';
 
 import { useMemo } from 'react';
+import type { CohortArchive, Track } from '@/entities/member';
 import { useTransientValue } from '@/shared/lib/useTransientValue';
 import { ArchiveCohortSection } from './components/ArchiveCohortSection';
 import { MissionArchiveHeader } from './components/MissionArchiveHeader';
 import { UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
 import { buildMarkdown, getFilteredArchives } from './utils';
-import type { CohortArchive, Track } from '@/entities/member';
 
 // 탭은 부모가 가진다 (URL에서 읽는 위젯). 이 피처는 URL을 모른다
 interface MissionArchiveProps {

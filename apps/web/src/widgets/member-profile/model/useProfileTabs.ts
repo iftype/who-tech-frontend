@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { parseMissionTab } from '@/features/mission-archive/parse';
-import type { MissionTab } from '@/features/mission-archive/types';
+import { parseMissionTab } from '@/features/mission-archive';
+import type { MissionTab } from '@/features/mission-archive';
 import { splitUrl, urlStore, useUrl } from '@/shared/lib/urlStore';
 import { parseProfileTab, type ProfileTab } from './profileTab';
 

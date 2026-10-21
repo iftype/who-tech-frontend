@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
 import type { ReactElement } from 'react';
+import { describe, expect, it, vi } from 'vitest';
 
 const notFound = vi.fn(() => {
   throw new Error('NEXT_NOT_FOUND');

@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { RefreshCw } from 'lucide-react';
 import { memberApi, memberDetailQuery, mergeRefreshedMember } from '@/entities/member';
 import { RateLimitError } from '@/shared/api';
-import { chipButtonVariants } from '@/shared/ui';
 import { useTransientValue } from '@/shared/lib/useTransientValue';
+import { chipButtonVariants } from '@/shared/ui';
 import { useRateLimitCountdown } from './model/useRateLimitCountdown';
 
 interface RefreshButtonProps {

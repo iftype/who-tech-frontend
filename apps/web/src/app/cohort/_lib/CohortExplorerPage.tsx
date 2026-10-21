@@ -1,8 +1,8 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { cohortMembersQuery, cohortsQuery, parseRoleGroup, parseTrackOrAll } from '@/entities/member';
-import { CohortExplorer } from '@/widgets/cohort-explorer/CohortExplorer';
 import { makeQueryClient } from '@/shared/api';
 import { PageContainer } from '@/shared/ui';
+import { CohortExplorer } from '@/widgets/cohort-explorer';
 
 export type CohortSearchParams = { roleGroup?: string; track?: string };
 

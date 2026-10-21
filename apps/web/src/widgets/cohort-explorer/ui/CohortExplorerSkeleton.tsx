@@ -1,5 +1,5 @@
 import type { TrackOption } from '@/entities/member';
-import { CohortHeading } from '@/features/cohort-filter/CohortHeading';
+import { CohortHeading } from '@/features/cohort-filter';
 import { ListCard } from '@/shared/ui';
 
 interface SkeletonProps {

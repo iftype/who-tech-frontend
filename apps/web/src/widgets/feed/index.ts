@@ -1,0 +1,1 @@
+export { FeedClient } from './FeedClient';

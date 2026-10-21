@@ -2,8 +2,8 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FeedItem } from '@/entities/post';
-import { renderHydrated } from '@/test/render';
 import { NOW, daysAgo, makeFeedItem as item } from '@/test/fixtures/post';
+import { renderHydrated } from '@/test/render';
 
 const feed = vi.fn();
 // 쿼리 옵션(post.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다

@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import { cache } from 'react';
-import { notFound } from 'next/navigation';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import { memberDetailQuery } from '@/entities/member';
-import { parseMissionTab } from '@/features/mission-archive/parse';
-import { parseProfileTab } from '@/widgets/member-profile/model/profileTab';
+import { parseMissionTab } from '@/features/mission-archive';
 import { ApiError, makeQueryClient } from '@/shared/api';
+import { parseProfileTab } from '@/widgets/member-profile';
 import { MemberDetailClient } from './MemberDetailClient';
 
 interface DetailPageProps {

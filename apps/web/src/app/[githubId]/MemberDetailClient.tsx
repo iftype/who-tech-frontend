@@ -2,11 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { memberDetailQuery } from '@/entities/member';
-import type { MissionTab } from '@/features/mission-archive/types';
-import { ProfileHeader } from '@/widgets/member-profile/ProfileHeader';
-import { ProfileTabs } from '@/widgets/member-profile/ProfileTabs';
-import type { ProfileTab } from '@/widgets/member-profile/model/profileTab';
+import type { MissionTab } from '@/features/mission-archive';
 import { PageContainer } from '@/shared/ui';
+import { ProfileHeader } from '@/widgets/member-profile';
+import { ProfileTabs } from '@/widgets/member-profile';
+import type { ProfileTab } from '@/widgets/member-profile';
 
 interface MemberDetailClientProps {
   githubId: string;

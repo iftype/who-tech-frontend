@@ -3,12 +3,12 @@
 import { useMemo } from 'react';
 import type { RoleGroup, Track } from '@/entities/member';
 import { CohortMemberGrid, CohortMemberList, TRACK_OPTIONS, isStaff } from '@/entities/member';
-import { CohortFilterBar } from '@/features/cohort-filter/CohortFilterBar';
-import { CohortTabBar } from '@/features/cohort-filter/CohortTabBar';
+import { CohortFilterBar } from '@/features/cohort-filter';
+import { CohortTabBar } from '@/features/cohort-filter';
+import { buttonVariants } from '@/shared/ui';
 import { useCohortMembers } from './model/useCohortMembers';
 import { useCohortUrlState } from './model/useCohortUrlState';
 import { CohortExplorerSkeleton } from './ui/CohortExplorerSkeleton';
-import { buttonVariants } from '@/shared/ui';
 
 // 데이터는 서버가 HydrationBoundary로 캐시에 넣어 준다. props는 URL 상태의 서버 스냅샷용
 interface CohortExplorerProps {

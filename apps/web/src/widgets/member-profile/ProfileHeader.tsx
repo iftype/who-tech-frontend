@@ -1,6 +1,6 @@
 import { TecoTalkBadge, TrackBadge, githubProfileUrl } from '@/entities/member';
 import type { MemberDetail } from '@/entities/member';
-import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
+import { RefreshButton } from '@/features/profile-refresh';
 import { Avatar } from '@/shared/ui';
 import { CohortRolePill } from './ui/CohortRolePill';
 import { ProfileLinks } from './ui/ProfileLinks';

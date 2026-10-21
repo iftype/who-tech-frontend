@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { memberPostsQuery } from '@/entities/post';
-import { ClockIcon } from '@/shared/ui';
 import { formatDate, formatRelativeDate } from '@/shared/lib/utils';
+import { ClockIcon } from '@/shared/ui';
 
 interface BlogSectionProps {
   githubId: string;

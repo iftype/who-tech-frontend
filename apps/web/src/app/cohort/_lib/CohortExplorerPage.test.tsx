@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
 import type { ReactElement } from 'react';
+import { describe, expect, it, vi } from 'vitest';
 import { cohortMembersQuery, cohortsQuery } from '@/entities/member';
 import { makeMember, makeSearchPage } from '@/test/fixtures/member';
 

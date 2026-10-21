@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactElement } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { memberDetailQuery } from '@/entities/member';
 import { ApiError } from '@/shared/api';
 import { makeMemberDetail } from '@/test/fixtures/member';
