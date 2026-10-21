@@ -13,7 +13,7 @@ Next.js 15 App Router 웹. 모노레포 `apps/web` 패키지.
 ```bash
 pnpm dev            # http://localhost:3000
 pnpm build
-pnpm lint           # eslint . (import 순서·깊은 import 금지 포함)
+pnpm lint           # eslint . && knip (import 순서·깊은 import 금지·안 쓰는 export)
 pnpm lint:tokens    # 디자인 토큰·버튼 모양 규칙
 pnpm typecheck
 pnpm deps:check     # 계층·슬라이스 경계 (dependency-cruiser)
