@@ -5,14 +5,12 @@ import { TabBar, tabVariants } from '@/shared/ui';
 
 interface CohortTabBarProps {
   activeCohort: number | null; // null = 전체
-  cohorts?: number[];
+  cohorts: number[];
   onChange: (cohort: number | null) => void;
 }
 
-const DEFAULT_COHORTS = [8, 7, 6, 5, 4, 3, 2, 1];
-
 // 기수 탭. 탭 전환은 부모(useCohortUrlState)가 URL과 상태를 함께 바꾼다
-export function CohortTabBar({ activeCohort, cohorts = DEFAULT_COHORTS, onChange }: CohortTabBarProps) {
+export function CohortTabBar({ activeCohort, cohorts, onChange }: CohortTabBarProps) {
   const tabClass = (active: boolean) => cn(tabVariants({ active }), 'transition-colors');
 
   return (

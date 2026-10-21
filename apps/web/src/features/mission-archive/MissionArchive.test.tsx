@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
@@ -310,6 +310,20 @@ describe('MissionArchive', () => {
 
     const copyButton = screen.getByRole('button', { name: '복사됨복사됨' });
     expect(within(copyButton).getAllByText('복사됨')).toHaveLength(2);
+  });
+
+  it('복사 상태는 2초 뒤 원래 문구로 돌아간다', () => {
+    vi.useFakeTimers();
+    renderMissionArchive();
+
+    fireEvent.click(screen.getByRole('button', { name: /Markdown 복사/ }));
+    expect(screen.getByRole('button', { name: '복사됨복사됨' })).toBeInTheDocument();
+
+    act(() => vi.advanceTimersByTime(1999));
+    expect(screen.getByRole('button', { name: '복사됨복사됨' })).toBeInTheDocument();
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.getByRole('button', { name: /Markdown 복사/ })).toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it('공통 탭에서 Markdown을 복사하면 공통 미션만 포함한다', async () => {

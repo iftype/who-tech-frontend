@@ -1,6 +1,6 @@
 // API 호출 공통 계층. 서버(SSR)는 API 주소로 직접, 브라우저는 CORS 우회를 위해 Next rewrite 프록시(/api)로 보낸다
 const SERVER_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://iftype.site';
-export const API_BASE_URL = typeof window === 'undefined' ? SERVER_URL : '/api';
+const API_BASE_URL = typeof window === 'undefined' ? SERVER_URL : '/api';
 
 export class ApiError extends Error {
   constructor(
