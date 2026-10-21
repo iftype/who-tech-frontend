@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.0](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.6...web-v0.1.0) (2026-10-21)
+
+
+### 기능
+
+* **web:** 요청 실패를 빈 상태가 아니라 실패로 보여 주고 다시 시도 ([#126](https://github.com/iftype/who-tech-frontend/issues/126)) ([dd26d78](https://github.com/iftype/who-tech-frontend/commit/dd26d788a8e56139222b6824f0bf0082b7b83772))
+
+
+### 리팩토링
+
+* **web:** 데이터 경계 — 피드 작성자 roles·tracks 정규화, 기수 목록 서버 캐시 ([#127](https://github.com/iftype/who-tech-frontend/issues/127)) ([b8b317a](https://github.com/iftype/who-tech-frontend/commit/b8b317ab4c9ef95c819401d51101151ad8d5bf13))
+
 ## [0.0.6](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.5...web-v0.0.6) (2026-10-21)
 
 
