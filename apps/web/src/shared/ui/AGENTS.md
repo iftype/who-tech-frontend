@@ -32,7 +32,7 @@
 - 도메인 타입·API를 import하지 않는다 (`@/entities/*`, `@/features/*` 금지 — 의존 규칙 검사가 경고)
 - 글자 크기는 `globals.css` `@theme`의 스케일(`text-caption`, `text-body` 등), 색은 의미 토큰(`text-danger`, `text-track-frontend` 등)만 쓴다. 이 폴더 밖에서 임의 px·원시 팔레트 색을 쓰면 `pnpm lint:tokens`가 실패한다
 - 배치용 조합(`flex items-center gap-2` 등)은 묶지 않는다. 같은 의미의 UI가 두 화면 이상에서 반복될 때 추가한다
-- 단, 누르는 요소(버튼·탭·칩·링크 버튼)의 모양은 한 곳에서만 쓰여도 여기 둔다. 화면의 모든 버튼 모양을 이 폴더에서 한눈에 보고 바꾸기 위해서다. 이 폴더 밖 `<button>`에 className을 문자열·템플릿으로 직접 쓰면 `pnpm lint:tokens`가 실패한다
+- 단, 누르는 요소(버튼·탭·칩·링크)의 모양은 한 곳에서만 쓰여도 여기 둔다. 화면의 모든 버튼·링크 모양을 이 폴더에서 한눈에 보고 바꾸기 위해서다. 이 폴더 밖 `<button>`에 className을 문자열·템플릿으로 직접 쓰면, 그리고 `<a>`·`Link`의 리터럴에 모양 클래스(색·호버·테두리·글자 크기)가 있으면 `pnpm lint:tokens`가 실패한다. 배치만 적는 리터럴(`flex shrink-0`)은 된다. 도메인 색(트랙·영상)은 `entities/*/ui`의 cva가 `BADGE_BASE_CLASS` 위에 더한다
 - 화면에서 쓰던 클래스를 옮길 때는 클래스 집합이 그대로인지 `variants.test.ts`에 고정한다 (화면 변화 0). 레이아웃 위치 클래스(`col-span-full`, `sm:hidden`)는 `className`으로 받아 **앞에** 둔다 — 쓰던 자리의 DOM 문자열이 그대로다
 - 같은 의미의 비(非)누름 요소(빈 상태, 카드)도 두 화면 이상에서 반복되면 여기 둔다. props는 CSS가 아니라 의미(`frame`, `size`, `stack`)를 말한다 (ADR 0008)
 - 기수 화면의 탭·세그먼트·칩은 기존처럼 `transition-colors`를 덧붙여 쓴다 (`cn(tabVariants(...), 'transition-colors')`). 피드 화면과 다른 이 차이는 디자인 결정으로 남겨 두었다
