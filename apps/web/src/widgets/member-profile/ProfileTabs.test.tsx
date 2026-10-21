@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { makeArchive } from '@/test/fixtures/member';
+import { makeArchive, makeMemberDetail } from '@/test/fixtures/member';
 import { makeBlogPost } from '@/test/fixtures/post';
 import { renderWithQuery } from '@/test/render';
 import { currentUrl, popstateTo, setUrl } from '@/test/url';
@@ -16,16 +16,16 @@ const { ProfileTabs } = await import('./ProfileTabs');
 
 type Props = Parameters<typeof ProfileTabs>[0];
 
-function renderTabs(props: Partial<Props> = {}) {
+const MEMBER = makeMemberDetail('crew', { archive: [makeArchive(8)], tracks: ['backend'] });
+
+function renderTabs(props: Partial<Props> & { lastPostedAt?: string | null } = {}) {
+  const { lastPostedAt = null, ...rest } = props;
   const merged: Props = {
-    archive: [makeArchive(8)],
-    memberTracks: ['backend'],
-    githubId: 'crew',
+    member: { ...MEMBER, lastPostedAt },
     detailId: 'crew',
-    lastPostedAt: null,
     initialTab: 'mission',
     initialMissionTab: 'mission',
-    ...props,
+    ...rest,
   };
   return renderWithQuery(<ProfileTabs {...merged} />);
 }
