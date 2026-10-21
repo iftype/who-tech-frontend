@@ -13,7 +13,6 @@
 - `src/app/globals.css`
 - `src/app/layout.tsx`
 - `src/shared/providers/ThemeProvider.tsx`
-- `src/features/theme-switch/DesignToggle.tsx`
 
 **결정**:
 
@@ -27,7 +26,7 @@
 - `isTheme(v)` / `isDesign(v)` 타입 가드 (unsafe `as` 캐스팅 제거)
 - `applyDesign(ds)` — `el.classList.remove('apple','sentry')` 후 추가
 - `ThemeProvider` — `useLayoutEffect`/`localStorage` 제거, `initialTheme`/`initialDesign` props 수신
-- `DesignToggle` — paper→apple→sentry 순환, 헤더에서는 미사용(설정 페이지 전용)
+- 디자인 선택은 설정 페이지 `ThemeTab`(paper·apple·sentry, `shared/providers/theme.ts`의 `DESIGN_SYSTEMS` 순서)
 - 컨테이너 max-width 통일: Apple 980px 제거, 모두 `--container-max: 1200px` (토글 시 레이아웃 shift 방지)
 
 **보안 검토 결과 적용**:

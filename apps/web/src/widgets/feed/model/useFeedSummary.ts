@@ -3,7 +3,7 @@ import { CURRENT_COHORT, isStaff } from '@/entities/member';
 import type { FeedItem } from '@/entities/post';
 import { getBlogSource } from '@/shared/lib/utils';
 
-// 화면 옆 요약: 최근 1주 운영진 글, 기수별 묶음, 블로그 플랫폼 비율
+// 화면 옆 요약: 최근 1주 운영진 글, 블로그 플랫폼 비율
 export function useFeedSummary(items: FeedItem[]) {
   const staffPosts = useMemo(() => {
     const now = Date.now();
@@ -14,17 +14,6 @@ export function useFeedSummary(items: FeedItem[]) {
       })
       .filter((item) => isStaff(item.member.roles) && item.member.cohort === CURRENT_COHORT)
       .slice(0, 5);
-  }, [items]);
-
-  const grouped = useMemo(() => {
-    const map = new Map<number, FeedItem[]>();
-    for (const item of items) {
-      const key = item.member.cohort;
-      if (key == null) continue;
-      if (!map.has(key)) map.set(key, []);
-      map.get(key)!.push(item);
-    }
-    return map;
   }, [items]);
 
   const platformStats = useMemo(
@@ -41,5 +30,5 @@ export function useFeedSummary(items: FeedItem[]) {
     [items],
   );
 
-  return { staffPosts, grouped, platformStats };
+  return { staffPosts, platformStats };
 }

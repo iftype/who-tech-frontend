@@ -14,7 +14,7 @@ html 클래스 조합: `html.dark` / `html.apple` / `html.sentry` (중첩 가능
 
 - 다크모드 기본값, 쿠키(`theme`, `design`) 기반 유지
 - `ThemeProvider` — `initialTheme` / `initialDesign` props 수신 (서버에서 쿠키값 전달)
-- `ThemeToggle` (Navbar 우측 Sun/Moon), `DesignToggle`은 설정 페이지 전용
+- `ThemeToggle` (Navbar 우측 Sun/Moon). 디자인 선택은 설정 페이지의 `ThemeTab`(`optionVariants`)
 - CSS 변수 `:root` (라이트) / `html.dark` (다크) — `globals.css` 참고
 - `color-scheme`도 함께 동기화해서 토글 버튼, 테두리, 기본 UI가 한 번에 전환되도록 유지
 - 테마 토글 순간에는 `theme-switching` 클래스로 전역 transition을 잠깐 비활성화해 카드/리스트 지연 전환을 줄임

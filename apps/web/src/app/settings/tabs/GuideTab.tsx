@@ -171,7 +171,8 @@ export function GuideTab() {
                 <h2 className="text-body-lg font-semibold text-text">{section.title}</h2>
               </div>
               <div className="flex flex-col gap-4">
-                <p className="pl-10 text-body-sm text-text-secondary leading-relaxed">{section.description}</p>
+                {/* description 안에 목록·박스(블록)가 있어 <p>가 아니라 <div> */}
+                <div className="pl-10 text-body-sm text-text-secondary leading-relaxed">{section.description}</div>
                 {section.id !== 'blog-register' && (
                   <div className="overflow-hidden rounded-xl border border-border-dim shadow-sm">
                     <Image

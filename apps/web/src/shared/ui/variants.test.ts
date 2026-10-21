@@ -64,7 +64,7 @@ describe('shared/ui variants', () => {
         buttonVariants({ variant: 'more', size: 'lg' }),
         'cursor-pointer rounded-md border border-border px-4 py-2 text-body-sm font-medium text-text-secondary transition-colors hover:bg-surface hover:text-text disabled:cursor-default disabled:opacity-60',
       ],
-      // ThemeToggle·Navbar 메뉴, DesignToggle
+      // ThemeToggle·Navbar 메뉴
       [
         buttonVariants({ variant: 'toolbar', size: 'icon' }),
         'flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border text-text-muted transition-colors hover:text-text',
