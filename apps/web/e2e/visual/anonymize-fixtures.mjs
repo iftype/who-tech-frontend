@@ -1,8 +1,8 @@
 // 녹화한 응답(fixtures/api.json)에서 다른 크루의 개인 정보를 가짜 값으로 바꾼다. 녹화(RECORD=1) 직후 한 번 실행한다.
 // 공개 레포에 크루 닉네임·GitHub ID·블로그 글이 영구히 남지 않게 하되, 화면 레이아웃이 같도록
 // 글자 수와 문자 종류(한글/영문/숫자)는 유지한다. 저장소 주인(OWNER)의 데이터는 그대로 둔다.
-import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const OWNER = 'iftype';

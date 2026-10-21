@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { CohortArchive } from '@/entities/member';
-import { ArchiveRepoList } from './ArchiveRepoList';
 import { Divider, SectionLabel } from '@/shared/ui';
+import { ArchiveRepoList } from './ArchiveRepoList';
 
 interface ArchiveCohortSectionProps {
   cohortArchive: CohortArchive;

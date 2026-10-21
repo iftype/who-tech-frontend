@@ -2,8 +2,8 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Member, MemberSearchPage } from '@/entities/member';
-import { renderHydrated } from '@/test/render';
 import { makeMember, makeSearchPage as page } from '@/test/fixtures/member';
+import { renderHydrated } from '@/test/render';
 
 const cohorts = vi.fn();
 const searchPage = vi.fn();

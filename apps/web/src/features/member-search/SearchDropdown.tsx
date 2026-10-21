@@ -4,7 +4,6 @@ import { useId } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { SearchIcon } from '@/shared/ui';
 import { useMemberSearch } from './model/useMemberSearch';
-import { SearchResultItem } from './ui/SearchResultItem';
 import {
   SEARCH_PLACEHOLDER,
   searchBoxVariants,
@@ -13,6 +12,7 @@ import {
   searchInputVariants,
   type SearchVariant,
 } from './ui/searchBoxVariants';
+import { SearchResultItem } from './ui/SearchResultItem';
 
 interface SearchDropdownProps {
   variant?: SearchVariant;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { MemberDetail } from '../model/types';
-import { memberDetailQuery, memberSearchQuery, mergeRefreshedMember } from './member.queries';
 import { memberKeys } from './member.keys';
+import { memberDetailQuery, memberSearchQuery, mergeRefreshedMember } from './member.queries';
+import type { MemberDetail } from '../model/types';
 
 const m = (archive: unknown[]) => ({ githubId: 'a', archive }) as unknown as MemberDetail;
 

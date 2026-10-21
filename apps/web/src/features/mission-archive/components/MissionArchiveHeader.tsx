@@ -1,6 +1,6 @@
+import { CopyIcon, buttonVariants, segmentVariants } from '@/shared/ui';
 import { MISSION_TAB_ITEMS } from '../constants';
 import type { MissionTab } from '../types';
-import { CopyIcon, buttonVariants, segmentVariants } from '@/shared/ui';
 
 interface MissionArchiveHeaderProps {
   tab: MissionTab;

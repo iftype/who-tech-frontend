@@ -1,6 +1,6 @@
 import { EmptyState, ListCard } from '@/shared/ui';
-import type { FeedItem } from '../model/types';
 import { FeedRow } from './FeedRow';
+import type { FeedItem } from '../model/types';
 
 export function FeedList({ items }: { items: FeedItem[] }) {
   if (items.length === 0) {

@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCallback, useMemo, useRef } from 'react';
 import { feedQuery } from '@/entities/post';
 import type { FeedFilters } from './useFeedFilters';
 

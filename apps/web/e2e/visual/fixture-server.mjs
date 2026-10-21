@@ -2,8 +2,8 @@
 // - 재생(기본): fixtures/api.json에 녹화된 응답만 돌려준다. 없는 요청은 404 + 로그로 남겨 테스트가 드러나게 한다
 // - 녹화(RECORD=1): 운영 API로 넘겨 받은 응답을 fixtures/api.json에 저장한다.
 //   녹화 후 반드시 `node e2e/visual/anonymize-fixtures.mjs`로 다른 크루의 개인 정보를 가짜 값으로 바꾼 뒤 커밋한다
-import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 
 const PORT = Number(process.env.FIXTURE_PORT ?? 4010);
