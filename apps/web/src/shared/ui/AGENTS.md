@@ -21,6 +21,7 @@
 | `Divider`, `SectionLabel`                                                                                        | 구간 이름과 가로선                                                                                  |
 | `Avatar` (`size`: px 숫자 또는 `lg` 반응형)                                                                      | 프로필 이미지                                                                                       |
 | `EmptyState` (`frame`: card·plain, `size`: tall·box)                                                             | 목록이 비었을 때의 안내 상자. 레이아웃 위치만 `className`                                           |
+| `ErrorState` (`frame`·`size` 같음, `onRetry`)                                                                    | 요청 실패 안내 + 다시 시도. 빈 상태와 같은 틀 (라운드 5)                                            |
 | `ListCard` (`stack`)                                                                                             | 행들을 담는 둥근 카드 (피드 목록, 모바일 멤버 목록)                                                 |
 | `navMenuRowVariants({ active })`                                                                                 | 모바일 메뉴에서 링크 옆에 다른 요소(테마 토글)를 함께 놓는 한 줄                                    |
 | `icons/`                                                                                                         | 화면에 인라인으로 그리던 SVG 원문. 라이브러리로 바꾸면 path가 달라 픽셀이 바뀐다                    |

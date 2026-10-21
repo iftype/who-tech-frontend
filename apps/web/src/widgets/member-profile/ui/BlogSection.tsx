@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { memberPostsQuery } from '@/entities/post';
 import { cn, formatDate, formatRelativeDate } from '@/shared/lib/utils';
-import { ClockIcon, linkVariants } from '@/shared/ui';
+import { ClockIcon, ErrorState, linkVariants } from '@/shared/ui';
 
 interface BlogSectionProps {
   githubId: string;
@@ -10,10 +10,14 @@ interface BlogSectionProps {
 
 // 블로그 글 탭: 글 목록(제목은 API 계층이 이미 HTML 엔티티를 풀어 준다)과 마지막 게시 시각
 export function BlogSection({ githubId, lastPostedAt }: BlogSectionProps) {
-  const { data: blogPosts, isLoading } = useQuery(memberPostsQuery(githubId));
+  const { data: blogPosts, isLoading, isError, refetch } = useQuery(memberPostsQuery(githubId));
 
   if (isLoading) {
     return <p className="py-8 text-body-sm text-text-muted">블로그 글을 불러오는 중...</p>;
+  }
+
+  if (isError) {
+    return <ErrorState frame="plain" onRetry={() => void refetch()} />;
   }
 
   if (!blogPosts) {

@@ -13,7 +13,7 @@ interface Params {
 // 목록 끝(sentinel)이 보이면 다음 페이지를 불러온다
 export function useFeedPosts({ filters, days }: Params) {
   const { cohort, track } = filters;
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching } = useInfiniteQuery(
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, isError, refetch } = useInfiniteQuery(
     feedQuery(days, track, cohort),
   );
 
@@ -44,5 +44,5 @@ export function useFeedPosts({ filters, days }: Params) {
 
   const totalCount = data?.pages[0]?.totalCount ?? items.length;
 
-  return { items, totalCount, isFetching, isFetchingNextPage, sentinelRef };
+  return { items, totalCount, isFetching, isFetchingNextPage, isError, refetch, sentinelRef };
 }
