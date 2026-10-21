@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/app/**/{page,layout,error,not-found,loading,template}.tsx",
+    "e2e/**/*.ts",
+    "e2e/visual/*.mjs",
+    "scripts/*.mjs"
+  ],
+  "project": ["src/**/*.{ts,tsx}", "e2e/**/*.{ts,mjs}", "scripts/**/*.mjs"],
+  "ignoreDependencies": [
+    "sharp",
+    "eslint",
+    "eslint-config-next",
+    "eslint-config-prettier",
+    "@stryker-mutator/core",
+    "@eslint/eslintrc",
+    "postcss",
+    "@stryker-mutator/api",
+    "tailwindcss"
+  ],
+  "ignoreBinaries": ["next", "eslint", "tsc", "vitest", "playwright", "depcruise", "prettier", "stryker", "knip"]
+}

@@ -1,11 +1,10 @@
-import type { Member } from '@/entities/member';
-import type { BlogPost, FeedItem, FeedResponse } from '@/entities/post';
-import { makeMember } from './member';
+import type { BlogPost, FeedItem } from '@/entities/post';
+import { makeMember, type MemberOverrides } from './member';
 
 export const NOW = new Date('2026-10-18T12:00:00Z');
 export const daysAgo = (n: number): string => new Date(NOW.getTime() - n * 24 * 60 * 60 * 1000).toISOString();
 
-export function makeFeedItem(id: number, member: Partial<Member> = {}, overrides: Partial<FeedItem> = {}): FeedItem {
+export function makeFeedItem(id: number, member: MemberOverrides = {}, overrides: Partial<FeedItem> = {}): FeedItem {
   return {
     id,
     url: `https://velog.io/@crew/${id}`,
@@ -14,10 +13,6 @@ export function makeFeedItem(id: number, member: Partial<Member> = {}, overrides
     member: makeMember(`crew${id}`, { nickname: `크루${id}`, ...member }),
     ...overrides,
   };
-}
-
-export function makeFeedPage(posts: FeedItem[], overrides: Partial<FeedResponse> = {}): FeedResponse {
-  return { posts, nextCursor: null, totalCount: posts.length, ...overrides };
 }
 
 export function makeBlogPost(n: number, overrides: Partial<BlogPost> = {}): BlogPost {

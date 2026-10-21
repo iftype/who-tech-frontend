@@ -3,12 +3,13 @@ import { requestJson, serverCache, withQuery } from '@/shared/api';
 import { decodeHtml } from '@/shared/lib/utils';
 import type { BlogPostDetail, FeedItem, FeedResponse } from '../model/types';
 
+// 필터 값은 "없음"이 undefined로 넘어온다 (exactOptionalPropertyTypes라 | undefined를 적는다)
 interface FeedParams {
-  cohort?: number;
-  track?: Track;
-  days?: number;
-  cursor?: string;
-  limit?: number;
+  cohort?: number | undefined;
+  track?: Track | undefined;
+  days?: number | undefined;
+  cursor?: string | undefined;
+  limit?: number | undefined;
 }
 
 // 서버 데이터 캐시 시간 (서버 prefetch 경로만 해당)

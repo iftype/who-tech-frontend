@@ -1,17 +1,18 @@
 import { ApiError, RateLimitError, readBody, requestJson, send, serverCache, withQuery } from '@/shared/api';
 import type { Member, MemberDetail, MemberSearchPage, Role, RoleGroup, Track } from '../model/types';
 
+// 필터 값은 "없음"이 undefined로 넘어온다 (exactOptionalPropertyTypes라 | undefined를 적는다)
 interface MemberSearchParams {
-  q?: string;
-  cohort?: number;
-  track?: Track;
-  role?: Role;
+  q?: string | undefined;
+  cohort?: number | undefined;
+  track?: Track | undefined;
+  role?: Role | undefined;
 }
 
 interface MemberSearchPageParams extends MemberSearchParams {
-  roleGroup?: RoleGroup;
-  limit?: number;
-  offset?: number;
+  roleGroup?: RoleGroup | undefined;
+  limit?: number | undefined;
+  offset?: number | undefined;
 }
 
 // 서버 데이터 캐시 시간 (서버 prefetch 경로만 해당)
