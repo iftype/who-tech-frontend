@@ -8,7 +8,7 @@ import { makeQueryClient } from './query-client';
 describe('server prefetch and hydration', () => {
   it('should share keys between page prefetch and widget queries', () => {
     expect(cohortMembersQuery(8, 'all', 'crew').queryKey).toEqual(memberKeys.cohortExplorer(8, 'all', 'crew'));
-    expect(feedQuery(30, null, '8').queryKey).toEqual(postKeys.feed(30, null, '8'));
+    expect(feedQuery(30, null, 8).queryKey).toEqual(postKeys.feed(30, null, 8));
     expect(cohortsQuery().queryKey).toEqual(memberKeys.cohorts());
   });
 

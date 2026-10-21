@@ -6,7 +6,7 @@ const all = ['posts'] as const;
 
 export const postKeys = {
   all,
-  feed: (days: number | undefined, track: Track | null, cohort: string | null) =>
+  feed: (days: number | undefined, track: Track | null, cohort: number | null) =>
     [...all, 'feed', days, track, cohort] as const,
   byMember: (githubId: string) => [...all, 'by-member', githubId] as const,
 };
