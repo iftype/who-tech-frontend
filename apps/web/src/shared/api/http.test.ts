@@ -37,7 +37,7 @@ describe('requestJson', () => {
   });
 
   it('should throw ApiError with the status on non-OK responses', async () => {
-    fetchMock.mockResolvedValue({ ok: false, status: 500, json: async () => ({}) });
+    fetchMock.mockResolvedValue({ ok: false, status: 500, json: async () => ({}), text: async () => 'boom' });
 
     const error = await requestJson('/members/cohorts').catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
