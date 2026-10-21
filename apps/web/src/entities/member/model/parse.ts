@@ -12,12 +12,6 @@ export function parseTrack(value: string | null | undefined): Track | null {
   return isTrack(value) ? value : null;
 }
 
-/** 'all' 또는 트랙. 알 수 없는 값은 fallback */
-export function parseTrackOrAll(value: string | null | undefined, fallback: Track | 'all' = 'all'): Track | 'all' {
-  if (value === 'all') return 'all';
-  return parseTrack(value) ?? fallback;
-}
-
 /** URL의 기수 값. 양의 정수 문자열만 받고 나머지("abc", "", "1.5")는 null (기수 없음) */
 export function parseCohortNumber(value: string | null | undefined): number | null {
   return value != null && /^\d+$/.test(value) ? Number(value) : null;

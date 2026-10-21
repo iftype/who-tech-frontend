@@ -8,7 +8,7 @@ Next.js App Router 페이지 진입점. **파싱 → prefetch → 하이드레�
 
 - ✅ `page.tsx`: 요청마다 `makeQueryClient()`로 `prefetchQuery`/`prefetchInfiniteQuery` → `<HydrationBoundary state={dehydrate(qc)}>`로 위젯을 감싼다. 쿼리 옵션은 엔티티의 `*.queries.ts`(`feedQuery`, `cohortMembersQuery`, `cohortsQuery`, `memberDetailQuery`)만 쓴다
 - ✅ URL 값(`params`·`searchParams`)은 파서로만 읽는다. `as` 단언·리터럴 비교 금지
-  - 엔티티: `parseTrack`, `parseTrackOrAll`, `parseRoleGroup`, `parseCohortNumber`(`entities/member`), `parseRange`(`entities/post`)
+  - 엔티티: `parseTrack`, `parseRoleGroup`, `parseCohortNumber`(`entities/member`), `parseRange`(`entities/post`)
   - 피처·위젯: `parseMissionTab`(`features/mission-archive`), `parseProfileTab`(`widgets/member-profile`)
   - 이 폴더: `parseSettingsTab`(`settings/settingsTab.ts`), URL 모양은 `settings/settingsLocation.ts`(`parseSettingsSearch`·`buildSettingsUrl`·`isSettingsPath`), 탭 상태는 `useSettingsTab({ initialTab })`, 테마·디자인 쿠키는 `parseTheme`·`parseDesign`(`shared/providers/theme`)
 - ✅ `'use client'`는 `error.tsx`·`global-error.tsx`와 페이지마다 하나인 `*Client.tsx`, 그리고 테마 탭(`settings/tabs/ThemeTab.tsx`, 테마 전환 상호작용)만
