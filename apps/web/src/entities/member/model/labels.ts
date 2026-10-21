@@ -6,10 +6,10 @@ export const TRACK_LABEL: Record<Track, string> = { frontend: '프론트엔드',
 export const TRACK_SHORT_LABEL: Record<Track, string> = { frontend: 'FE', backend: 'BE', android: 'AN' };
 export const ROLE_LABEL: Record<Role, string> = { crew: '크루', coach: '코치', reviewer: '리뷰어' };
 
-export type TrackOption = { label: string; value: Track | 'all' };
+export type TrackOption = { label: string; value: Track | null };
 
 /** 트랙 필터 칩: "전체" 다음에 TRACKS 순서 */
 export const TRACK_OPTIONS: TrackOption[] = [
-  { label: '전체', value: 'all' },
+  { label: '전체', value: null },
   ...TRACKS.map((track) => ({ label: TRACK_LABEL[track], value: track })),
 ];

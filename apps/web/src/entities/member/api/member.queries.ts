@@ -14,13 +14,13 @@ export function cohortsQuery() {
 }
 
 // 기수 탐색 멤버 페이지. 서버 prefetch, 화면 쿼리, 인접 기수 미리 받기가 같은 옵션(같은 캐시 모양)을 쓴다
-export function cohortMembersQuery(cohort: number | null, track: Track | 'all', roleGroup: RoleGroup) {
+export function cohortMembersQuery(cohort: number | null, track: Track | null, roleGroup: RoleGroup) {
   return infiniteQueryOptions({
     queryKey: memberKeys.cohortExplorer(cohort, track, roleGroup),
     queryFn: ({ pageParam }) =>
       memberApi.searchPage({
         ...(cohort != null ? { cohort } : {}),
-        ...(track !== 'all' ? { track } : {}),
+        ...(track ? { track } : {}),
         roleGroup,
         limit: MEMBER_PAGE_SIZE,
         offset: pageParam,

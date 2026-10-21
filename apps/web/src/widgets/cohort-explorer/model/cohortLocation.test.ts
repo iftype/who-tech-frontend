@@ -17,13 +17,15 @@ describe('cohort location', () => {
   });
 
   it('should round-trip filters and omit the defaults from the query', () => {
-    expect(buildCohortPath(null, { roleGroup: 'crew', track: 'all' })).toBe('/cohort');
-    expect(buildCohortPath(8, { roleGroup: 'crew', track: 'all' })).toBe('/cohort/8');
+    expect(buildCohortPath(null, { roleGroup: 'crew', track: null })).toBe('/cohort');
+    expect(buildCohortPath(8, { roleGroup: 'crew', track: null })).toBe('/cohort/8');
     expect(buildCohortPath(8, { roleGroup: 'staff', track: 'android' })).toBe(
       '/cohort/8?roleGroup=staff&track=android',
     );
     expect(parseCohortSearch('?roleGroup=staff&track=android')).toEqual({ roleGroup: 'staff', track: 'android' });
-    expect(parseCohortSearch('')).toEqual({ roleGroup: 'crew', track: 'all' });
-    expect(parseCohortSearch('?roleGroup=boss&track=ios')).toEqual({ roleGroup: 'crew', track: 'all' });
+    expect(parseCohortSearch('')).toEqual({ roleGroup: 'crew', track: null });
+    // 예전 URL의 ?track=all 도 전체로 읽는다
+    expect(parseCohortSearch('?track=all')).toEqual({ roleGroup: 'crew', track: null });
+    expect(parseCohortSearch('?roleGroup=boss&track=ios')).toEqual({ roleGroup: 'crew', track: null });
   });
 });

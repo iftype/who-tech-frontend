@@ -6,8 +6,8 @@ import { CohortHeading } from './CohortHeading';
 interface CohortFilterBarProps {
   /** null = 전체 기수 */
   cohort: number | null;
-  filters: { roleGroup: RoleGroup; track: Track | 'all' };
-  applyFilters: (patch: { roleGroup?: RoleGroup; track?: Track | 'all' }) => void;
+  filters: { roleGroup: RoleGroup; track: Track | null };
+  applyFilters: (patch: { roleGroup?: RoleGroup; track?: Track | null }) => void;
   counts: { crew: number; staff: number };
   visibleTrackOptions: TrackOption[];
   filteredCount: number;
@@ -49,7 +49,7 @@ export function CohortFilterBar({
         <div className="flex items-center gap-0.5">
           {visibleTrackOptions.map(({ label, value }) => (
             <button
-              key={value}
+              key={value ?? 'all'}
               onClick={() => applyFilters({ track: value })}
               className={cn(filterChipVariants({ active: track === value }), 'transition-colors')}
             >

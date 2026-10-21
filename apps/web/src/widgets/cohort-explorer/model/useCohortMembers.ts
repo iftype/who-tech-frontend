@@ -8,7 +8,7 @@ const EMPTY_MEMBERS: Member[] = [];
 interface Params {
   activeCohort: number | null;
   roleGroup: RoleGroup;
-  track: Track | 'all';
+  track: Track | null;
 }
 
 // 기수 목록과 선택한 기수의 멤버 페이지. 서버 page.tsx가 같은 옵션으로 prefetch해 HydrationBoundary로 넣어 주고,

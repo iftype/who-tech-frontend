@@ -1,5 +1,5 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { cohortMembersQuery, cohortsQuery, parseRoleGroup, parseTrackOrAll } from '@/entities/member';
+import { cohortMembersQuery, cohortsQuery, parseRoleGroup, parseTrack } from '@/entities/member';
 import { makeQueryClient } from '@/shared/api';
 import { PageContainer } from '@/shared/ui';
 import { CohortExplorer } from '@/widgets/cohort-explorer';
@@ -16,7 +16,7 @@ interface CohortExplorerPageProps {
 // prefetch는 실패해도 throw하지 않고, 실패한 쿼리는 dehydrate에 실리지 않는다 → 화면이 마운트 후 다시 받는다
 export async function CohortExplorerPage({ cohort, searchParams }: CohortExplorerPageProps) {
   const roleGroup = parseRoleGroup(searchParams?.roleGroup);
-  const track = parseTrackOrAll(searchParams?.track);
+  const track = parseTrack(searchParams?.track);
 
   const queryClient = makeQueryClient();
   await Promise.all([
