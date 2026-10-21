@@ -1,7 +1,7 @@
 import { ThemeToggle } from '@/features/theme-switch';
 import { navMenuRowVariants } from '@/shared/ui';
 import { NavLink } from './NavLink';
-import { NAV_LINKS } from '../model/navLinks';
+import { NAV_LINKS, isNavActive } from '../model/navLinks';
 
 interface MobileMenuProps {
   activeHref: string;
@@ -14,7 +14,7 @@ export function MobileMenu({ activeHref, onNavigate }: MobileMenuProps) {
     <div className="sm:hidden border-t border-border bg-surface-alt/95 backdrop-blur-sm">
       <div className="flex flex-col py-1">
         {NAV_LINKS.map(({ href, label }) => {
-          const active = activeHref === href;
+          const active = isNavActive(href, activeHref);
           if (href === '/settings') {
             return (
               <div key={href} className={navMenuRowVariants({ active })}>

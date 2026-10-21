@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from '@/features/theme-switch';
 import { CONTAINER_MAX_STYLE } from '@/shared/ui';
-import { NAV_LINKS } from './model/navLinks';
+import { NAV_LINKS, isNavActive } from './model/navLinks';
 import { useActiveNav } from './model/useActiveNav';
 import { Logo } from './ui/Logo';
 import { MenuToggle } from './ui/MenuToggle';
@@ -54,7 +54,7 @@ export function Navbar() {
                   key={href}
                   href={href}
                   label={label}
-                  active={activeHref === href}
+                  active={isNavActive(href, activeHref)}
                   placement="bar"
                   onNavigate={onNavigate}
                 />
