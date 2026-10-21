@@ -2,7 +2,7 @@ import { parseMissionTab } from '@/features/mission-archive';
 import type { MissionTab } from '@/features/mission-archive';
 import { parseProfileTab, type ProfileTab } from './profileTab';
 
-export type ProfileTabs = { tab: ProfileTab; missionTab: MissionTab };
+type ProfileTabs = { tab: ProfileTab; missionTab: MissionTab };
 
 export function parseProfileSearch(search: string): ProfileTabs {
   const params = new URLSearchParams(search);

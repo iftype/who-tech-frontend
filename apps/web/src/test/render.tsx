@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
 
 /** 테스트용 브라우저 QueryClient: 재시도 없이 바로 실패해 테스트가 기다리지 않게 한다 */
-export function makeTestQueryClient(): QueryClient {
+function makeTestQueryClient(): QueryClient {
   return new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
 }
 
