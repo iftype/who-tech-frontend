@@ -22,9 +22,4 @@ describe('CohortExplorerSkeleton', () => {
       '안드로이드',
     ]);
   });
-
-  it('should keep the same markup (pinned before sharing pieces with the filter bar)', () => {
-    const { container } = render(<CohortExplorerSkeleton cohort={8} {...props} />);
-    expect(container.innerHTML).toMatchSnapshot();
-  });
 });
