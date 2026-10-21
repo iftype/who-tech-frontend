@@ -35,7 +35,7 @@
   - 설정 페이지: "가이드" / "테마" 탭 구조
   - 테마 탭: 2-way light/dark + 3-way 디자인 셀렉터(Next / Apple / Sentry)
   - Navbar: `/guide` → `/settings`, "가이드" → "설정"
-  - 헤더에 다크모드 토글(`ThemeToggle`) 유지, `DesignToggle`은 헤더에서 제거
+  - 헤더에 다크모드 토글(`ThemeToggle`) 유지, 디자인 선택은 설정 페이지에서만
   - 모든 버튼 `cursor-pointer` 적용
 
 **Navbar `data-nav` 속성 추가**

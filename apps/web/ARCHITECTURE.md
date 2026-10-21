@@ -10,40 +10,43 @@
 ```mermaid
 flowchart TD
   app["app/<br/>라우트: 데이터 미리 받기 + 화면 조립"] --> widgets
-  widgets["widgets/<br/>여러 기능을 묶은 화면 블록<br/>layout · cohort-explorer · feed · profile-tabs"] --> features
+  widgets["widgets/<br/>여러 기능을 묶은 화면 블록<br/>layout · cohort-explorer · feed · member-profile"] --> features
   features["features/<br/>사용자 행동 하나<br/>member-search · cohort-filter · feed-filter<br/>mission-archive · profile-refresh · theme-switch"] --> entities
-  entities["entities/<br/>도메인: member · post<br/>api · model(타입·쿼리 키) · ui(도메인 배지)"] --> shared
+  entities["entities/<br/>도메인: member · post<br/>api(함수·키·쿼리 팩토리) · model(타입·파서·라벨·규칙) · ui(배지·행)"] --> shared
   shared["shared/<br/>api(http·ApiError) · ui(디자인 시스템) · lib · providers"]
 ```
 
-- 화살표 방향으로만 import한다. 같은 층끼리도 금지 (기능 → 다른 기능 ✕). 엔티티끼리는 공개 진입점(`index.ts`)으로만
+- 화살표 방향으로만 import한다. 같은 층끼리도 금지 (기능 → 다른 기능 ✕, 위젯 → 다른 위젯 ✕). 엔티티·기능·위젯은 바깥에서 공개 진입점(`index.ts`)으로만 참조한다 — 안쪽 파일 구조를 바꿔도 바깥이 깨지지 않는다
 - 규칙은 dependency-cruiser가 CI(Web quality gate)에서 실패로 막는다: `pnpm --filter @who-tech/web deps:check`
 - 왜 이 구조인가 → [ADR 0001](docs/adr/0001-layers.md)
 
 ### 데이터
 
 - 서버 호출은 `shared/api`(`requestJson`, `withQuery`, `ApiError`, `RateLimitError`)를 거쳐 엔티티의 API 함수(`memberApi`, `postApi`)로만 한다
-- 쿼리 옵션은 엔티티의 `*.queries.ts`(`feedQuery`, `cohortMembersQuery`, `cohortsQuery`, `memberDetailQuery`)에 한 번만 정의한다. 서버 `page.tsx`의 prefetch, 화면의 `useQuery`, 미리 받기가 같은 옵션을 써서 키·캐시 모양이 어긋날 수 없다
+- 쿼리 옵션은 엔티티의 `*.queries.ts`(`feedQuery`, `cohortMembersQuery`, `cohortsQuery`, `memberDetailQuery`, `memberSearchQuery`, `memberPostsQuery`)에 한 번만 정의한다. 서버 `page.tsx`의 prefetch, 화면의 `useQuery`, 미리 받기가 같은 옵션을 써서 키·캐시 모양이 어긋날 수 없다. 키는 `['members', …]`·`['posts', …]` 네임스페이스로 시작한다 → [ADR 0006](docs/adr/0006-query-keys-and-factories.md)
 - 첫 데이터는 props가 아니라 캐시로 넘긴다: 요청마다 새 `QueryClient` → prefetch → `dehydrate` → `<HydrationBoundary>`. 실패한 prefetch는 넘어가지 않아 화면이 다시 받는다 → [ADR 0004](docs/adr/0004-rendering-and-hydration.md)
-- URL 상태(필터·탭)는 `shared/lib/urlStore`(`useSyncExternalStore`)로 URL에서 계산한다 → [ADR 0005](docs/adr/0005-url-as-external-store.md)
+- URL 상태(필터·탭)는 `shared/lib/urlStore`(`useSyncExternalStore`)로 URL에서 계산한다 → [ADR 0005](docs/adr/0005-url-as-external-store.md). URL·쿠키 값은 그 값을 아는 층의 파서(`parseTrack`, `parseCohortNumber`, `parseProfileTab`, `parseTheme` …)로만 읽는다 → [ADR 0007](docs/adr/0007-url-parsers-and-profile-tabs.md)
+- 도메인 사실(트랙·역할 이름, 운영진 판별, 현재 기수, GitHub 주소)은 `entities/member/model`에만 있고 UI는 읽는다. 같은 의미의 UI는 공용 컴포넌트 하나로 → [ADR 0008](docs/adr/0008-component-composition.md)
 
 ### 이름 규칙
 
-| 이름             | 뜻                                                                                                                                           |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `*Client.tsx`    | 서버 `page.tsx`가 미리 받은 데이터를 넘겨 그리는 `'use client'` 뿌리. 페이지마다 하나 (`MemberDetailClient`, `SettingsClient`, `FeedClient`) |
-| `use*`           | 훅. 화면에서 데이터·URL 상태를 떼어 낸 것 (`useCohortUrlState`, `useFeedPosts`)                                                              |
-| `*Api` / `*Keys` | 엔티티의 서버 호출 함수 묶음 / 쿼리 키 팩토리                                                                                                |
-| `*Variants`      | `shared/ui`의 cva 클래스 함수. `button`·`a`·`Link` 어디에나 붙인다                                                                           |
-| `*Skeleton`      | 데이터가 오기 전 같은 자리를 차지하는 뼈대                                                                                                   |
+| 이름             | 뜻                                                                                                                                             |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `*Client.tsx`    | 서버 `page.tsx`가 캐시로 넘긴 데이터를 읽어 그리는 `'use client'` 뿌리. 페이지마다 하나 (`MemberDetailClient`, `SettingsClient`, `FeedClient`) |
+| `index.ts`       | 슬라이스(엔티티·기능·위젯)의 공개 진입점. 바깥은 이것으로만 import한다                                                                         |
+| `parse*`         | URL·쿠키 문자열 → 도메인 값. 모르는 값은 기본값 (`parseCohortNumber`, `parseProfileTab`, `parseTheme`)                                         |
+| `use*`           | 훅. 화면에서 데이터·URL 상태를 떼어 낸 것 (`useCohortUrlState`, `useFeedPosts`)                                                                |
+| `*Api` / `*Keys` | 엔티티의 서버 호출 함수 묶음 / 쿼리 키 팩토리                                                                                                  |
+| `*Variants`      | `shared/ui`의 cva 클래스 함수. `button`·`a`·`Link` 어디에나 붙인다                                                                             |
+| `*Skeleton`      | 데이터가 오기 전 같은 자리를 차지하는 뼈대                                                                                                     |
 
 ## 디자인 시스템 (`shared/ui`)
 
 | 종류        | 부품                                                                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 누르는 요소 | `buttonVariants`, `chipButtonVariants`, `tabVariants`·`pageTabVariants`, `segmentVariants`, `optionVariants`, `filterChipVariants`, `listItemVariants`, `navLinkVariants` |
-| 묶음·틀     | `TabBar`, `SegmentedControl`, `OptionGroup`, `FilterRow`, `PageContainer`                                                                                                 |
-| 표시        | `Badge`(tone), `Avatar`, `Divider`, `SectionLabel`                                                                                                                        |
+| 묶음·틀     | `TabBar`, `SegmentedControl`, `OptionGroup`, `FilterRow`, `PageContainer`, `ListCard`(stack), `EmptyState`(frame·size)                                                    |
+| 표시        | `Badge`(tone), `Avatar`, `Divider`, `SectionLabel`, `icons/`(인라인 SVG 원문 — 라이브러리로 바꾸면 픽셀이 바뀐다)                                                         |
 
 - 모든 variant는 cva. `button`·`a`·`Link` 어디에나 붙도록 클래스 함수로 준다
 - 글자 크기는 `@theme` 스케일(`text-caption`, `text-body` …), 색은 의미 토큰(`text-danger`, `text-track-frontend` …)만
@@ -59,15 +62,22 @@ flowchart TD
 4. `app/<라우트>/page.tsx`는 데이터를 미리 받고 위젯·기능을 조립만 한다
 5. 버튼·탭·칩 모양이 필요하면 `shared/ui`의 variant를 쓰고, 없으면 거기에 추가한다
 
+## 테스트 하네스 (`src/test/`)
+
+- `renderHydrated(ui, { seed })`: 서버 page.tsx처럼 서버 캐시에 넣고 `dehydrate` → `HydrationBoundary`. `renderWithQuery`, URL 헬퍼(`setUrl`·`popstateTo`), 픽스처(`makeMember`·`makeFeedItem` …)
+- 리팩토링 PR은 동작 고정 테스트를 **먼저** 쓴다(옛 코드로 통과 → 새 코드로 통과). 분해할 컴포넌트는 분해 전에 DOM 스냅샷(`FeedRow`·`MemberDetailClient`·`Navbar`)을 찍어 둔다. 클래스는 집합으로 비교한다 → [ADR 0009](docs/adr/0009-test-harness-and-quality-gates.md)
+
 ## 바꿔도 안전한지 확인하는 장치
 
-| 장치             | 무엇을 고정하나                                                                | 위치                                        |
-| ---------------- | ------------------------------------------------------------------------------ | ------------------------------------------- |
-| 스크린샷 비교    | 주요 화면 38장(라이트·다크) 픽셀 비교. 녹화·익명화한 API 응답과 고정 시각 사용 | `e2e/visual`, `playwright.visual.config.ts` |
-| variant 테스트   | 화면에서 옮긴 클래스가 원래 문자열과 같은 집합인지                             | `src/shared/ui/variants.test.ts`            |
-| 단위·통합 테스트 | API 계층, 피드·기수 화면 렌더링, 검색 (커버리지 래칫)                          | `src/**/*.test.ts(x)`                       |
-| 스테이징         | 런타임 변경은 `develop`(Vercel 프리뷰)에서 먼저 확인                           | 루트 `CLAUDE.md`                            |
-| 뮤테이션 테스트  | 테스트가 실제로 버그를 잡는지 (주간)                                           | `stryker.config.mjs`                        |
+| 장치             | 무엇을 고정하나                                                                | 위치                                                                              |
+| ---------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| 스크린샷 비교    | 주요 화면 38장(라이트·다크) 픽셀 비교. 녹화·익명화한 API 응답과 고정 시각 사용 | `e2e/visual`, `playwright.visual.config.ts`                                       |
+| variant 테스트   | 화면에서 옮긴 클래스가 원래 문자열과 같은 집합인지                             | `src/shared/ui/variants.test.ts`                                                  |
+| 단위·통합 테스트 | API 계층, 화면 렌더링·URL·탭, 파서, 훅 (커버리지 래칫 lines 93 / functions 93) | `src/**/*.test.ts(x)`, `src/test/`                                                |
+| 경계·규칙 린트   | 계층 역방향, 슬라이스 안쪽 깊은 import, 위젯끼리 참조, import 순서, 토큰       | `.dependency-cruiser.cjs`, `eslint.config.mjs`, `scripts/check-design-tokens.mjs` |
+| WebView 계약     | 모바일 앱이 읽는 셀렉터(`header[data-nav]` 등)                                 | `src/widgets/layout/Navbar.test.tsx`                                              |
+| 스테이징         | 런타임 변경은 `develop`(Vercel 프리뷰)에서 먼저 확인                           | 루트 `CLAUDE.md`                                                                  |
+| 뮤테이션 테스트  | 테스트가 실제로 버그를 잡는지 (주간)                                           | `stryker.config.mjs`                                                              |
 
 → [ADR 0002](docs/adr/0002-visual-regression.md)
 
@@ -86,6 +96,20 @@ flowchart TD
 | 가장 큰 컴포넌트                | 342줄 (CohortExplorer, 훅 14개)                      | 199줄 (CohortExplorer는 121줄)                |
 | API 계층                        | 쿼리스트링 코드 3중 복붙, 일반 객체 throw            | `withQuery` 하나, `ApiError`·`RateLimitError` |
 
+## 리팩토링 라운드 3 전후 (2026-10-21)
+
+면접에서 설명할 수 있는 코드를 목표로, 화면은 1px도 바꾸지 않고(스크린샷 38장 0픽셀, fixture·baseline 변경 0) 함수·컴포넌트 안쪽을 정리했다. PR #106–#118.
+
+| 항목                                                  | 전                     | 후                                                         |
+| ----------------------------------------------------- | ---------------------- | ---------------------------------------------------------- |
+| 엔티티 밖 인라인 `useQuery` / 네임스페이스 밖 쿼리 키 | 2 / 2                  | 0 / 0                                                      |
+| `useState`로 복사한 탭 상태 / 파서 없는 URL·쿠키 값   | 2 / 5종                | 0 / 0                                                      |
+| 역할 배지 복사 / 트랙 라벨 리터럴 / 인라인 SVG        | 4 / 3 / 8              | 0 / 1 / 0                                                  |
+| 줄 수: Navbar · MemberDetailClient · ProfileTabs      | 178 · 123 · 122        | 77 · 35 · 57                                               |
+| 줄 수: SearchDropdown · useMemberSearch               | 134 · 97               | 105 · 58                                                   |
+| 테스트 파일 / 케이스 / 커버리지(lines·functions)      | 18 / 114 / 78.0 · 78.9 | 50 / 217 / 94.2 · 94.0                                     |
+| CI가 막는 규칙                                        | 계층 역방향, 토큰      | + 슬라이스 index 경계, 위젯 교차, import 순서, 깊은 import |
+
 ## 결정 기록
 
 - [0001 계층 구조 (app → widgets → features → entities → shared)](docs/adr/0001-layers.md)
@@ -93,3 +117,7 @@ flowchart TD
 - [0003 디자인 시스템: cva variant와 토큰, 누르는 요소는 모두 shared/ui](docs/adr/0003-design-system.md)
 - [0004 렌더링·캐시: 동적 렌더링 + 서버 prefetch 하이드레이션](docs/adr/0004-rendering-and-hydration.md)
 - [0005 URL은 외부 저장소 (useSyncExternalStore)](docs/adr/0005-url-as-external-store.md)
+- [0006 서버 상태의 모양은 엔티티에 한 번만 (키 네임스페이스·쿼리 팩토리·http 경계)](docs/adr/0006-query-keys-and-factories.md)
+- [0007 URL 값은 파서로만 읽고, 탭 상태의 주인은 URL 하나](docs/adr/0007-url-parsers-and-profile-tabs.md)
+- [0008 컴포넌트 합성: 같은 의미는 하나로, props는 의미를 말한다](docs/adr/0008-component-composition.md)
+- [0009 테스트 하네스와 품질 게이트](docs/adr/0009-test-harness-and-quality-gates.md)
