@@ -34,6 +34,7 @@ export function SearchDropdown({ variant = 'full' }: SearchDropdownProps) {
     containerRef,
     handleSelect,
     handleKeyDown,
+    isError,
   } = useMemberSearch();
 
   const listboxId = useId();
@@ -81,7 +82,9 @@ export function SearchDropdown({ variant = 'full' }: SearchDropdownProps) {
       {showDropdown && (
         <div className={searchDropdownVariants({ variant })}>
           {results.length === 0 ? (
-            <div className="px-4 py-6 text-center text-body-sm text-text-muted">검색 결과가 없습니다</div>
+            <div className="px-4 py-6 text-center text-body-sm text-text-muted">
+              {isError ? '검색에 실패했습니다' : '검색 결과가 없습니다'}
+            </div>
           ) : (
             <ul id={listboxId} role="listbox" aria-label="검색 결과">
               {results.map((member, idx) => (

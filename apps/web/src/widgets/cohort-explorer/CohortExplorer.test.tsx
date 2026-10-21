@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Member, MemberSearchPage } from '@/entities/member';
 import { makeMember, makeSearchPage as page } from '@/test/fixtures/member';
-import { renderHydrated } from '@/test/render';
+import { renderHydrated, renderWithQuery } from '@/test/render';
 
 const cohorts = vi.fn();
 const searchPage = vi.fn();
@@ -208,5 +208,19 @@ describe('CohortExplorer', () => {
 
     expect(await screen.findByRole('heading', { name: '7기 크루' })).toBeInTheDocument();
     await waitFor(() => expect(shown('m7')).toBe(true));
+  });
+
+  it('should show the error state when the member page fails and recover on retry', async () => {
+    searchPage.mockRejectedValueOnce(new Error('down'));
+    searchPage.mockResolvedValue(page([member('fe', ['crew'], ['frontend'])]));
+    renderWithQuery(<CohortExplorer initialCohort={8} initialRoleGroup="crew" initialTrack="all" />);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('불러오지 못했습니다');
+    expect(screen.queryByText('해당 기수의 멤버가 없습니다.')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+
+    await waitFor(() => expect(shown('fe')).toBe(true));
+    expect(searchPage).toHaveBeenCalledTimes(2);
   });
 });

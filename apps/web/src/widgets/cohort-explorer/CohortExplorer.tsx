@@ -5,7 +5,7 @@ import type { RoleGroup, Track } from '@/entities/member';
 import { CohortMemberGrid, CohortMemberList, TRACK_OPTIONS, matchesRoleGroup } from '@/entities/member';
 import { CohortFilterBar } from '@/features/cohort-filter';
 import { CohortTabBar } from '@/features/cohort-filter';
-import { buttonVariants } from '@/shared/ui';
+import { ErrorState, buttonVariants } from '@/shared/ui';
 import { useCohortMembers } from './model/useCohortMembers';
 import { useCohortUrlState } from './model/useCohortUrlState';
 import { CohortExplorerSkeleton } from './ui/CohortExplorerSkeleton';
@@ -33,6 +33,8 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
     hasNextPage,
     isFetchingNextPage,
     isMembersPending,
+    isMembersError,
+    refetchMembers,
   } = useCohortMembers({ activeCohort, roleGroup, track });
 
   const roleScopedMembers = useMemo(
@@ -69,9 +71,15 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
             filteredCount={filtered.length}
             totalCount={filteredTotalCount}
           />
-          {/* 둘 다 그리고 CSS 브레이크포인트로 하나만 보인다 (JS 분기 없음 — WebView 첫 화면 플래시 방지) */}
-          <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
-          <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
+          {isMembersError && cohortMembers.length === 0 ? (
+            <ErrorState onRetry={() => void refetchMembers()} />
+          ) : (
+            <>
+              {/* 둘 다 그리고 CSS 브레이크포인트로 하나만 보인다 (JS 분기 없음 — WebView 첫 화면 플래시 방지) */}
+              <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
+              <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
+            </>
+          )}
           {hasNextPage && (
             <div className="mt-5 flex justify-center">
               <button
