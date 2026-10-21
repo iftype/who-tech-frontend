@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type { ReactNode } from 'react';
 
 // 작은 정보 표시용 배지. tone으로 의미 색을 고른다 (도메인 배지는 entities/*/ui에서 tone을 정해 감싼다)
-export const badgeVariants = cva('inline-flex items-center px-1.5 py-0.5 rounded text-caption font-medium border', {
+const badgeVariants = cva('inline-flex items-center px-1.5 py-0.5 rounded text-caption font-medium border', {
   variants: {
     tone: {
       accent: 'font-mono text-accent-dm border-accent-border bg-accent-bg',

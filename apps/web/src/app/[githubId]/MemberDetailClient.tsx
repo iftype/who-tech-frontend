@@ -78,7 +78,7 @@ export function MemberDetailClient({ githubId, initialTab, initialMissionTab }: 
             {member.cohorts.map((mc) => (
               <div
                 key={mc.cohort}
-                className="flex items-center gap-1 p-0.5 sm:p-1 bg-surface-alt rounded-lg border border-border-dim shadow-sm animate-fade-in hover:shadow-md transition-all duration-300"
+                className="flex items-center gap-1 p-0.5 sm:p-1 bg-surface-alt rounded-lg border border-border-dim shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <CohortBadge cohort={mc.cohort} />
                 <div className="flex items-center gap-0.5 sm:gap-1">
