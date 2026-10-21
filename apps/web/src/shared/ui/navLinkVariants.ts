@@ -1,9 +1,14 @@
 import { cva } from 'class-variance-authority';
 
-// 상단 이동 링크. bar는 데스크톱 막대, menu는 모바일 펼침 메뉴의 한 줄. active가 없으면 색은 감싼 줄이 정한다
+// 상단 이동 링크. bar는 데스크톱 막대, menu는 모바일 펼침 메뉴의 한 줄,
+// menuInRow는 메뉴 줄 안에서 다른 요소(테마 토글)와 나란히 놓이는 링크 — 색은 감싼 줄(navMenuRowVariants)이 정한다
 export const navLinkVariants = cva('', {
   variants: {
-    placement: { bar: 'cursor-pointer whitespace-nowrap text-body-sm', menu: 'px-6 py-3 text-body' },
+    placement: {
+      bar: 'cursor-pointer whitespace-nowrap text-body-sm',
+      menu: 'px-6 py-3 text-body flex items-center justify-start text-left',
+      menuInRow: 'px-6 py-3 text-body flex min-w-0 flex-1 cursor-pointer items-center justify-start text-left',
+    },
     active: { true: '', false: '' },
   },
   compoundVariants: [

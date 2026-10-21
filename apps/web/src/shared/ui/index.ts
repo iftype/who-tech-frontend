@@ -1,4 +1,5 @@
-export { Avatar } from './Avatar';
+export { Avatar, avatarVariants } from './Avatar';
+export type { AvatarSize } from './Avatar';
 export { BADGE_BASE_CLASS, Badge, badgeVariants } from './Badge';
 export { buttonVariants, chipButtonVariants } from './buttonVariants';
 export { Divider } from './Divider';

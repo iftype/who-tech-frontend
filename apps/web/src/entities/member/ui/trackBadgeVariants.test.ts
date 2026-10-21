@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { classSet as set } from '@/test/classes';
 import { trackBadgeVariants } from './trackBadgeVariants';
 
-const set = (s: string) => new Set(s.split(/\s+/).filter(Boolean));
 const BASE = 'inline-flex items-center px-1.5 py-0.5 rounded text-caption font-medium border';
 
 // shared Badge의 frontend·backend·android tone을 옮겨 왔다. 클래스 집합이 그대로여야 화면도 그대로다
