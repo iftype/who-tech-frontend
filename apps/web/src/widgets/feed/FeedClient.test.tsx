@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FeedItem } from '@/entities/post';
 import { NOW, daysAgo, makeFeedItem as item } from '@/test/fixtures/post';
-import { renderHydrated } from '@/test/render';
+import { renderHydrated, renderWithQuery } from '@/test/render';
 
 const feed = vi.fn();
 // 쿼리 옵션(post.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다
@@ -196,5 +196,20 @@ describe('FeedClient', () => {
 
     expect(screen.queryByRole('heading', { name: '7기 피드' })).not.toBeInTheDocument();
     expect(window.location.search).toBe('');
+  });
+
+  // 예전에는 실패도 "등록된 블로그 글이 없습니다"로 보였다 → 실패는 실패라고 말하고 다시 시도할 수 있다
+  it('should show the error state when the feed request fails and recover on retry', async () => {
+    feed.mockRejectedValueOnce(new Error('down'));
+    feed.mockResolvedValue({ posts: [ITEMS[0]], nextCursor: null, totalCount: 1 });
+    renderWithQuery(<FeedClient initialCohort={null} initialTrack={null} initialRange="30d" />);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('불러오지 못했습니다');
+    expect(screen.queryByText('등록된 블로그 글이 없습니다')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+
+    expect((await screen.findAllByText('글 1')).length).toBeGreaterThan(0);
+    expect(feed).toHaveBeenCalledTimes(2);
   });
 });

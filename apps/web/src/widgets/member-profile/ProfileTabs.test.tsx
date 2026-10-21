@@ -94,12 +94,17 @@ describe('ProfileTabs', () => {
     expect(screen.queryByText(/마지막 게시:/)).not.toBeInTheDocument();
   });
 
-  it('should show the empty text when the posts request fails', async () => {
-    byMember.mockRejectedValue(new Error('down'));
+  // 예전에는 실패도 "없습니다"로 보였다 → 실패는 실패라고 말하고 다시 시도할 수 있다
+  it('should show the error state when the posts request fails and retry on demand', async () => {
+    byMember.mockRejectedValueOnce(new Error('down'));
+    byMember.mockResolvedValue({ latest: [], archive: [makeBlogPost(1)], page: 1, totalPages: 1 });
     setUrl('/crew?tab=blog');
     renderTabs({ initialTab: 'blog' });
 
-    expect(await screen.findByText('등록된 블로그 글이 없습니다')).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent('불러오지 못했습니다');
+    await userEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+    expect(await screen.findByText('블로그 글 1')).toBeInTheDocument();
+    expect(byMember).toHaveBeenCalledTimes(2);
   });
 
   it('should follow the URL when history moves (back/forward) instead of a stale copy', async () => {

@@ -23,6 +23,8 @@ export function useCohortMembers({ activeCohort, roleGroup, track }: Params) {
     hasNextPage,
     isFetchingNextPage,
     isPending: isMembersPending,
+    isError: isMembersError,
+    refetch: refetchMembers,
   } = useInfiniteQuery(cohortMembersQuery(activeCohort, track, roleGroup));
 
   const firstMemberPage = memberPages?.pages[0];
@@ -72,5 +74,7 @@ export function useCohortMembers({ activeCohort, roleGroup, track }: Params) {
     hasNextPage,
     isFetchingNextPage,
     isMembersPending,
+    isMembersError,
+    refetchMembers,
   };
 }
