@@ -54,6 +54,13 @@ describe('memberApi', () => {
     await expect(memberApi.cohorts()).rejects.toThrow('API error: 500 /members/cohorts');
   });
 
+  // 기수 목록은 기수가 바뀔 때만 달라진다 → 다른 서버 prefetch와 같은 5분 데이터 캐시 (라운드 5)
+  it('should cache the cohort list for 5 minutes on the server', async () => {
+    fetchMock.mockResolvedValue(jsonResponse([8, 7]));
+    await expect(memberApi.cohorts()).resolves.toEqual([8, 7]);
+    expect(fetchMock.mock.calls[0]![1].next).toEqual({ revalidate: 300 });
+  });
+
   it('should return member detail as the API sends it, cached for 5 minutes', async () => {
     const detail = {
       githubId: 'crew1',

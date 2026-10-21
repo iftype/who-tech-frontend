@@ -24,7 +24,8 @@ export const memberApi = {
   searchPage: (params: MemberSearchPageParams, init: RequestInit = serverCache(CACHE_SECONDS)) =>
     requestJson<MemberSearchPage>(withQuery('/members/search', { ...params }), init),
 
-  cohorts: () => requestJson<number[]>('/members/cohorts'),
+  // 기수 목록은 기수가 바뀔 때만 달라진다 → 다른 서버 prefetch와 같은 5분 캐시 (라운드 5에서 추가)
+  cohorts: () => requestJson<number[]>('/members/cohorts', serverCache(CACHE_SECONDS)),
 
   detail: (githubId: string) => requestJson<MemberDetail>(`/members/${githubId}`, serverCache(CACHE_SECONDS)),
 

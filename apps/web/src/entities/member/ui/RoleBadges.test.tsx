@@ -14,8 +14,8 @@ describe('RoleBadges', () => {
     expect(container.firstElementChild!.tagName).toBe('SPAN');
   });
 
-  it('should render nothing for missing roles', () => {
-    const { container } = render(<RoleBadges roles={undefined} hideCrew />);
+  it('should render nothing for an empty role list', () => {
+    const { container } = render(<RoleBadges roles={[]} hideCrew />);
     expect(container).toBeEmptyDOMElement();
   });
 });
