@@ -1,4 +1,6 @@
 import type { TrackOption } from '@/entities/member';
+import { CohortHeading } from '@/features/cohort-filter/CohortHeading';
+import { ListCard } from '@/shared/ui';
 
 interface SkeletonProps {
   /** null = 전체 기수 */
@@ -15,14 +17,7 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
   return (
     <>
       <div className="mb-5 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-title font-bold tracking-tight text-text sm:text-title-lg">
-            {cohort === null ? '전체 크루' : `${cohort}기 크루`}
-          </h1>
-          <p className="mt-1 text-label text-text-muted">
-            우아한테크코스 {cohort === null ? '전체' : `${cohort}기`} 멤버 목록
-          </p>
-        </div>
+        <CohortHeading cohort={cohort} />
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">
           <div className={SEGMENT_PLACEHOLDER_CLASS}>크루 {counts.crew}</div>
           <div className={SEGMENT_PLACEHOLDER_CLASS}>운영진 {counts.staff}</div>
@@ -54,7 +49,7 @@ export function CohortExplorerSkeleton({ cohort, counts, visibleTrackOptions, fi
         visibleTrackOptions={visibleTrackOptions}
         filteredCount={filteredCount}
       />
-      <div className="sm:hidden flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
+      <ListCard stack className="sm:hidden">
         {[72, 56, 88, 64, 76].map((w) => (
           <div key={w} className="flex items-center gap-3 border-b border-border-dim px-4 py-3 last:border-0">
             <div className="h-9 w-9 flex-shrink-0 animate-pulse rounded-full bg-surface-alt" />
@@ -67,7 +62,7 @@ export function CohortExplorerSkeleton({ cohort, counts, visibleTrackOptions, fi
             </div>
           </div>
         ))}
-      </div>
+      </ListCard>
       <div className="hidden sm:grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
           <div

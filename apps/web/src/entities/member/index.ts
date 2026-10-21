@@ -28,6 +28,7 @@ export {
   mergeRefreshedMember,
 } from './api/member.queries';
 export { CohortBadge, RoleBadge, TrackBadge } from './ui/MemberBadges';
+export { RoleBadges } from './ui/RoleBadges';
 export { TecoTalkBadge } from './ui/TecoTalkBadge';
 export { CohortMemberGrid } from './ui/CohortMemberGrid';
 export { CohortMemberList } from './ui/CohortMemberList';

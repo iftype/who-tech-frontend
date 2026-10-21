@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NOW, daysAgo, makeFeedItem } from '@/test/fixtures/post';
-import { FeedList, FeedRow } from './FeedRow';
+import { FeedList } from './FeedList';
+import { FeedRow } from './FeedRow';
 
 // 아바타를 감싼 링크 (아바타 글자가 접근 가능한 이름이라 role 조회 대신 첫 링크)
 const avatarLink = () => document.querySelector('a')!;

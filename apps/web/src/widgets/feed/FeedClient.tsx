@@ -9,6 +9,7 @@ import { useFeedFilters, type Range } from './model/useFeedFilters';
 import { useFeedPosts } from './model/useFeedPosts';
 import { useFeedSummary } from './model/useFeedSummary';
 import { FeedSkeleton } from './ui/FeedSkeleton';
+import { EmptyState } from '@/shared/ui';
 
 interface FeedClientProps {
   initialCohort: number | null;
@@ -43,7 +44,9 @@ export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedCl
         ) : isFetching ? (
           <FeedSkeleton />
         ) : (
-          <div className="py-16 text-center text-body text-text-muted">등록된 블로그 글이 없습니다</div>
+          <EmptyState frame="plain" size="tall">
+            등록된 블로그 글이 없습니다
+          </EmptyState>
         )}
       </section>
       <FeedSidebar staffPosts={staffPosts} platformStats={platformStats} />

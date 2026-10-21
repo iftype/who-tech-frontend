@@ -1,6 +1,6 @@
 import { MISSION_TAB_ITEMS } from '../constants';
 import type { MissionTab } from '../types';
-import { buttonVariants, segmentVariants } from '@/shared/ui';
+import { CopyIcon, buttonVariants, segmentVariants } from '@/shared/ui';
 
 interface MissionArchiveHeaderProps {
   tab: MissionTab;
@@ -48,10 +48,7 @@ interface CopyMarkdownButtonProps {
 function CopyMarkdownButton({ copied, onClick }: CopyMarkdownButtonProps) {
   return (
     <button onClick={onClick} className={buttonVariants({ variant: 'subtle', size: 'caption' })}>
-      <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="9" y="9" width="13" height="13" rx="2" />
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-      </svg>
+      <CopyIcon className="h-3 w-3" />
       <span className="hidden sm:inline">{copied ? '복사됨' : 'Markdown 복사'}</span>
       <span className="sm:hidden">{copied ? '복사됨' : 'MD 복사'}</span>
     </button>

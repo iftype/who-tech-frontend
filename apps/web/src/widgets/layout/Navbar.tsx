@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { type MouseEvent, useEffect, useState } from 'react';
 import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
-import { buttonVariants, navLinkVariants } from '@/shared/ui';
+import { CONTAINER_MAX_STYLE, CloseIcon, MenuIcon, buttonVariants, navLinkVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
 import { urlStore } from '@/shared/lib/urlStore';
 
@@ -57,10 +57,7 @@ export function Navbar() {
 
   return (
     <header data-nav className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
-      <nav
-        className="mx-auto flex h-14 items-center gap-2 px-4 sm:px-6"
-        style={{ maxWidth: 'var(--container-max, 1200px)' }}
-      >
+      <nav className="mx-auto flex h-14 items-center gap-2 px-4 sm:px-6" style={CONTAINER_MAX_STYLE}>
         <Link href="/" onClick={handleLogoClick} className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
@@ -109,15 +106,7 @@ export function Navbar() {
             className={cn(buttonVariants({ variant: 'toolbar', size: 'icon' }), 'sm:hidden')}
             aria-label="메뉴"
           >
-            {open ? (
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12h18M3 6h18M3 18h18" />
-              </svg>
-            )}
+            {open ? <CloseIcon className="w-4 h-4" /> : <MenuIcon className="w-4 h-4" />}
           </button>
         </div>
       </nav>
