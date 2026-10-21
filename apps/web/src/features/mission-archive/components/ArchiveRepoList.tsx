@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ArchiveRepo, ArchiveStep } from '@/entities/member';
+import { cn } from '@/shared/lib/utils';
+import { linkVariants } from '@/shared/ui';
 import { getForkUrl } from '../utils';
 
 interface ArchiveRepoListProps {
@@ -55,7 +57,7 @@ function ArchiveRepoHeader({ repoName, index, githubId }: ArchiveRepoHeaderProps
         href={forkUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex-1 text-body-sm font-medium text-text hover:text-accent-dm hover:underline"
+        className={cn(linkVariants({ variant: 'title', size: 'bodySm' }), 'flex-1')}
       >
         {repoName}
       </a>
@@ -88,7 +90,7 @@ function ArchiveSubmissionRow({ step, index }: ArchiveSubmissionRowProps) {
         href={step.prUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="min-w-0 flex-1 truncate text-label font-medium text-text hover:text-accent-dm hover:underline"
+        className={cn(linkVariants({ variant: 'title', size: 'label' }), 'min-w-0 flex-1 truncate')}
       >
         {step.title}
         {isClosed && <ClosedBadge />}
@@ -120,7 +122,7 @@ function PullRequestLink({ prUrl, prNumber, isClosed }: PullRequestLinkProps) {
       href={prUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className={`ml-3 shrink-0 font-mono text-caption font-medium hover:opacity-80 ${statusColorClassName}`}
+      className={cn(linkVariants({ variant: 'mono', size: 'caption' }), 'ml-3 shrink-0', statusColorClassName)}
     >
       PR #{prNumber} →
     </a>

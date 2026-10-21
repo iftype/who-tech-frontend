@@ -5,6 +5,7 @@ export { Divider } from './Divider';
 export { EmptyState, emptyStateVariants } from './EmptyState';
 export { ListCard, listCardVariants } from './ListCard';
 export { FilterRow, filterChipVariants } from './FilterRow';
+export { linkVariants } from './linkVariants';
 export { listItemVariants } from './listItemVariants';
 export { navLinkVariants, navMenuRowVariants } from './navLinkVariants';
 export { CONTAINER_MAX_STYLE, PageContainer } from './PageContainer';

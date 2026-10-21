@@ -1,7 +1,7 @@
 import { TecoTalkBadge, TrackBadge, githubProfileUrl } from '@/entities/member';
 import type { MemberDetail } from '@/entities/member';
 import { RefreshButton } from '@/features/profile-refresh';
-import { Avatar } from '@/shared/ui';
+import { Avatar, linkVariants } from '@/shared/ui';
 import { CohortRolePill } from './ui/CohortRolePill';
 import { ProfileLinks } from './ui/ProfileLinks';
 
@@ -19,7 +19,7 @@ export function ProfileHeader({ member, detailId }: ProfileHeaderProps) {
         href={githubProfileUrl(member.githubId)}
         target="_blank"
         rel="noopener noreferrer"
-        className="block shrink-0 transition-transform duration-200 hover:scale-105"
+        className={linkVariants({ variant: 'avatar' })}
         title={`${member.nickname}의 GitHub 프로필 방문`}
       >
         <Avatar

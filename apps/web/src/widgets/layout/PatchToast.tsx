@@ -1,7 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { CONTAINER_MAX_STYLE, buttonVariants } from '@/shared/ui';
+import { CONTAINER_MAX_STYLE, buttonVariants, linkVariants } from '@/shared/ui';
 
 const STORAGE_KEY = 'who-tech.patch-toast';
 const PATCH_VERSION = '2026-10-02-team-blog';
@@ -61,7 +61,7 @@ export function PatchToast() {
             href="https://www.rilog.kr/feeds"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-text hover:underline"
+            className={linkVariants({ variant: 'text', weight: 'medium' })}
           >
             Rilog 팀 블로그
           </a>{' '}
