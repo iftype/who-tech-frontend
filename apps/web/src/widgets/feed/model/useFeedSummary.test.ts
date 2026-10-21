@@ -25,15 +25,6 @@ describe('useFeedSummary', () => {
     expect(result.current.staffPosts.map((p) => p.id)).toEqual([1, 2, 6, 7, 8]);
   });
 
-  it('should group by the primary cohort and skip members without one', () => {
-    const items = [makeFeedItem(1, { cohort: 8 }), makeFeedItem(2, { cohort: 7 }), makeFeedItem(3, { cohort: null })];
-    const { result } = renderHook(() => useFeedSummary(items));
-    expect([...result.current.grouped.entries()].map(([c, posts]) => [c, posts.map((p) => p.id)])).toEqual([
-      [8, [1]],
-      [7, [2]],
-    ]);
-  });
-
   it('should rank the top four platforms and count unknown hosts as 기타', () => {
     const items = [
       ...[1, 2, 3].map((n) => makeFeedItem(n)),

@@ -23,7 +23,7 @@ export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedCl
   const { cohort } = filters;
   const { items, totalCount, isFetching, isFetchingNextPage, sentinelRef } = useFeedPosts({ filters, days });
   const cohorts = useCohorts();
-  const { staffPosts, grouped, platformStats } = useFeedSummary(items);
+  const { staffPosts, platformStats } = useFeedSummary(items);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
@@ -37,7 +37,7 @@ export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedCl
         />
         {items.length > 0 ? (
           <>
-            <FeedListSection cohort={cohort} cohorts={cohorts} filtered={items} grouped={grouped} />
+            <FeedListSection cohort={cohort} items={items} />
             <div ref={sentinelRef} className="h-10" />
             {isFetchingNextPage && <div className="py-4 text-center text-body-sm text-text-muted">로딩 중...</div>}
           </>

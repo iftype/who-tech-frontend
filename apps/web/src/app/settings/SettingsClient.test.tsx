@@ -9,7 +9,9 @@ vi.mock('@/shared/providers/ThemeProvider', () => ({ useTheme: () => theme }));
 const { SettingsClient: Client } = await import('./SettingsClient');
 const { GuideTab } = await import('./tabs/GuideTab');
 const { PrivacyTab } = await import('./tabs/PrivacyTab');
-const SettingsClient = () => <Client guide={<GuideTab />} privacy={<PrivacyTab />} />;
+const SettingsClient = ({ initialTab = 'theme' }: { initialTab?: 'theme' | 'guide' | 'privacy' }) => (
+  <Client initialTab={initialTab} guide={<GuideTab />} privacy={<PrivacyTab />} />
+);
 
 describe('SettingsClient', () => {
   beforeEach(() => {
@@ -52,9 +54,17 @@ describe('SettingsClient', () => {
     expect(screen.getByRole('heading', { name: '개인정보처리방침' })).toBeInTheDocument();
   });
 
-  it('should render the theme tab on the server even when the URL has another tab (no hydration mismatch)', () => {
-    window.history.replaceState(null, '', '/settings?tab=guide');
+  // 서버는 window를 모른다. 페이지가 ?tab= 을 파싱해 넘긴 initialTab 이 서버 스냅샷이라 첫 HTML부터 그 탭이다
+  it('should render the tab the page parsed on the server, not the theme tab', () => {
+    expect(renderToString(<SettingsClient initialTab="guide" />)).toContain('who.tech 사용 가이드');
+    expect(renderToString(<SettingsClient initialTab="guide" />)).not.toContain('화면 밝기를 선택합니다');
     expect(renderToString(<SettingsClient />)).toContain('화면 밝기를 선택합니다');
+  });
+
+  it('should hydrate the same tab the server rendered when the URL matches', () => {
+    window.history.replaceState(null, '', '/settings?tab=guide');
+    render(<SettingsClient initialTab="guide" />);
+    expect(screen.getByRole('tab', { name: '가이드' })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should toggle only when choosing the other theme and change the design system', async () => {
