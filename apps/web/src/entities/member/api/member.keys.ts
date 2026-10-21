@@ -9,6 +9,6 @@ export const memberKeys = {
   cohorts: () => [...all, 'cohorts'] as const,
   detail: (githubId: string) => [...all, 'detail', githubId] as const,
   search: (query: string) => [...all, 'search', query] as const,
-  cohortExplorer: (cohort: number | null, track: Track | 'all', roleGroup: RoleGroup) =>
+  cohortExplorer: (cohort: number | null, track: Track | null, roleGroup: RoleGroup) =>
     [...all, 'cohort-explorer', cohort, track, roleGroup] as const,
 };

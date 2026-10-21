@@ -9,7 +9,7 @@ export type {
   RoleGroup,
   Track,
 } from './model/types';
-export { TRACKS, parseCohortNumber, parseRoleGroup, parseTrack, parseTrackOrAll } from './model/parse';
+export { TRACKS, parseCohortNumber, parseRoleGroup, parseTrack } from './model/parse';
 export { CURRENT_COHORT, UNREGISTERED_COHORT } from './model/constants';
 export { TRACK_LABEL, TRACK_OPTIONS } from './model/labels';
 export type { TrackOption } from './model/labels';

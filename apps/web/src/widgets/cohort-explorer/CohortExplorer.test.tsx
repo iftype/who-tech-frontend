@@ -40,7 +40,7 @@ type Props = Parameters<typeof CohortExplorer>[0];
 
 // 서버 page.tsx처럼: 첫 페이지·기수 목록을 서버 캐시에 넣고 dehydrate → HydrationBoundary
 function renderExplorer({ initialPage = INITIAL, ...props }: Partial<Props> & { initialPage?: MemberSearchPage } = {}) {
-  const merged: Props = { initialCohort: 8, initialRoleGroup: 'crew', initialTrack: 'all', ...props };
+  const merged: Props = { initialCohort: 8, initialRoleGroup: 'crew', initialTrack: null, ...props };
   return renderHydrated(<CohortExplorer {...merged} />, {
     seed: (server) => {
       server.setQueryData(
@@ -213,7 +213,7 @@ describe('CohortExplorer', () => {
   it('should show the error state when the member page fails and recover on retry', async () => {
     searchPage.mockRejectedValueOnce(new Error('down'));
     searchPage.mockResolvedValue(page([member('fe', ['crew'], ['frontend'])]));
-    renderWithQuery(<CohortExplorer initialCohort={8} initialRoleGroup="crew" initialTrack="all" />);
+    renderWithQuery(<CohortExplorer initialCohort={8} initialRoleGroup="crew" initialTrack={null} />);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('불러오지 못했습니다');
     expect(screen.queryByText('해당 기수의 멤버가 없습니다.')).not.toBeInTheDocument();

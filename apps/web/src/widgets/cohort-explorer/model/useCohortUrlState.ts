@@ -6,7 +6,7 @@ import { buildCohortPath, isCohortPath, parseCohortPath, parseCohortSearch } fro
 interface InitialState {
   initialCohort: number | null;
   initialRoleGroup: RoleGroup;
-  initialTrack: Track | 'all';
+  initialTrack: Track | null;
 }
 
 // 기수·구분·트랙 선택 상태. URL이 단일 소스다: 상태를 따로 들고 있지 않고 URL에서 계산한다.
@@ -24,7 +24,7 @@ export function useCohortUrlState({ initialCohort, initialRoleGroup, initialTrac
   }, [url]);
 
   const applyFilters = useCallback(
-    (patch: Partial<{ roleGroup: RoleGroup; track: Track | 'all' }>) => {
+    (patch: Partial<{ roleGroup: RoleGroup; track: Track | null }>) => {
       urlStore.replace(
         buildCohortPath(activeCohort, { roleGroup: patch.roleGroup ?? roleGroup, track: patch.track ?? track }),
       );

@@ -11,7 +11,7 @@ describe('member labels', () => {
 
   it('should list the track chips as 전체 then frontend, backend, android', () => {
     expect(TRACK_OPTIONS).toEqual([
-      { label: '전체', value: 'all' },
+      { label: '전체', value: null },
       { label: '프론트엔드', value: 'frontend' },
       { label: '백엔드', value: 'backend' },
       { label: '안드로이드', value: 'android' },

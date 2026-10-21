@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isTrack, parseCohortNumber, parseRoleGroup, parseTrack, parseTrackOrAll } from './parse';
+import { isTrack, parseCohortNumber, parseRoleGroup, parseTrack } from './parse';
 
 describe('member parse', () => {
   it('parseTrack keeps known tracks and drops anything else', () => {
@@ -9,13 +9,6 @@ describe('member parse', () => {
     expect(parseTrack('all')).toBeNull();
     expect(parseTrack(undefined)).toBeNull();
     expect(parseTrack(null)).toBeNull();
-  });
-
-  it('parseTrackOrAll accepts all and falls back for unknown values', () => {
-    expect(parseTrackOrAll('all')).toBe('all');
-    expect(parseTrackOrAll('backend')).toBe('backend');
-    expect(parseTrackOrAll('foo')).toBe('all');
-    expect(parseTrackOrAll(undefined, 'frontend')).toBe('frontend');
   });
 
   it('parseRoleGroup only accepts staff or crew', () => {
