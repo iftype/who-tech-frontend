@@ -1,14 +1,14 @@
 import { ApiError, RateLimitError, readBody, requestJson, send, serverCache, withQuery } from '@/shared/api';
 import type { Member, MemberDetail, MemberSearchPage, Role, RoleGroup, Track } from '../model/types';
 
-export interface MemberSearchParams {
+interface MemberSearchParams {
   q?: string;
   cohort?: number;
   track?: Track;
   role?: Role;
 }
 
-export interface MemberSearchPageParams extends MemberSearchParams {
+interface MemberSearchPageParams extends MemberSearchParams {
   roleGroup?: RoleGroup;
   limit?: number;
   offset?: number;

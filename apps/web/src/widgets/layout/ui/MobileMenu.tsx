@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { ThemeToggle } from '@/features/theme-switch';
-import { navLinkVariants, navMenuRowVariants } from '@/shared/ui';
+import { navMenuRowVariants } from '@/shared/ui';
 import { NavLink } from './NavLink';
 import { NAV_LINKS } from '../model/navLinks';
 
@@ -19,31 +18,13 @@ export function MobileMenu({ activeHref, onNavigate }: MobileMenuProps) {
           if (href === '/settings') {
             return (
               <div key={href} className={navMenuRowVariants({ active })}>
-                <Link
-                  href={href}
-                  onClick={() => onNavigate(href)}
-                  aria-current={active ? 'page' : undefined}
-                  className={navLinkVariants({
-                    placement: 'menu',
-                    className: 'flex min-w-0 flex-1 cursor-pointer items-center justify-start text-left',
-                  })}
-                >
-                  {label}
-                </Link>
+                <NavLink href={href} label={label} active={active} placement="menuInRow" onNavigate={onNavigate} />
                 <ThemeToggle />
               </div>
             );
           }
           return (
-            <NavLink
-              key={href}
-              href={href}
-              label={label}
-              active={active}
-              placement="menu"
-              onNavigate={onNavigate}
-              className="flex items-center justify-start text-left"
-            />
+            <NavLink key={href} href={href} label={label} active={active} placement="menu" onNavigate={onNavigate} />
           );
         })}
       </div>

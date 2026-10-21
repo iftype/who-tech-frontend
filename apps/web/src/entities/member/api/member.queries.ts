@@ -3,7 +3,7 @@ import { memberApi } from './member.api';
 import { memberKeys } from './member.keys';
 import type { MemberDetail, MemberSearchPage, RoleGroup, Track } from '../model/types';
 
-export const MEMBER_PAGE_SIZE = 120;
+const MEMBER_PAGE_SIZE = 120;
 
 export function cohortsQuery() {
   return queryOptions({

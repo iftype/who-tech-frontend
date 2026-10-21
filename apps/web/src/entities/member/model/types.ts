@@ -1,10 +1,10 @@
 export type Role = 'crew' | 'coach' | 'reviewer';
 export type Track = 'frontend' | 'backend' | 'android';
-export type TabCategory = 'base' | 'common' | 'excluded' | 'precourse';
+type TabCategory = 'base' | 'common' | 'excluded' | 'precourse';
 /** 기수 목록의 구분: 크루 / 운영진(코치·리뷰어) */
 export type RoleGroup = 'crew' | 'staff';
 
-export interface MemberCohort {
+interface MemberCohort {
   cohort: number;
   roles: Role[];
 }
@@ -44,7 +44,7 @@ export interface ArchiveRepo {
   submissions: ArchiveStep[] | null;
 }
 
-export interface ArchiveLevel {
+interface ArchiveLevel {
   level: number | null;
   repos: ArchiveRepo[];
 }

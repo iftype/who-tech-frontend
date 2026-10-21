@@ -27,7 +27,7 @@ export {
   memberSearchQuery,
   mergeRefreshedMember,
 } from './api/member.queries';
-export { CohortBadge, RoleBadge, TeamBlogBadge, TrackBadge } from './ui/MemberBadges';
+export { CohortBadge, TrackBadge } from './ui/MemberBadges';
 export { MemberBadgeSet } from './ui/MemberBadgeSet';
 export { RoleBadges } from './ui/RoleBadges';
 export { TecoTalkBadge } from './ui/TecoTalkBadge';

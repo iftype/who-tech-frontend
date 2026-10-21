@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Member } from '@/entities/member';
+import { classSet as set } from '@/test/classes';
 
 const push = vi.fn();
 const search = vi.fn();
@@ -186,14 +187,12 @@ describe('SearchDropdown', () => {
 
   // 세 모드(기본·헤더 compact·모바일 헤더)의 클래스 집합. 모드가 variant prop으로 바뀌어도 집합은 그대로여야 한다
   describe('modes', () => {
-    const set = (source: Element | string | null) =>
-      new Set(
-        (typeof source === 'string' ? source : (source?.getAttribute('class') ?? '')).split(/\s+/).filter(Boolean),
-      );
     const box = () => screen.getByRole('combobox').parentElement!.parentElement!;
+    const container = () => box().parentElement!;
 
     it('should style the full search box with the shortcut hint', () => {
       renderDropdown();
+      expect(set(container())).toEqual(set('relative w-full max-w-[560px]'));
       expect(set(box())).toEqual(
         set(
           'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50 px-4 py-3',
@@ -209,6 +208,10 @@ describe('SearchDropdown', () => {
 
     it('should style the compact header box without the hint', () => {
       renderDropdown({ variant: 'compact' });
+      // Navbar가 className으로 덧붙이던 헤더 너비
+      expect(set(container())).toEqual(
+        set('relative w-full max-w-[560px] w-[300px] max-w-[300px] xl:w-[360px] xl:max-w-[360px]'),
+      );
       expect(set(box())).toEqual(
         set(
           'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50 px-2.5 py-2',
@@ -224,8 +227,9 @@ describe('SearchDropdown', () => {
 
     it('should style the mobile header box with the scaled input and a scrollable dropdown', async () => {
       search.mockResolvedValue([member('garam')]);
-      renderDropdown({ variant: 'mobileHeader', dropdownClassName: 'fixed z-[70]' });
+      renderDropdown({ variant: 'mobileHeader' });
       const input = screen.getByRole('combobox');
+      expect(set(container())).toEqual(set('relative w-full max-w-[560px] max-w-none'));
 
       expect(set(box())).toEqual(
         set(
@@ -247,7 +251,8 @@ describe('SearchDropdown', () => {
       const dropdown = (await screen.findByRole('listbox')).parentElement!;
       expect(set(dropdown)).toEqual(
         set(
-          'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-border bg-surface shadow-xl max-h-[min(60vh,24rem)] overflow-y-auto overscroll-contain fixed z-[70]',
+          // Navbar가 dropdownClassName으로 덧붙이던, 헤더 아래 화면 폭으로 펼치는 클래스까지
+          'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-border bg-surface shadow-xl max-h-[min(60vh,24rem)] overflow-y-auto overscroll-contain fixed left-2 right-2 top-[3.65rem] z-[70] w-auto max-w-none',
         ),
       );
     });

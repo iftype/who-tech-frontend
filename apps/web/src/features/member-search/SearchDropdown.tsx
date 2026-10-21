@@ -7,6 +7,7 @@ import { useMemberSearch } from './model/useMemberSearch';
 import {
   SEARCH_PLACEHOLDER,
   searchBoxVariants,
+  searchContainerVariants,
   searchDropdownVariants,
   searchIconVariants,
   searchInputVariants,
@@ -16,15 +17,12 @@ import { SearchResultItem } from './ui/SearchResultItem';
 
 interface SearchDropdownProps {
   variant?: SearchVariant;
-  className?: string;
-  /** 드롭다운의 위치만 (모바일 헤더는 화면에 고정) */
-  dropdownClassName?: string;
 }
 
 // 모바일 헤더의 입력은 iOS 자동 확대를 피하려고 16px로 두고 scale로 줄인다 (폭은 그만큼 늘려 자리를 맞춘다)
 const MOBILE_HEADER_INPUT_SCALE = 0.86;
 
-export function SearchDropdown({ variant = 'full', className, dropdownClassName }: SearchDropdownProps) {
+export function SearchDropdown({ variant = 'full' }: SearchDropdownProps) {
   const {
     query,
     setQuery,
@@ -44,7 +42,7 @@ export function SearchDropdown({ variant = 'full', className, dropdownClassName 
   const isMobileHeader = variant === 'mobileHeader';
 
   return (
-    <div ref={containerRef} className={cn('relative w-full max-w-[560px]', className)}>
+    <div ref={containerRef} className={searchContainerVariants({ variant })}>
       <div className={searchBoxVariants({ variant })}>
         <SearchIcon className={searchIconVariants({ variant })} aria-hidden="true" />
         <div className={cn('min-w-0 flex-1', isMobileHeader && 'overflow-hidden')}>
@@ -81,7 +79,7 @@ export function SearchDropdown({ variant = 'full', className, dropdownClassName 
       </div>
 
       {showDropdown && (
-        <div className={cn(searchDropdownVariants({ variant }), dropdownClassName)}>
+        <div className={searchDropdownVariants({ variant })}>
           {results.length === 0 ? (
             <div className="px-4 py-6 text-center text-body-sm text-text-muted">검색 결과가 없습니다</div>
           ) : (

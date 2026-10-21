@@ -19,7 +19,7 @@
 | `listItemVariants({ active })`                                                                                   | 한 줄을 통째로 누르는 목록 버튼 (검색 결과)                                                         |
 | `navLinkVariants({ placement, active })`                                                                         | 상단 이동 링크 (데스크톱 막대·모바일 메뉴)                                                          |
 | `Divider`, `SectionLabel`                                                                                        | 구간 이름과 가로선                                                                                  |
-| `Avatar`                                                                                                         | 프로필 이미지                                                                                       |
+| `Avatar` (`size`: px 숫자 또는 `lg` 반응형)                                                                      | 프로필 이미지                                                                                       |
 | `EmptyState` (`frame`: card·plain, `size`: tall·box)                                                             | 목록이 비었을 때의 안내 상자. 레이아웃 위치만 `className`                                           |
 | `ListCard` (`stack`)                                                                                             | 행들을 담는 둥근 카드 (피드 목록, 모바일 멤버 목록)                                                 |
 | `navMenuRowVariants({ active })`                                                                                 | 모바일 메뉴에서 링크 옆에 다른 요소(테마 토글)를 함께 놓는 한 줄                                    |

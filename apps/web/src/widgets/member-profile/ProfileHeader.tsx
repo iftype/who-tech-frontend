@@ -22,13 +22,7 @@ export function ProfileHeader({ member, detailId }: ProfileHeaderProps) {
         className={linkVariants({ variant: 'avatar' })}
         title={`${member.nickname}의 GitHub 프로필 방문`}
       >
-        <Avatar
-          src={member.avatarUrl}
-          alt={member.nickname}
-          size={80}
-          responsive
-          className="w-12 h-12 sm:w-20 sm:h-20"
-        />
+        <Avatar src={member.avatarUrl} alt={member.nickname} size="lg" />
       </a>
       <div className="flex flex-col gap-1 sm:gap-2 min-w-0 flex-1">
         <div className="flex min-w-0 items-center justify-between gap-2">

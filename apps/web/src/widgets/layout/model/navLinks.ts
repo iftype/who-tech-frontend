@@ -3,5 +3,3 @@ export const NAV_LINKS = [
   { href: '/cohort', label: '기수 목록' },
   { href: '/settings', label: '설정' },
 ] as const;
-
-export type NavHref = (typeof NAV_LINKS)[number]['href'];

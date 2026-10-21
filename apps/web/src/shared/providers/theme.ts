@@ -9,11 +9,11 @@ export type DesignSystem = (typeof DESIGN_SYSTEMS)[number];
 export const DEFAULT_THEME: Theme = 'dark';
 export const DEFAULT_DESIGN: DesignSystem = 'paper';
 
-export function isTheme(value: unknown): value is Theme {
+function isTheme(value: unknown): value is Theme {
   return typeof value === 'string' && (THEMES as readonly string[]).includes(value);
 }
 
-export function isDesign(value: unknown): value is DesignSystem {
+function isDesign(value: unknown): value is DesignSystem {
   return typeof value === 'string' && (DESIGN_SYSTEMS as readonly string[]).includes(value);
 }
 
