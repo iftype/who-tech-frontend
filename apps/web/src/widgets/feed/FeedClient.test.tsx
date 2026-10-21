@@ -212,4 +212,24 @@ describe('FeedClient', () => {
     expect((await screen.findAllByText('글 1')).length).toBeGreaterThan(0);
     expect(feed).toHaveBeenCalledTimes(2);
   });
+
+  // 다음 페이지만 실패하면 받은 글은 그대로 두고, 그 아래 안내와 다시 시도만 보인다
+  it('should keep the loaded posts and offer a retry when only the next page fails', async () => {
+    feed.mockRejectedValueOnce(new Error('down'));
+    feed.mockResolvedValue({ posts: [item(9, {})], nextCursor: null, totalCount: 5 });
+    renderFeed();
+
+    await act(async () => {
+      observerCallback?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    });
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('다음 글을 불러오지 못했습니다');
+    expect(screen.getAllByText('글 1').length).toBeGreaterThan(0);
+    expect(screen.queryByText('불러오지 못했습니다')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+
+    expect(await screen.findAllByText('글 9')).not.toHaveLength(0);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });
