@@ -4,6 +4,8 @@ import { listItemVariants } from './listItemVariants';
 import { navLinkVariants } from './navLinkVariants';
 import { optionVariants, segmentVariants } from './SegmentedControl';
 import { pageTabVariants } from './TabBar';
+import { emptyStateVariants } from './EmptyState';
+import { listCardVariants } from './ListCard';
 
 // 화면에 손으로 쓰던 클래스를 공용 variant로 옮겼다. 클래스 집합이 그대로여야 화면도 그대로다
 const set = (s: string) => new Set(s.split(/\s+/).filter(Boolean));
@@ -26,6 +28,28 @@ describe('shared/ui variants', () => {
     expect(set(segmentVariants({ active: false }))).toEqual(
       set('cursor-pointer rounded px-2.5 py-1.5 text-caption text-text-muted hover:text-text'),
     );
+  });
+
+  it('should match the empty states and list cards that used to be styled in place', () => {
+    const cases: [string, string][] = [
+      // FeedList 빈 상태
+      [
+        emptyStateVariants({ size: 'tall' }),
+        'rounded-xl border border-border bg-surface py-16 text-center text-body text-text-muted',
+      ],
+      // CohortMemberGrid·List 빈 상태 (Grid는 col-span-full을 className으로 덧붙인다)
+      [
+        emptyStateVariants(),
+        'rounded-xl border border-border bg-surface px-4 py-12 text-center text-body text-text-muted',
+      ],
+      // FeedClient 빈 상태 (카드 없이)
+      [emptyStateVariants({ frame: 'plain', size: 'tall' }), 'py-16 text-center text-body text-text-muted'],
+      // FeedList 카드
+      [listCardVariants(), 'overflow-hidden rounded-xl border border-border bg-surface'],
+      // CohortMemberList·스켈레톤 카드
+      [listCardVariants({ stack: true }), 'flex flex-col overflow-hidden rounded-xl border border-border bg-surface'],
+    ];
+    for (const [actual, expected] of cases) expect(set(actual)).toEqual(set(expected));
   });
 
   it('should match the buttons that used to be styled in place', () => {

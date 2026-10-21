@@ -69,12 +69,9 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
             filteredCount={filtered.length}
             totalCount={filteredTotalCount}
           />
-          <div className="sm:hidden">
-            <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
-          </div>
-          <div className="hidden sm:block">
-            <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
-          </div>
+          {/* 둘 다 그리고 CSS 브레이크포인트로 하나만 보인다 (JS 분기 없음 — WebView 첫 화면 플래시 방지) */}
+          <CohortMemberList members={filtered} emptyMessage={emptyMessage} />
+          <CohortMemberGrid members={filtered} emptyMessage={emptyMessage} />
           {hasNextPage && (
             <div className="mt-5 flex justify-center">
               <button

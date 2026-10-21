@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { buttonVariants } from '@/shared/ui';
+import { CONTAINER_MAX_STYLE, buttonVariants } from '@/shared/ui';
 
 const PATCH_VERSION = '2026-10-02-team-blog';
 
@@ -21,7 +21,7 @@ export function PatchToast() {
 
   return (
     <aside className="border-b border-border bg-surface-alt/95 px-4 py-2.5 text-label text-text-secondary">
-      <div className="mx-auto flex items-center gap-2" style={{ maxWidth: 'var(--container-max, 1200px)' }}>
+      <div className="mx-auto flex items-center gap-2" style={CONTAINER_MAX_STYLE}>
         <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-tiny font-semibold text-accent-dm">
           PATCH
         </span>

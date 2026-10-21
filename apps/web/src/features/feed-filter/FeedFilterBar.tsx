@@ -1,5 +1,3 @@
-'use client';
-
 import { TRACKS, TRACK_LABEL } from '@/entities/member';
 import type { Track } from '@/entities/member';
 import type { FeedRange as Range } from '@/entities/post';

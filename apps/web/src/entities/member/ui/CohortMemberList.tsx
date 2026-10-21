@@ -1,31 +1,29 @@
-'use client';
-
 import Link from 'next/link';
 import type { Member } from '../model/types';
-import { nonCrewRoles } from '../model/role';
-import { Avatar } from '@/shared/ui';
-import { CohortBadge, RoleBadge, TrackBadge } from './MemberBadges';
+import { Avatar, EmptyState, ListCard } from '@/shared/ui';
+import { staggerFadeIn } from '@/shared/lib/animation';
+import { RoleBadges } from './RoleBadges';
+import { CohortBadge, TrackBadge } from './MemberBadges';
 
 interface CohortMemberListProps {
   members: Member[];
   emptyMessage: string;
 }
 
+// 모바일(sm 미만) 멤버 목록. 데스크톱 그리드(CohortMemberGrid)와 함께 렌더되고 CSS로 하나만 보인다
 export function CohortMemberList({ members, emptyMessage }: CohortMemberListProps) {
   return (
     <div className="sm:hidden">
       {members.length === 0 ? (
-        <div className="rounded-xl border border-border bg-surface px-4 py-12 text-center text-body text-text-muted">
-          {emptyMessage}
-        </div>
+        <EmptyState>{emptyMessage}</EmptyState>
       ) : (
-        <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
+        <ListCard stack>
           {members.map((member, i) => (
             <Link
               key={member.githubId}
               href={`/${member.githubId}`}
               className="flex items-center gap-3 border-b border-border-dim px-4 py-3 hover:bg-surface-alt last:border-0"
-              style={{ animation: `feedRowFadeIn 0.3s ease both`, animationDelay: `${Math.min(i * 30, 300)}ms` }}
+              style={staggerFadeIn(i)}
             >
               <Avatar src={member.avatarUrl} alt={member.nickname} size={36} className="flex-shrink-0" />
               <div className="min-w-0 flex-1">
@@ -44,15 +42,15 @@ export function CohortMemberList({ members, emptyMessage }: CohortMemberListProp
                 </div>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {member.cohort != null && <CohortBadge cohort={member.cohort} />}
-                  {member.tracks.length > 0 && member.tracks.map((t) => <TrackBadge key={t} track={t} />)}
-                  {nonCrewRoles(member.roles).map((r) => (
-                    <RoleBadge key={r} role={r} />
+                  {member.tracks.map((t) => (
+                    <TrackBadge key={t} track={t} />
                   ))}
+                  <RoleBadges roles={member.roles} hideCrew />
                 </div>
               </div>
             </Link>
           ))}
-        </div>
+        </ListCard>
       )}
     </div>
   );
