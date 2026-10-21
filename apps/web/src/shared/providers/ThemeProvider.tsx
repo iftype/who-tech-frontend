@@ -3,8 +3,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { DEFAULT_DESIGN, DEFAULT_THEME, type DesignSystem, type Theme } from './theme';
 
-export type { DesignSystem, Theme } from './theme';
-
 const ThemeContext = createContext<{
   theme: Theme;
   toggle: () => void;

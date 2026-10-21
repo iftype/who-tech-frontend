@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 /** 반응형 크기 이름. lg = 모바일 48px → sm 80px (프로필 상단) */
-export type AvatarSize = number | 'lg';
+type AvatarSize = number | 'lg';
 
 // 숫자면 인라인 style로 고정 크기, 이름이면 클래스로 반응형 크기. 두 가지가 한 prop이라 호출부가 className으로 크기를 덧대지 않는다
 const avatarVariants = cva('rounded-full overflow-hidden bg-surface border border-border flex-shrink-0', {
