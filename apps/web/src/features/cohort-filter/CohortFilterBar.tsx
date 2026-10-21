@@ -1,24 +1,16 @@
 'use client';
 
-import type { RoleGroup, Track } from '@/entities/member';
+import type { RoleGroup, Track, TrackOption } from '@/entities/member';
 import { cn } from '@/shared/lib/utils';
 import { FilterRow, SegmentedControl, filterChipVariants, segmentVariants } from '@/shared/ui';
 
-const TRACK_OPTIONS: { label: string; value: Track | 'all' }[] = [
-  { label: '전체', value: 'all' },
-  { label: '프론트엔드', value: 'frontend' },
-  { label: '백엔드', value: 'backend' },
-  { label: '안드로이드', value: 'android' },
-];
-
-export { TRACK_OPTIONS };
-
 interface CohortFilterBarProps {
-  cohort: number;
+  /** null = 전체 기수 */
+  cohort: number | null;
   filters: { roleGroup: RoleGroup; track: Track | 'all' };
   applyFilters: (patch: { roleGroup?: RoleGroup; track?: Track | 'all' }) => void;
   counts: { crew: number; staff: number };
-  visibleTrackOptions: { label: string; value: Track | 'all' }[];
+  visibleTrackOptions: TrackOption[];
   filteredCount: number;
   totalCount: number;
 }
@@ -39,10 +31,10 @@ export function CohortFilterBar({
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-title font-bold tracking-tight text-text sm:text-title-lg">
-            {cohort === 0 ? '전체 크루' : `${cohort}기 크루`}
+            {cohort === null ? '전체 크루' : `${cohort}기 크루`}
           </h1>
           <p className="mt-1 text-label text-text-muted">
-            우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
+            우아한테크코스 {cohort === null ? '전체' : `${cohort}기`} 멤버 목록
           </p>
         </div>
         <SegmentedControl>

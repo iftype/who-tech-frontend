@@ -5,13 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { memberPostsQuery } from '@/entities/post';
-import type { CohortArchive } from '@/entities/member';
+import type { CohortArchive, Track } from '@/entities/member';
 import { pageTabVariants } from '@/shared/ui';
 import { urlStore } from '@/shared/lib/urlStore';
 
 interface ProfileTabsProps {
   archive: CohortArchive[];
-  memberTracks: string[];
+  memberTracks: Track[];
   githubId: string;
   lastPostedAt: string | null;
   initialTab: 'mission' | 'blog';

@@ -7,11 +7,11 @@ import { UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
 import { buildMarkdown, getFilteredArchives } from './utils';
 import { urlStore } from '@/shared/lib/urlStore';
-import type { CohortArchive } from '@/entities/member';
+import type { CohortArchive, Track } from '@/entities/member';
 
 interface MissionArchiveProps {
   archive: CohortArchive[];
-  memberTracks: string[];
+  memberTracks: Track[];
   githubId: string;
   initialMissionTab: MissionTab;
 }

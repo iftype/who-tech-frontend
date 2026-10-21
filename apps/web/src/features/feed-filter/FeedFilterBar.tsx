@@ -1,5 +1,6 @@
 'use client';
 
+import { TRACKS, TRACK_LABEL } from '@/entities/member';
 import type { Track } from '@/entities/member';
 import type { FeedRange as Range } from '@/entities/post';
 import { FilterRow, SegmentedControl, TabBar, filterChipVariants, segmentVariants, tabVariants } from '@/shared/ui';
@@ -63,13 +64,13 @@ export function FeedFilterBar({ filters, applyFilters, cohorts, filteredCount, t
 
       <FilterRow>
         <div className="flex items-center gap-0.5">
-          {([null, 'frontend', 'backend', 'android'] as (Track | null)[]).map((v) => (
+          {[null, ...TRACKS].map((v: Track | null) => (
             <button
               key={v ?? 'all'}
               onClick={() => applyFilters({ track: v })}
               className={filterChipVariants({ active: track === v })}
             >
-              {v === null ? '전체' : v === 'frontend' ? '프론트엔드' : v === 'backend' ? '백엔드' : '안드로이드'}
+              {v === null ? '전체' : TRACK_LABEL[v]}
             </button>
           ))}
         </div>
