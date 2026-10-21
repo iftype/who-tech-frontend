@@ -1,37 +1,26 @@
-# src/lib
+# src/shared/lib
 
 ## 역할
 
-API 클라이언트, 유틸 함수. React 의존성 없이 서버/클라이언트 모두에서 사용 가능.
+도메인을 모르는 공용 함수·훅. 어떤 상위 층도 import하지 않는다(`shared-no-upward`).
+
+| 파일                   | 내용                                                                                                                                   |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils.ts`             | 순수 함수: `cn`(클래스 이어 붙이기, tailwind-merge 없음 — 의도), `formatRelativeDate`, `formatDate`, `decodeHtml`, `getBlogSource`     |
+| `urlStore.ts`          | URL(pathname+search)을 외부 저장소로: `urlStore.push/replace/pushParam/replaceParam`, `useUrl(serverUrl, owns)`, `splitUrl` (ADR 0005) |
+| `animation.ts`         | `staggerFadeIn(i)` — 목록 행 페이드인 지연(30ms 간격, 300ms 상한)                                                                      |
+| `useDebounce.ts`       | 값이 delay 동안 안 바뀌면 갱신 (검색어)                                                                                                |
+| `useOutsideClick.ts`   | ref 바깥 mousedown → handler (드롭다운 닫기)                                                                                           |
+| `useTransientValue.ts` | 잠깐 보였다 사라지는 값(복사됨 2초, 실패 문구 2.5초). 언마운트 때 타이머 정리                                                          |
 
 ## 경계
 
-- ✅ `api.ts`: 백엔드 응답 정규화 유일 지점
-- ✅ `utils.ts`: 순수 함수만 (사이드이펙트 없음)
-- ❌ React import 금지
-- ❌ feature 컴포넌트에서 직접 fetch 금지 — 반드시 `api.ts` 경유
-
-## api.ts 규약
-
-**BASE_URL 분기**:
-
-- 서버 환경: `NEXT_PUBLIC_API_URL` 직접 호출
-- 브라우저 환경: `/api` 프록시 (`next.config.ts` rewrite → 백엔드로 전달, CORS 우회)
-
-**응답 정규화**:
-
-- `normalizeDetail()`: `submission`(단수) / `submissions`(배열) 구버전/신버전 모두 처리
-- `feed()`: `{ posts: FeedItem[], nextCursor: string | null }` 구조로 반환. cursor 기반 무한스크롤 지원
-- `detail()`: `blogPage` 선택적 파라미터 지원. 블로그 아카이브 페이지네이션용
-- 새 API 엔드포인트 추가 시 이 파일에 메서드 추가
-
-## utils.ts 주요 함수
-
-- `formatRelativeDate(date)`: 상대 시간 표시 ("3일 전")
-- `getBlogSource(url)`: URL에서 플랫폼명 추출 (tistory, velog, github.io 등)
-  — 새 플랫폼 추가 시 이 함수만 수정
+- ✅ 순수 함수와 React 훅 둘 다 둔다. 단, 훅은 도메인을 모르는 것만(`useDebounce`처럼). 도메인 훅은 features/widgets의 `model/`에
+- ✅ API 호출은 여기 없다 — `shared/api`(http)와 엔티티의 `*.api.ts`
+- ❌ `@/entities/*`, `@/features/*`, `@/widgets/*` import 금지 (depcruise가 막는다)
 
 ## 주의
 
-- `api.ts`의 BASE_URL 분기 로직을 다른 곳에서 복제하지 마세요
-- `getBlogSource`가 `null`을 반환할 수 있음 — 호출부에서 null 처리 필요
+- `cn`은 `filter(Boolean).join(' ')`이다. 충돌하는 클래스를 병합하지 않는다(tailwind-merge를 쓰면 지금 화면의 클래스 우선순위가 바뀔 수 있어 들이지 않았다, ADR 0003)
+- `urlStore.replace`는 history 항목을 만들지 않고, `push`는 만든다. 필터·보기 전환은 replace, 뒤로가기로 돌아올 탭(설정·기수 탭)은 push
+- `getBlogSource`는 `null`을 돌려줄 수 있다 — 호출부에서 처리
