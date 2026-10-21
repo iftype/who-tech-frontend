@@ -12,8 +12,8 @@ widgets/feed/
   FeedClient.tsx           화면 조합
   model/useFeedFilters.ts  기간·기수·트랙 필터 (URL에서 계산, 바꿀 때 urlStore.replace). parseFeedSearch/buildFeedSearch
   model/useFeedPosts.ts    피드 무한 쿼리(feedQuery, 서버가 첫 페이지를 하이드레이션) + 목록 끝(sentinel) 감시
-  model/useFeedSummary.ts  운영진 최신 글·기수별 묶음·플랫폼 통계
-  FeedListSection.tsx      목록 (기수 선택 시 묶음, 없으면 평탄)
+  model/useFeedSummary.ts  운영진 최신 글·플랫폼 통계
+  FeedListSection.tsx      목록 (기수 선택 시 그 기수 제목 + 개수, 없으면 평탄)
   FeedSidebar.tsx          운영진 최신 글 + 플랫폼 통계 (lg 이상)
   ui/FeedSkeleton.tsx      로딩 화면
 사용하는 하위 층:
@@ -33,7 +33,7 @@ widgets/feed/
 
 - `staffPosts`: 현재 기수(`CURRENT_COHORT`) 운영진(`isStaff`)의 최근 7일 글 상위 5개
 - `platformStats`: 화면에 보이는 글 기준 상위 4개 플랫폼
-- `grouped`: 대표 기수(`member.cohort`)별 묶음. 기수 탭을 고르면 `FeedListSection`이 그 기수 묶음만 그린다
+- 기수 탭의 글은 서버가 참여 기수로 거른 것을 **전부** 그린다. 대표 기수(`member.cohort`)로 다시 묶지 않는다 — 다른 기수가 대표인 크루의 글이 빠졌었다(라운드 4)
 
 ## 주의
 

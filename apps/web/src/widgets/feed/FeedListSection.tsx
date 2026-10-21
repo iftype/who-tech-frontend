@@ -4,37 +4,25 @@ import { Divider, SectionLabel } from '@/shared/ui';
 
 interface FeedListSectionProps {
   cohort: number | null;
-  cohorts: number[];
-  filtered: FeedItem[];
-  grouped: Map<number, FeedItem[]>;
+  items: FeedItem[];
 }
 
-export function FeedListSection({ cohort, cohorts, filtered, grouped }: FeedListSectionProps) {
-  if (cohort !== null) {
-    const matchedCohorts = cohorts.filter((c) => c === cohort);
-    const hasItems = matchedCohorts.some((c) => (grouped.get(c) ?? []).length > 0);
-    if (!hasItems) return null;
+// 기수 탭을 고르면 서버가 참여 기수 기준으로 걸러 준 글이 온다. 대표 기수(member.cohort)로 다시 묶으면
+// 다른 기수가 대표인 크루의 글이 조용히 빠졌다 → 받은 글을 전부 그 기수 제목 아래 그린다
+export function FeedListSection({ cohort, items }: FeedListSectionProps) {
+  if (items.length === 0) return null;
+  if (cohort === null) return <FeedList items={items} />;
 
-    return (
-      <div className="flex flex-col gap-6">
-        {matchedCohorts.map((c) => {
-          const items = grouped.get(c) ?? [];
-          return (
-            <div key={c}>
-              <div className="mb-2 flex items-center gap-2">
-                <SectionLabel>{c}기</SectionLabel>
-                <Divider />
-                <span className="text-caption text-text-dim">{items.length}개</span>
-              </div>
-              <FeedList items={items} />
-            </div>
-          );
-        })}
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <div className="mb-2 flex items-center gap-2">
+          <SectionLabel>{cohort}기</SectionLabel>
+          <Divider />
+          <span className="text-caption text-text-dim">{items.length}개</span>
+        </div>
+        <FeedList items={items} />
       </div>
-    );
-  }
-
-  if (filtered.length === 0) return null;
-
-  return <FeedList items={filtered} />;
+    </div>
+  );
 }
