@@ -31,6 +31,20 @@ describe('urlStore', () => {
     expect(window.history.length).toBe(length);
   });
 
+  it('should change one query param with replace or push', () => {
+    window.history.replaceState(null, '', '/settings?tab=theme&x=1');
+    render(<Probe />);
+    const length = window.history.length;
+
+    act(() => urlStore.replaceParam('tab', 'guide'));
+    expect(screen.getByTestId('url')).toHaveTextContent('/settings?tab=guide&x=1');
+    expect(window.history.length).toBe(length);
+
+    act(() => urlStore.pushParam('tab', 'privacy'));
+    expect(screen.getByTestId('url')).toHaveTextContent('/settings?tab=privacy&x=1');
+    expect(window.history.length).toBe(length + 1);
+  });
+
   it('should add a history entry on push', () => {
     render(<Probe />);
     const length = window.history.length;

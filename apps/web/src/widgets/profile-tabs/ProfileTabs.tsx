@@ -1,51 +1,50 @@
 'use client';
 
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MissionArchive } from '@/features/mission-archive/MissionArchive';
+import type { MissionTab } from '@/features/mission-archive/types';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { memberPostsQuery } from '@/entities/post';
 import type { CohortArchive, Track } from '@/entities/member';
 import { pageTabVariants } from '@/shared/ui';
-import { urlStore } from '@/shared/lib/urlStore';
+import { PROFILE_TABS, type ProfileTab } from './model/profileTab';
+import { useProfileTabs } from './model/useProfileTabs';
 
 interface ProfileTabsProps {
   archive: CohortArchive[];
   memberTracks: Track[];
   githubId: string;
+  /** 페이지 경로의 아이디 (githubId와 다를 수 있다: 예전 아이디로 들어온 경우) */
+  detailId: string;
   lastPostedAt: string | null;
-  initialTab: 'mission' | 'blog';
-  initialMissionTab: 'mission' | 'common' | 'pending';
+  initialTab: ProfileTab;
+  initialMissionTab: MissionTab;
 }
 
 export function ProfileTabs({
   archive,
   memberTracks,
   githubId,
+  detailId,
   lastPostedAt,
   initialTab,
   initialMissionTab,
 }: ProfileTabsProps) {
-  const [tab, setTab] = useState<'mission' | 'blog'>(initialTab);
-
-  const handleTabChange = (t: 'mission' | 'blog') => {
-    setTab(t);
-    urlStore.replaceParam('tab', t);
-  };
+  const { tab, missionTab, setTab, setMissionTab } = useProfileTabs({ detailId, initialTab, initialMissionTab });
 
   return (
     <>
       <div className="border-b border-border mb-6">
         <div role="tablist" aria-label="프로필" className="flex">
-          {(['mission', 'blog'] as const).map((t) => (
+          {PROFILE_TABS.map((t) => (
             <button
-              key={t}
+              key={t.id}
               role="tab"
-              aria-selected={tab === t}
-              onClick={() => handleTabChange(t)}
-              className={pageTabVariants({ active: tab === t, size: 'lg', indicator: 'accent' })}
+              aria-selected={tab === t.id}
+              onClick={() => setTab(t.id)}
+              className={pageTabVariants({ active: tab === t.id, size: 'lg', indicator: 'accent' })}
             >
-              {t === 'mission' ? '미션 아카이브' : '블로그 글'}
+              {t.label}
             </button>
           ))}
         </div>
@@ -57,7 +56,8 @@ export function ProfileTabs({
             archive={archive}
             memberTracks={memberTracks}
             githubId={githubId}
-            initialMissionTab={initialMissionTab}
+            tab={missionTab}
+            onTabChange={setMissionTab}
           />
         ) : (
           <BlogSection githubId={githubId} lastPostedAt={lastPostedAt} />

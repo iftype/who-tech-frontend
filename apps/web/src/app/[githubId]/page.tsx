@@ -3,6 +3,8 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { memberDetailQuery } from '@/entities/member';
+import { parseMissionTab } from '@/features/mission-archive/parse';
+import { parseProfileTab } from '@/widgets/profile-tabs/model/profileTab';
 import { makeQueryClient } from '@/shared/api';
 import { MemberDetailClient } from './MemberDetailClient';
 
@@ -40,8 +42,8 @@ export default async function DetailPage({ params, searchParams }: DetailPagePro
   if (!member) notFound();
 
   const sp = await searchParams;
-  const tab = sp?.tab === 'blog' ? 'blog' : 'mission';
-  const missionTab = sp?.missionTab === 'common' || sp?.missionTab === 'pending' ? sp.missionTab : 'mission';
+  const tab = parseProfileTab(sp?.tab);
+  const missionTab = parseMissionTab(sp?.missionTab);
 
   return (
     <HydrationBoundary state={dehydrate(getRequestQueryClient())}>

@@ -12,13 +12,15 @@ import {
   visibleArchive,
 } from '@/entities/member';
 import { ProfileTabs } from '@/widgets/profile-tabs/ProfileTabs';
+import type { ProfileTab } from '@/widgets/profile-tabs/model/profileTab';
 import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
+import type { MissionTab } from '@/features/mission-archive/types';
 import { PageContainer, buttonVariants } from '@/shared/ui';
 
 interface MemberDetailClientProps {
   githubId: string;
-  initialTab: 'mission' | 'blog';
-  initialMissionTab: 'mission' | 'common' | 'pending';
+  initialTab: ProfileTab;
+  initialMissionTab: MissionTab;
 }
 
 // 멤버 데이터는 서버가 HydrationBoundary로 캐시에 넣어 준다. 새로고침 버튼이 같은 캐시를 갱신한다
@@ -117,6 +119,7 @@ export function MemberDetailClient({ githubId, initialTab, initialMissionTab }: 
           archive={visibleArchive(member)}
           memberTracks={member.tracks}
           githubId={member.githubId}
+          detailId={githubId}
           lastPostedAt={member.lastPostedAt}
           initialTab={initialTab}
           initialMissionTab={initialMissionTab}
