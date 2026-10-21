@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { CohortBadge, RoleBadge, RoleBadges, TrackBadge, githubProfileUrl, nonCrewRoles } from '@/entities/member';
-import type { Member } from '@/entities/member';
+import { MemberBadgeSet, githubProfileUrl, memberPath } from '@/entities/member';
 import { staggerFadeIn } from '@/shared/lib/animation';
-import { formatRelativeDate, getBlogSource } from '@/shared/lib/utils';
+import { formatRelativeDate } from '@/shared/lib/utils';
 import { Avatar } from '@/shared/ui';
+import { postVisitPath } from '../model/links';
+import { getBlogSource } from '../model/source';
 import type { FeedItem } from '../model/types';
 
 // 카드 전체 링크 위에 올라가는 작은 링크(작성자·출처). z-10으로 카드 링크보다 위에 둔다
@@ -25,7 +26,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
       <div className="min-w-0 flex-1">
         <div className="mb-1.5">
           <a
-            href={`/api/members/blog-posts/${item.id}/visit`}
+            href={postVisitPath(item.id)}
             target="_blank"
             rel="noopener noreferrer"
             className="break-all text-body text-text hover:underline after:absolute after:inset-0 after:content-['']"
@@ -37,7 +38,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
           <div className="flex flex-wrap items-center gap-1.5">
             <AuthorName item={item} />
             <div className="flex flex-wrap items-center gap-1">
-              <AuthorBadges member={item.member} />
+              <MemberBadgeSet member={item.member} />
             </div>
           </div>
           <span className="ml-auto flex-shrink-0 text-text-muted sm:ml-0">{formatRelativeDate(item.publishedAt)}</span>
@@ -72,42 +73,8 @@ function AuthorName({ item }: { item: FeedItem }) {
     );
   }
   return (
-    <Link href={`/${item.member.githubId}`} className={META_LINK_CLASS}>
+    <Link href={memberPath(item.member.githubId)} className={META_LINK_CLASS}>
       {item.member.nickname}
     </Link>
-  );
-}
-
-// 팀 블로그 → 팀 배지 하나. 멤버 → 트랙 + 기수별 역할 (cohorts가 없는 예전 응답은 대표 기수·역할로)
-function AuthorBadges({ member }: { member: Member }) {
-  if (member.isTeamBlog) {
-    return (
-      <span className="inline-flex items-center rounded-full border border-team-blog/50 bg-team-blog/15 px-1.5 py-0.5 text-tiny font-medium text-team-blog-text">
-        팀 블로그
-      </span>
-    );
-  }
-  const cohorts = member.cohorts;
-  return (
-    <>
-      <TrackBadge track={member.tracks[0]} compact />
-      {cohorts && cohorts.length > 0 ? (
-        cohorts.map((c) => {
-          const hasCrew = c.roles.includes('crew');
-          return (
-            <span key={c.cohort} className="inline-flex items-center gap-1">
-              <CohortBadge cohort={c.cohort} />
-              {hasCrew && <RoleBadge role="crew" />}
-              {!hasCrew && nonCrewRoles(c.roles).map((r) => <RoleBadge key={r} role={r} />)}
-            </span>
-          );
-        })
-      ) : (
-        <>
-          {member.cohort != null && <CohortBadge cohort={member.cohort} />}
-          <RoleBadges roles={member.roles} hideCrew />
-        </>
-      )}
-    </>
   );
 }

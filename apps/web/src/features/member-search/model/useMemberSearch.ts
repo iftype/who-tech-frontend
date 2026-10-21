@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
-import { memberSearchQuery } from '@/entities/member';
+import { memberPath, memberSearchQuery } from '@/entities/member';
 import type { Member } from '@/entities/member';
 import { useDebounce } from '@/shared/lib/useDebounce';
 import { useOutsideClick } from '@/shared/lib/useOutsideClick';
@@ -22,7 +22,7 @@ export function useMemberSearch() {
 
   const handleSelect = useCallback(
     (member: Member) => {
-      router.push(`/${member.githubId}`);
+      router.push(memberPath(member.githubId));
       setQuery('');
       setOpen(false);
     },
