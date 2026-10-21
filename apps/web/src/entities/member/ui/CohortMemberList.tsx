@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { Member } from '../model/types';
+import { nonCrewRoles } from '../model/role';
 import { Avatar } from '@/shared/ui';
 import { CohortBadge, RoleBadge, TrackBadge } from './MemberBadges';
 
@@ -44,11 +45,9 @@ export function CohortMemberList({ members, emptyMessage }: CohortMemberListProp
                 <div className="mt-1 flex flex-wrap gap-1">
                   {member.cohort != null && <CohortBadge cohort={member.cohort} />}
                   {member.tracks.length > 0 && member.tracks.map((t) => <TrackBadge key={t} track={t} />)}
-                  {member.roles
-                    .filter((r) => r !== 'crew')
-                    .map((r) => (
-                      <RoleBadge key={r} role={r} />
-                    ))}
+                  {nonCrewRoles(member.roles).map((r) => (
+                    <RoleBadge key={r} role={r} />
+                  ))}
                 </div>
               </div>
             </Link>

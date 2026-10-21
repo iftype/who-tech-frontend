@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { Member, RoleGroup, Track } from '@/entities/member';
-import { CohortMemberGrid, CohortMemberList } from '@/entities/member';
-import { CohortFilterBar, TRACK_OPTIONS } from '@/features/cohort-filter/CohortFilterBar';
+import type { RoleGroup, Track } from '@/entities/member';
+import { CohortMemberGrid, CohortMemberList, TRACK_OPTIONS, isStaff } from '@/entities/member';
+import { CohortFilterBar } from '@/features/cohort-filter/CohortFilterBar';
 import { CohortTabBar } from '@/features/cohort-filter/CohortTabBar';
 import { useCohortMembers } from './model/useCohortMembers';
 import { useCohortUrlState } from './model/useCohortUrlState';
@@ -16,8 +16,6 @@ interface CohortExplorerProps {
   initialRoleGroup: RoleGroup;
   initialTrack: Track | 'all';
 }
-
-const isStaff = (m: Member) => m.roles.some((r) => r === 'coach' || r === 'reviewer');
 
 export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }: CohortExplorerProps) {
   const { activeCohort, roleGroup, track, applyFilters, selectCohort } = useCohortUrlState({
@@ -38,8 +36,8 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
   } = useCohortMembers({ activeCohort, roleGroup, track });
 
   const roleScopedMembers = useMemo(() => {
-    if (roleGroup === 'crew') return cohortMembers.filter((m) => m.roles.includes('crew') && !isStaff(m));
-    return cohortMembers.filter((m) => isStaff(m));
+    if (roleGroup === 'crew') return cohortMembers.filter((m) => m.roles.includes('crew') && !isStaff(m.roles));
+    return cohortMembers.filter((m) => isStaff(m.roles));
   }, [cohortMembers, roleGroup]);
 
   const filtered = useMemo(
@@ -55,7 +53,7 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
       <CohortTabBar activeCohort={activeCohort} cohorts={cohorts} onChange={selectCohort} />
       {isMembersPending ? (
         <CohortExplorerSkeleton
-          cohort={activeCohort ?? 0}
+          cohort={activeCohort}
           counts={{ crew: crewCount, staff: staffCount }}
           visibleTrackOptions={TRACK_OPTIONS}
           filteredCount={filtered.length}
@@ -63,7 +61,7 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
       ) : (
         <>
           <CohortFilterBar
-            cohort={activeCohort ?? 0}
+            cohort={activeCohort}
             filters={{ roleGroup, track }}
             applyFilters={applyFilters}
             counts={{ crew: crewCount, staff: staffCount }}

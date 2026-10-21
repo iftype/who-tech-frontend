@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { CURRENT_COHORT, isStaff } from '@/entities/member';
 import type { FeedItem } from '@/entities/post';
 import { getBlogSource } from '@/shared/lib/utils';
 
@@ -11,10 +12,7 @@ export function useFeedSummary(items: FeedItem[]) {
         const diffDays = (now - new Date(item.publishedAt).getTime()) / (1000 * 60 * 60 * 24);
         return diffDays <= 7;
       })
-      .filter((item) => {
-        const roles = item.member.roles ?? [];
-        return (roles.includes('coach') || roles.includes('reviewer')) && item.member.cohort === 8;
-      })
+      .filter((item) => isStaff(item.member.roles) && item.member.cohort === CURRENT_COHORT)
       .slice(0, 5);
   }, [items]);
 

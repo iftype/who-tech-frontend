@@ -1,16 +1,17 @@
 import { MISSION_TAB, UNREGISTERED_COHORT } from './constants';
 import type { MissionTab } from './types';
-import type { ArchiveRepo, ArchiveStep, CohortArchive } from '@/entities/member';
+import { githubProfileUrl } from '@/entities/member';
+import type { ArchiveRepo, ArchiveStep, CohortArchive, Track } from '@/entities/member';
 
 export function getForkUrl(githubId: string, repoName: string) {
-  return `https://github.com/${githubId}/${repoName}`;
+  return `${githubProfileUrl(githubId)}/${repoName}`;
 }
 
 export function buildMarkdown(
   archives: CohortArchive[],
   tab: MissionTab,
   githubId: string,
-  memberTracks: string[],
+  memberTracks: Track[],
 ): string {
   const lines: string[] = [`# ${new Date().getFullYear()} woowacourse-archive\n`];
 
@@ -46,7 +47,7 @@ export function buildMarkdown(
 export function getFilteredArchives(
   archives: CohortArchive[],
   tab: MissionTab,
-  memberTracks: string[],
+  memberTracks: Track[],
 ): CohortArchive[] {
   return archives
     .map((archive) => ({
@@ -67,7 +68,7 @@ function getFilteredRepos(
   repos: ArchiveRepo[],
   tab: MissionTab,
   cohort: number,
-  memberTracks?: string[],
+  memberTracks?: Track[],
 ): ArchiveRepo[] {
   return repos
     .map((repo) => ({
@@ -86,12 +87,14 @@ function getFilteredSubmissions(submissions: ArchiveStep[] | null, tab: MissionT
   );
 }
 
-function shouldIncludeRepo(repo: ArchiveRepo, tab: MissionTab, cohort: number, memberTracks?: string[]) {
+function shouldIncludeRepo(repo: ArchiveRepo, tab: MissionTab, cohort: number, memberTracks?: Track[]) {
   if (tab === MISSION_TAB.PENDING) return Boolean(repo.submissions && repo.submissions.length > 0);
   if (cohort === UNREGISTERED_COHORT) return false;
   if (tab === MISSION_TAB.MISSION) {
     if (repo.tabCategory !== 'base') return false;
-    if (memberTracks && memberTracks.length > 0) return repo.track === null || memberTracks.includes(repo.track);
+    // repo.track은 API 문자열 그대로라 Track으로 좁히지 않고 비교만 한다
+    if (memberTracks && memberTracks.length > 0)
+      return repo.track === null || memberTracks.some((t) => t === repo.track);
     return true;
   }
   if (tab === MISSION_TAB.COMMON) return repo.tabCategory === 'common';

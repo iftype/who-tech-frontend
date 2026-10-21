@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { Member } from '../model/types';
+import { nonCrewRoles } from '../model/role';
 import { Avatar } from '@/shared/ui';
 import { RoleBadge, TrackBadge } from './MemberBadges';
 
@@ -26,11 +27,9 @@ export function CohortMemberGrid({ members, emptyMessage }: CohortMemberGridProp
             <p className="truncate text-caption text-text-dim">@{member.githubId}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-1">
-            {member.roles
-              .filter((r) => r !== 'crew')
-              .map((r) => (
-                <RoleBadge key={r} role={r} />
-              ))}
+            {nonCrewRoles(member.roles).map((r) => (
+              <RoleBadge key={r} role={r} />
+            ))}
             {member.tracks.length > 0 && member.tracks.map((t) => <TrackBadge key={t} track={t} />)}
           </div>
         </Link>

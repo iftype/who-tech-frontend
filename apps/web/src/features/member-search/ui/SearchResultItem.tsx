@@ -1,5 +1,5 @@
 import type { Member } from '@/entities/member';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
+import { CohortBadge, RoleBadge, TrackBadge, nonCrewRoles } from '@/entities/member';
 import { Avatar, listItemVariants } from '@/shared/ui';
 
 interface SearchResultItemProps {
@@ -31,11 +31,9 @@ export function SearchResultItem({ id, member, active, onSelect }: SearchResultI
       </div>
       <div className="flex items-center gap-1.5 flex-shrink-0">
         {member.cohort && <CohortBadge cohort={member.cohort} />}
-        {member.roles
-          .filter((r) => r !== 'crew')
-          .map((r) => (
-            <RoleBadge key={r} role={r} />
-          ))}
+        {nonCrewRoles(member.roles).map((r) => (
+          <RoleBadge key={r} role={r} />
+        ))}
         {member.tracks.map((t) => (
           <TrackBadge key={t} track={t} />
         ))}

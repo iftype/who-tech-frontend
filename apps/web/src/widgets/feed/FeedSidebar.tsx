@@ -1,4 +1,5 @@
 import { Avatar } from '@/shared/ui';
+import { CURRENT_COHORT } from '@/entities/member';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import type { FeedItem } from '@/entities/post';
 
@@ -14,7 +15,7 @@ export function FeedSidebar({ staffPosts, platformStats }: FeedSidebarProps) {
     <aside className="hidden lg:block">
       <div className="sticky top-24 space-y-7 border-l border-border pl-5">
         <section>
-          <h2 className="mb-4 text-label font-semibold text-text-secondary">8기 운영진 최신 글</h2>
+          <h2 className="mb-4 text-label font-semibold text-text-secondary">{CURRENT_COHORT}기 운영진 최신 글</h2>
           <div className="space-y-4">
             {staffPosts.length === 0 ? (
               <p className="text-label text-text-muted">데이터 없음</p>
