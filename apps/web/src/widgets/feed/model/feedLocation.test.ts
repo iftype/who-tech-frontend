@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildFeedSearch, parseFeedSearch } from './useFeedFilters';
+import { buildFeedSearch, parseFeedSearch } from './feedLocation';
 
 describe('feed URL search', () => {
   it('should read the defaults from an empty search', () => {
