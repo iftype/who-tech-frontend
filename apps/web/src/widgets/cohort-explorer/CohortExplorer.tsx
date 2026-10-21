@@ -5,7 +5,7 @@ import type { RoleGroup, Track } from '@/entities/member';
 import { CohortMemberGrid, CohortMemberList, TRACK_OPTIONS, matchesRoleGroup } from '@/entities/member';
 import { CohortFilterBar } from '@/features/cohort-filter';
 import { CohortTabBar } from '@/features/cohort-filter';
-import { ErrorState, buttonVariants } from '@/shared/ui';
+import { ErrorState, LOADING_TEXT, buttonVariants } from '@/shared/ui';
 import { useCohortMembers } from './model/useCohortMembers';
 import { useCohortUrlState } from './model/useCohortUrlState';
 import { CohortExplorerSkeleton } from './ui/CohortExplorerSkeleton';
@@ -88,7 +88,7 @@ export function CohortExplorer({ initialCohort, initialRoleGroup, initialTrack }
                 className={buttonVariants({ variant: 'more', size: 'lg' })}
               >
                 {isFetchingNextPage
-                  ? '불러오는 중...'
+                  ? LOADING_TEXT
                   : `더 보기 (${filtered.length}/${filteredTotalCount || firstMemberPage?.totalCount || filtered.length})`}
               </button>
             </div>

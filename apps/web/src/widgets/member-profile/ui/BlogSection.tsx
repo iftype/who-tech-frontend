@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { memberPostsQuery } from '@/entities/post';
+import { NO_POSTS_TEXT, memberPostsQuery } from '@/entities/post';
 import { cn, formatDate, formatRelativeDate } from '@/shared/lib/utils';
-import { ClockIcon, ErrorState, linkVariants } from '@/shared/ui';
+import { ClockIcon, ErrorState, LOADING_TEXT, linkVariants } from '@/shared/ui';
 
 interface BlogSectionProps {
   githubId: string;
@@ -13,7 +13,7 @@ export function BlogSection({ githubId, lastPostedAt }: BlogSectionProps) {
   const { data: blogPosts, isLoading, isError, refetch } = useQuery(memberPostsQuery(githubId));
 
   if (isLoading) {
-    return <p className="py-8 text-body-sm text-text-muted">블로그 글을 불러오는 중...</p>;
+    return <p className="py-8 text-body-sm text-text-muted">{LOADING_TEXT}</p>;
   }
 
   if (isError) {
@@ -21,7 +21,7 @@ export function BlogSection({ githubId, lastPostedAt }: BlogSectionProps) {
   }
 
   if (!blogPosts) {
-    return <p className="py-8 text-body-sm text-text-muted">등록된 블로그 글이 없습니다</p>;
+    return <p className="py-8 text-body-sm text-text-muted">{NO_POSTS_TEXT}</p>;
   }
 
   const { archive: archivePosts } = blogPosts;
@@ -29,7 +29,7 @@ export function BlogSection({ githubId, lastPostedAt }: BlogSectionProps) {
   return (
     <div className="flex flex-col gap-4">
       {archivePosts.length === 0 ? (
-        <p className="text-body-sm text-text-muted">등록된 블로그 글이 없습니다</p>
+        <p className="text-body-sm text-text-muted">{NO_POSTS_TEXT}</p>
       ) : (
         <>
           <div className="flex flex-col divide-y divide-border-dim border border-border rounded-lg overflow-hidden bg-surface">
