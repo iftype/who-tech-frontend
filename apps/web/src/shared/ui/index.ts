@@ -1,10 +1,9 @@
-export { Avatar, avatarVariants } from './Avatar';
-export type { AvatarSize } from './Avatar';
-export { BADGE_BASE_CLASS, Badge, badgeVariants } from './Badge';
+export { Avatar } from './Avatar';
+export { BADGE_BASE_CLASS, Badge } from './Badge';
 export { buttonVariants, chipButtonVariants } from './buttonVariants';
 export { Divider } from './Divider';
-export { EmptyState, emptyStateVariants } from './EmptyState';
-export { ListCard, listCardVariants } from './ListCard';
+export { EmptyState } from './EmptyState';
+export { ListCard } from './ListCard';
 export { FilterRow, filterChipVariants } from './FilterRow';
 export { linkVariants } from './linkVariants';
 export { listItemVariants } from './listItemVariants';

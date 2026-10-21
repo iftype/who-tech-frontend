@@ -2,10 +2,7 @@ export type { BlogPost, BlogPostDetail, FeedItem, FeedResponse } from './model/t
 export type { FeedRange } from './model/parse';
 export { parseRange, rangeToDays } from './model/parse';
 export { getBlogSource } from './model/source';
-export { postVisitPath } from './model/links';
 export { postApi } from './api/post.api';
-export type { FeedParams } from './api/post.api';
 export { postKeys } from './api/post.keys';
 export { feedQuery, memberPostsQuery } from './api/post.queries';
-export { FeedRow } from './ui/FeedRow';
 export { FeedList } from './ui/FeedList';
