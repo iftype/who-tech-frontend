@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { badgeVariants } from './Badge';
 import { buttonVariants, chipButtonVariants } from './buttonVariants';
 import { emptyStateVariants } from './EmptyState';
 import { listCardVariants } from './ListCard';
@@ -28,6 +29,14 @@ describe('shared/ui variants', () => {
     expect(set(segmentVariants({ active: false }))).toEqual(
       set('cursor-pointer rounded px-2.5 py-1.5 text-caption text-text-muted hover:text-text'),
     );
+  });
+
+  it('should keep the two domain-free badge tones', () => {
+    const base = 'inline-flex items-center px-1.5 py-0.5 rounded text-caption font-medium border';
+    expect(set(badgeVariants({ tone: 'accent' }))).toEqual(
+      set(`${base} font-mono text-accent-dm border-accent-border bg-accent-bg`),
+    );
+    expect(set(badgeVariants())).toEqual(set(`${base} text-text-secondary border-border bg-surface`));
   });
 
   it('should match the empty states and list cards that used to be styled in place', () => {

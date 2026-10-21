@@ -1,4 +1,5 @@
 import { Badge } from '@/shared/ui';
+import { trackBadgeVariants } from './trackBadgeVariants';
 import { ROLE_LABEL, TRACK_LABEL, TRACK_SHORT_LABEL } from '../model/labels';
 import type { Role, Track } from '../model/types';
 
@@ -13,5 +14,14 @@ export function RoleBadge({ role }: { role: Role }) {
 // track이 없을 때(트랙 없는 멤버의 첫 트랙)도 지금 화면 그대로 빈 배지를 그린다. 숨길지는 화면 변경으로 따로 판단
 export function TrackBadge({ track, compact }: { track: Track | undefined; compact?: boolean }) {
   const label = track ? (compact ? TRACK_SHORT_LABEL[track] : TRACK_LABEL[track]) : undefined;
-  return <Badge tone={track}>{label}</Badge>;
+  return <span className={trackBadgeVariants({ track })}>{label}</span>;
+}
+
+/** 팀 블로그 작성자 표시. 역할·기수 배지 대신 하나만 붙는다 */
+export function TeamBlogBadge() {
+  return (
+    <span className="inline-flex items-center rounded-full border border-team-blog/50 bg-team-blog/15 px-1.5 py-0.5 text-tiny font-medium text-team-blog-text">
+      팀 블로그
+    </span>
+  );
 }
