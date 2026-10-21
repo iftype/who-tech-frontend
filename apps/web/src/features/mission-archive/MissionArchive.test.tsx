@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
 import { MissionArchive } from './MissionArchive';
 import { getFilteredArchives } from './utils';
-import type { CohortArchive } from '@/entities/member';
+import type { CohortArchive, Track } from '@/entities/member';
 
 const archive: CohortArchive[] = [
   {
@@ -101,7 +101,7 @@ function renderMissionArchive({
 }: {
   customArchive?: CohortArchive[];
   initialMissionTab?: MissionTab;
-  memberTracks?: string[];
+  memberTracks?: Track[];
 } = {}) {
   return render(
     <MissionArchive

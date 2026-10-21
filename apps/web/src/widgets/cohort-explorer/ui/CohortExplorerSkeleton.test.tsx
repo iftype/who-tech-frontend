@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { TRACK_OPTIONS } from '@/features/cohort-filter/CohortFilterBar';
+import { TRACK_OPTIONS } from '@/entities/member';
 import { CohortExplorerSkeleton } from './CohortExplorerSkeleton';
 
 const props = { counts: { crew: 12, staff: 3 }, visibleTrackOptions: TRACK_OPTIONS, filteredCount: 12 };
 
 describe('CohortExplorerSkeleton', () => {
   it('should title the whole list for cohort 0 and a cohort otherwise', () => {
-    const { rerender } = render(<CohortExplorerSkeleton cohort={0} {...props} />);
+    const { rerender } = render(<CohortExplorerSkeleton cohort={null} {...props} />);
     expect(screen.getByRole('heading', { name: '전체 크루' })).toBeInTheDocument();
     expect(screen.getByText('우아한테크코스 전체 멤버 목록')).toBeInTheDocument();
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Avatar } from '@/shared/ui';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
+import { CohortBadge, RoleBadge, TrackBadge, githubProfileUrl, nonCrewRoles } from '@/entities/member';
 import { formatRelativeDate, getBlogSource } from '@/shared/lib/utils';
 import type { FeedItem } from '../model/types';
 
@@ -25,7 +25,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
     >
       <div className="relative z-10 mt-0.5 flex flex-shrink-0">
         <a
-          href={item.member.isTeamBlog ? (item.member.blog ?? item.url) : `https://github.com/${item.member.githubId}`}
+          href={item.member.isTeamBlog ? (item.member.blog ?? item.url) : githubProfileUrl(item.member.githubId)}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -70,23 +70,20 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
                   {(item.member.cohorts ?? []).length > 0 ? (
                     item.member.cohorts!.map((c) => {
                       const hasCrew = c.roles.includes('crew');
-                      const nonCrewRoles = c.roles.filter((r) => r !== 'crew');
                       return (
                         <span key={c.cohort} className="inline-flex items-center gap-1">
                           <CohortBadge cohort={c.cohort} />
                           {hasCrew && <RoleBadge role="crew" />}
-                          {!hasCrew && nonCrewRoles.map((r) => <RoleBadge key={r} role={r} />)}
+                          {!hasCrew && nonCrewRoles(c.roles).map((r) => <RoleBadge key={r} role={r} />)}
                         </span>
                       );
                     })
                   ) : (
                     <>
                       {item.member.cohort != null && <CohortBadge cohort={item.member.cohort} />}
-                      {(item.member.roles ?? [])
-                        .filter((r) => r !== 'crew')
-                        .map((r) => (
-                          <RoleBadge key={r} role={r} />
-                        ))}
+                      {nonCrewRoles(item.member.roles).map((r) => (
+                        <RoleBadge key={r} role={r} />
+                      ))}
                     </>
                   )}
                 </>

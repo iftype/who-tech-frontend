@@ -1,9 +1,10 @@
-import type { Track } from '@/entities/member';
+import type { TrackOption } from '@/entities/member';
 
 interface SkeletonProps {
-  cohort: number;
+  /** null = 전체 기수 */
+  cohort: number | null;
   counts: { crew: number; staff: number };
-  visibleTrackOptions: { label: string; value: Track | 'all' }[];
+  visibleTrackOptions: TrackOption[];
   filteredCount: number;
 }
 
@@ -16,10 +17,10 @@ function CohortFilterBarSkeleton({ cohort, counts, visibleTrackOptions, filtered
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-title font-bold tracking-tight text-text sm:text-title-lg">
-            {cohort === 0 ? '전체 크루' : `${cohort}기 크루`}
+            {cohort === null ? '전체 크루' : `${cohort}기 크루`}
           </h1>
           <p className="mt-1 text-label text-text-muted">
-            우아한테크코스 {cohort === 0 ? '전체' : `${cohort}기`} 멤버 목록
+            우아한테크코스 {cohort === null ? '전체' : `${cohort}기`} 멤버 목록
           </p>
         </div>
         <div className="pointer-events-none flex items-center gap-1 rounded-md border border-border bg-surface p-1">

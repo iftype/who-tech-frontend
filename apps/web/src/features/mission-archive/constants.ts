@@ -10,4 +10,4 @@ export const MISSION_TAB_ITEMS = [
   { value: MISSION_TAB.PENDING, label: '확인전' },
 ] as const;
 
-export const UNREGISTERED_COHORT = 0;
+export { UNREGISTERED_COHORT } from '@/entities/member';

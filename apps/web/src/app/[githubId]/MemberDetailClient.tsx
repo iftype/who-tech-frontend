@@ -2,11 +2,17 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Avatar } from '@/shared/ui';
-import { CohortBadge, RoleBadge, TrackBadge } from '@/entities/member';
-import { TecoTalkBadge } from '@/entities/member';
+import {
+  CohortBadge,
+  RoleBadge,
+  TecoTalkBadge,
+  TrackBadge,
+  githubProfileUrl,
+  memberDetailQuery,
+  visibleArchive,
+} from '@/entities/member';
 import { ProfileTabs } from '@/widgets/profile-tabs/ProfileTabs';
 import { RefreshButton } from '@/features/profile-refresh/RefreshButton';
-import { memberDetailQuery } from '@/entities/member';
 import { PageContainer, buttonVariants } from '@/shared/ui';
 
 interface MemberDetailClientProps {
@@ -23,7 +29,7 @@ export function MemberDetailClient({ githubId, initialTab, initialMissionTab }: 
   const profileLinks = (className: string) => (
     <div className={`shrink-0 items-center gap-1 ${className}`}>
       <a
-        href={`https://github.com/${member.githubId}`}
+        href={githubProfileUrl(member.githubId)}
         target="_blank"
         rel="noopener noreferrer"
         className={buttonVariants()}
@@ -49,7 +55,7 @@ export function MemberDetailClient({ githubId, initialTab, initialMissionTab }: 
     <PageContainer spacing="detail">
       <div className="flex items-center gap-3 sm:gap-5 pb-5 sm:pb-8 border-b border-border-dim">
         <a
-          href={`https://github.com/${member.githubId}`}
+          href={githubProfileUrl(member.githubId)}
           target="_blank"
           rel="noopener noreferrer"
           className="block shrink-0 transition-transform duration-200 hover:scale-105"
@@ -108,9 +114,7 @@ export function MemberDetailClient({ githubId, initialTab, initialMissionTab }: 
 
       <div className="pt-6 sm:pt-8">
         <ProfileTabs
-          archive={member.archive.filter(
-            (ca) => ca.cohort === 0 || member.cohorts.some((mc) => mc.cohort === ca.cohort),
-          )}
+          archive={visibleArchive(member)}
           memberTracks={member.tracks}
           githubId={member.githubId}
           lastPostedAt={member.lastPostedAt}
