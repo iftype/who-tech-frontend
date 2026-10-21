@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/iftype/who-tech-frontend/compare/web-v0.1.0...web-v0.2.0) (2026-10-21)
+
+
+### 기능
+
+* **web:** 피드 다음 페이지 실패를 받은 글 아래에서 다시 시도, 로딩·빈 글 문구 통일 ([#130](https://github.com/iftype/who-tech-frontend/issues/130)) ([655b570](https://github.com/iftype/who-tech-frontend/commit/655b570931023cf996c87ce344ee60e54323925e))
+* **web:** 홈(/)에서 피드 메뉴를 활성으로 표시 ([#132](https://github.com/iftype/who-tech-frontend/issues/132)) ([16f117a](https://github.com/iftype/who-tech-frontend/commit/16f117a3608849ec3d2e3f4bd2738a3bcd65420c))
+
+
+### 리팩토링
+
+* **web:** 트랙 센티널 통일 — 기수 화면도 Track | null (URL은 그대로) ([#134](https://github.com/iftype/who-tech-frontend/issues/134)) ([e23d7e1](https://github.com/iftype/who-tech-frontend/commit/e23d7e166c808031b06166feb3be3bb0b4f39b6f))
+
 ## [0.1.0](https://github.com/iftype/who-tech-frontend/compare/web-v0.0.6...web-v0.1.0) (2026-10-21)
 
 
