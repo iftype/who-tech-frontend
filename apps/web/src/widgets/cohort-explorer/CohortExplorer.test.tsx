@@ -1,9 +1,9 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HydrationBoundary, QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-query';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Member } from '@/entities/member';
-import type { MemberSearchPage } from '@/entities/member';
+import type { Member, MemberSearchPage } from '@/entities/member';
+import { renderHydrated } from '@/test/render';
+import { makeMember, makeSearchPage as page } from '@/test/fixtures/member';
 
 const cohorts = vi.fn();
 const searchPage = vi.fn();
@@ -23,22 +23,11 @@ const { CohortExplorer } = await import('./CohortExplorer');
 const { cohortMembersQuery, cohortsQuery } = await import('@/entities/member');
 
 function member(githubId: string, roles: string[], tracks: string[]): Member {
-  return {
-    githubId,
-    nickname: `${githubId}-닉`,
-    avatarUrl: null,
-    cohort: 8,
-    roles,
-    cohorts: [{ cohort: 8, roles }],
-    track: tracks[0] ?? null,
-    tracks,
-    blog: null,
-    lastPostedAt: null,
-  } as Member;
-}
-
-function page(members: Member[], overrides: Partial<MemberSearchPage> = {}): MemberSearchPage {
-  return { members, totalCount: members.length, counts: { crew: 2, staff: 1 }, nextOffset: null, ...overrides };
+  return makeMember(githubId, {
+    roles: roles as Member['roles'],
+    cohorts: [{ cohort: 8, roles: roles as Member['roles'] }],
+    tracks: tracks as Member['tracks'],
+  });
 }
 
 const INITIAL = page([
@@ -49,23 +38,18 @@ const INITIAL = page([
 
 type Props = Parameters<typeof CohortExplorer>[0];
 
-// 서버 page.tsx처럼: 서버용 QueryClient에 첫 페이지·기수 목록을 넣고 dehydrate → HydrationBoundary
+// 서버 page.tsx처럼: 첫 페이지·기수 목록을 서버 캐시에 넣고 dehydrate → HydrationBoundary
 function renderExplorer({ initialPage = INITIAL, ...props }: Partial<Props> & { initialPage?: MemberSearchPage } = {}) {
   const merged: Props = { initialCohort: 8, initialRoleGroup: 'crew', initialTrack: 'all', ...props };
-  const server = new QueryClient();
-  server.setQueryData(cohortMembersQuery(merged.initialCohort, merged.initialTrack, merged.initialRoleGroup).queryKey, {
-    pages: [initialPage],
-    pageParams: [0],
+  return renderHydrated(<CohortExplorer {...merged} />, {
+    seed: (server) => {
+      server.setQueryData(
+        cohortMembersQuery(merged.initialCohort, merged.initialTrack, merged.initialRoleGroup).queryKey,
+        { pages: [initialPage], pageParams: [0] },
+      );
+      server.setQueryData(cohortsQuery().queryKey, [8, 7, 6]);
+    },
   });
-  server.setQueryData(cohortsQuery().queryKey, [8, 7, 6]);
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(
-    <QueryClientProvider client={client}>
-      <HydrationBoundary state={dehydrate(server)}>
-        <CohortExplorer {...merged} />
-      </HydrationBoundary>
-    </QueryClientProvider>,
-  );
 }
 
 const shown = (githubId: string) => screen.queryAllByText(`${githubId}-닉`).length > 0;

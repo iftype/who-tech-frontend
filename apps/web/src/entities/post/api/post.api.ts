@@ -1,21 +1,23 @@
 import { decodeHtml } from '@/shared/lib/utils';
-import { requestJson, withQuery } from '@/shared/api';
+import { requestJson, serverCache, withQuery } from '@/shared/api';
+import type { Track } from '@/entities/member';
 import type { BlogPostDetail, FeedResponse } from '../model/types';
 
 export interface FeedParams {
   cohort?: number;
-  track?: string;
+  track?: Track;
   days?: number;
   cursor?: string;
   limit?: number;
 }
 
+// 서버 데이터 캐시 시간 (서버 prefetch 경로만 해당)
+const CACHE_SECONDS = 300;
+
 // 블로그 글 제목은 RSS 원문 그대로라 HTML 엔티티(&amp; 등)를 풀어서 넘긴다
 export const postApi = {
   feed: async (params: FeedParams = {}) => {
-    const res = await requestJson<FeedResponse>(withQuery('/members/feed', { ...params }), {
-      next: { revalidate: 300 },
-    });
+    const res = await requestJson<FeedResponse>(withQuery('/members/feed', { ...params }), serverCache(CACHE_SECONDS));
     return {
       posts: res.posts.map((item) => ({ ...item, title: decodeHtml(item.title) })),
       nextCursor: res.nextCursor,

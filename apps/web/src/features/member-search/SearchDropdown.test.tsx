@@ -8,8 +8,9 @@ const push = vi.fn();
 const search = vi.fn();
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
-vi.mock('@/entities/member', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/entities/member')>()),
+// 쿼리 옵션(member.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다
+vi.mock('@/entities/member/api/member.api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/entities/member/api/member.api')>()),
   memberApi: { search: (...args: unknown[]) => search(...args) },
 }));
 
@@ -181,5 +182,74 @@ describe('SearchDropdown', () => {
     await userEvent.keyboard('{Meta>}k{/Meta}');
 
     expect(visible).toHaveFocus();
+  });
+
+  // 세 모드(기본·헤더 compact·모바일 헤더)의 클래스 집합. 모드가 variant prop으로 바뀌어도 집합은 그대로여야 한다
+  describe('modes', () => {
+    const set = (source: Element | string | null) =>
+      new Set(
+        (typeof source === 'string' ? source : (source?.getAttribute('class') ?? '')).split(/\s+/).filter(Boolean),
+      );
+    const box = () => screen.getByRole('combobox').parentElement!.parentElement!;
+
+    it('should style the full search box with the shortcut hint', () => {
+      renderDropdown();
+      expect(set(box())).toEqual(
+        set(
+          'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50 px-4 py-3',
+        ),
+      );
+      expect(set(box().querySelector('svg'))).toEqual(set('text-text-muted flex-shrink-0 h-4 w-4'));
+      expect(set(screen.getByRole('combobox'))).toEqual(
+        set('w-full bg-transparent text-text placeholder:text-text-muted outline-none text-body-lg sm:text-body'),
+      );
+      expect(screen.getByText('⌘K')).toBeInTheDocument();
+      expect(screen.getByRole('combobox')).toHaveAttribute('placeholder', '닉네임 또는 GitHub ID로 검색...');
+    });
+
+    it('should style the compact header box without the hint', () => {
+      renderDropdown({ compact: true });
+      expect(set(box())).toEqual(
+        set(
+          'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50 px-2.5 py-2',
+        ),
+      );
+      expect(set(box().querySelector('svg'))).toEqual(set('text-text-muted flex-shrink-0 h-3.5 w-3.5'));
+      expect(set(screen.getByRole('combobox'))).toEqual(
+        set('w-full bg-transparent text-text placeholder:text-text-muted outline-none text-body-sm'),
+      );
+      expect(screen.queryByText('⌘K')).not.toBeInTheDocument();
+      expect(screen.getByRole('combobox')).toHaveAttribute('placeholder', '닉네임 / ID 검색');
+    });
+
+    it('should style the mobile header box with the scaled input and a scrollable dropdown', async () => {
+      search.mockResolvedValue([member('garam')]);
+      renderDropdown({ compact: true, mobileHeader: true, dropdownClassName: 'fixed z-[70]' });
+      const input = screen.getByRole('combobox');
+
+      expect(set(box())).toEqual(
+        set(
+          'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50 gap-2 px-2 py-1.5',
+        ),
+      );
+      expect(set(box().querySelector('svg'))).toEqual(set('text-text-muted flex-shrink-0 h-3 w-3'));
+      expect(set(input.parentElement)).toEqual(set('min-w-0 flex-1 overflow-hidden'));
+      expect(set(input)).toEqual(
+        set(
+          'w-full bg-transparent text-text placeholder:text-text-muted outline-none origin-left text-body-lg placeholder:text-label sm:text-body-sm',
+        ),
+      );
+      expect(input).toHaveStyle({ transform: 'scale(0.86)' });
+      expect(input.style.width).toBe(`${100 / 0.86}%`);
+      expect(input).toHaveAttribute('placeholder', '검색');
+
+      await userEvent.type(input, 'ga');
+      const dropdown = (await screen.findByRole('listbox')).parentElement!;
+      expect(set(dropdown)).toEqual(
+        set(
+          'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-border bg-surface shadow-xl max-h-[min(60vh,24rem)] overflow-y-auto overscroll-contain fixed z-[70]',
+        ),
+      );
+    });
   });
 });

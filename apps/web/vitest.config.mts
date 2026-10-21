@@ -12,9 +12,9 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.test.{ts,tsx}'],
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**'],
       reporter: ['text-summary'],
-      thresholds: { lines: 67, functions: 70 },
+      thresholds: { lines: 88, functions: 90 },
     },
   },
   resolve: {

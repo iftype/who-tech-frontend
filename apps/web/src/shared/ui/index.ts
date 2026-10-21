@@ -1,5 +1,5 @@
 export { Avatar } from './Avatar';
-export { Badge, badgeVariants } from './Badge';
+export { Badge } from './Badge';
 export { buttonVariants, chipButtonVariants } from './buttonVariants';
 export { Divider } from './Divider';
 export { FilterRow, filterChipVariants } from './FilterRow';

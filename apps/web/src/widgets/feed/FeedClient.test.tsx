@@ -1,9 +1,9 @@
-import { act, render, screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HydrationBoundary, QueryClient, QueryClientProvider, dehydrate } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Member } from '@/entities/member';
 import type { FeedItem } from '@/entities/post';
+import { renderHydrated } from '@/test/render';
+import { NOW, daysAgo, makeFeedItem as item } from '@/test/fixtures/post';
 
 const feed = vi.fn();
 // 쿼리 옵션(post.queries)이 API 모듈을 직접 쓰므로 그 모듈을 바꿔 끼운다
@@ -32,32 +32,6 @@ class FakeIntersectionObserver {
   }
 }
 
-const NOW = new Date('2026-10-18T12:00:00Z');
-const daysAgo = (n: number) => new Date(NOW.getTime() - n * 24 * 60 * 60 * 1000).toISOString();
-
-function item(id: number, member: Partial<Member>, overrides: Partial<FeedItem> = {}): FeedItem {
-  return {
-    id,
-    url: `https://velog.io/@crew/${id}`,
-    title: `글 ${id}`,
-    publishedAt: daysAgo(1),
-    member: {
-      githubId: `crew${id}`,
-      nickname: `크루${id}`,
-      avatarUrl: null,
-      cohort: 8,
-      roles: ['crew'],
-      cohorts: [{ cohort: 8, roles: ['crew'] }],
-      track: 'backend',
-      tracks: ['backend'],
-      blog: null,
-      lastPostedAt: null,
-      ...member,
-    } as Member,
-    ...overrides,
-  };
-}
-
 const ITEMS = [
   item(1, { cohort: 8, tracks: ['backend'] }),
   item(2, { cohort: 7, tracks: ['frontend'] }, { url: 'https://crew.tistory.com/2' }),
@@ -68,26 +42,21 @@ const ITEMS = [
 type Props = Parameters<typeof FeedClient>[0];
 type FirstPage = { posts: FeedItem[]; nextCursor: string | null; totalCount: number | undefined };
 
-// 서버 page.tsx처럼: 서버용 QueryClient에 첫 페이지를 넣고 dehydrate → HydrationBoundary로 화면 캐시에 붙인다
+// 서버 page.tsx처럼: 첫 페이지와 기수 목록을 서버 캐시에 넣고 dehydrate → HydrationBoundary로 화면 캐시에 붙인다
 function renderFeed({
   firstPage = { posts: ITEMS, nextCursor: 'c1', totalCount: 40 },
   ...props
 }: Partial<Props> & { firstPage?: FirstPage } = {}) {
   const merged: Props = { initialCohort: null, initialTrack: null, initialRange: '30d', ...props };
-  const server = new QueryClient();
-  server.setQueryData(feedQuery(rangeToDays(merged.initialRange), merged.initialTrack, merged.initialCohort).queryKey, {
-    pages: [firstPage],
-    pageParams: [undefined],
+  return renderHydrated(<FeedClient {...merged} />, {
+    seed: (server) => {
+      server.setQueryData(
+        feedQuery(rangeToDays(merged.initialRange), merged.initialTrack, merged.initialCohort).queryKey,
+        { pages: [firstPage], pageParams: [undefined] },
+      );
+      server.setQueryData(cohortsQuery().queryKey, [8, 7]);
+    },
   });
-  server.setQueryData(cohortsQuery().queryKey, [8, 7]);
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(
-    <QueryClientProvider client={client}>
-      <HydrationBoundary state={dehydrate(server)}>
-        <FeedClient {...merged} />
-      </HydrationBoundary>
-    </QueryClientProvider>,
-  );
 }
 
 describe('FeedClient', () => {

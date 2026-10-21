@@ -55,8 +55,6 @@ export function Navbar() {
   const linkClass = (href: string, mobile = false) =>
     navLinkVariants({ placement: mobile ? 'menu' : 'bar', active: isActive(href) });
 
-  const showHeaderSearch = true;
-
   return (
     <header data-nav className="sticky top-0 z-50 w-full border-b border-border bg-surface-alt/80 backdrop-blur-sm">
       <nav
@@ -78,22 +76,18 @@ export function Navbar() {
           </span>
         </Link>
 
-        {showHeaderSearch && (
-          <div className="min-w-0 flex-1 sm:hidden">
-            <SearchDropdown
-              className="max-w-none"
-              compact
-              mobileHeader
-              dropdownClassName="fixed left-2 right-2 top-[3.65rem] z-[70] w-auto max-w-none"
-            />
-          </div>
-        )}
+        <div className="min-w-0 flex-1 sm:hidden">
+          <SearchDropdown
+            className="max-w-none"
+            compact
+            mobileHeader
+            dropdownClassName="fixed left-2 right-2 top-[3.65rem] z-[70] w-auto max-w-none"
+          />
+        </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <div className="hidden sm:flex items-center gap-3">
-            {showHeaderSearch && (
-              <SearchDropdown className="w-[300px] max-w-[300px] xl:w-[360px] xl:max-w-[360px]" compact />
-            )}
+            <SearchDropdown className="w-[300px] max-w-[300px] xl:w-[360px] xl:max-w-[360px]" compact />
             <div className="flex items-center gap-4 sm:gap-6">
               {NAV_LINKS.map(({ href, label }) => (
                 <Link

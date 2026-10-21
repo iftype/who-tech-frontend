@@ -1,10 +1,9 @@
 import { useEffect, useMemo } from 'react';
-import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
-import { cohortMembersQuery, cohortsQuery } from '@/entities/member';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { cohortMembersQuery, useCohorts } from '@/entities/member';
 import type { Member, RoleGroup, Track } from '@/entities/member';
 
 const EMPTY_MEMBERS: Member[] = [];
-const EMPTY_COHORTS: number[] = [];
 
 interface Params {
   activeCohort: number | null;
@@ -16,7 +15,7 @@ interface Params {
 // 인접 기수는 한가할 때 미리 받는다 (prefetchInfiniteQuery — 화면 쿼리와 같은 캐시 모양)
 export function useCohortMembers({ activeCohort, roleGroup, track }: Params) {
   const queryClient = useQueryClient();
-  const { data: cohorts = EMPTY_COHORTS } = useQuery(cohortsQuery());
+  const cohorts = useCohorts();
 
   const {
     data: memberPages,
