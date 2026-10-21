@@ -14,3 +14,10 @@ export const navLinkVariants = cva('', {
   ],
   defaultVariants: { placement: 'bar' },
 });
+
+// 모바일 메뉴에서 링크 옆에 다른 요소(테마 토글)를 함께 놓는 한 줄. 색은 menu 링크와 같다
+export const navMenuRowVariants = cva('flex items-center gap-3 pr-4', {
+  variants: {
+    active: { true: 'bg-surface text-text', false: 'text-text-secondary hover:bg-surface hover:text-text' },
+  },
+});
