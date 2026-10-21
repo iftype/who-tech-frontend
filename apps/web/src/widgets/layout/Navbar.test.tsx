@@ -53,6 +53,14 @@ describe('Navbar', () => {
     expect(new Set(prefetch.mock.calls.map(([href]) => href))).toEqual(new Set(['/feed', '/cohort', '/settings']));
   });
 
+  // 피드(/feed)는 홈(/)으로 리다이렉트되므로 홈에서도 피드 메뉴가 활성이다 (라운드 6)
+  it('should mark the feed link active on the home page', () => {
+    pathname = '/';
+    render(<Navbar />);
+    expect(screen.getByRole('link', { name: '피드' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: '기수 목록' })).not.toHaveAttribute('aria-current');
+  });
+
   it('should reset the feed URL instead of navigating when the logo is clicked on the home page', async () => {
     pathname = '/';
     const replace = vi.spyOn(urlStore, 'replace').mockImplementation(() => undefined);
