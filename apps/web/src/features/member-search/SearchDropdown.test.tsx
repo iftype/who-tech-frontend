@@ -137,12 +137,12 @@ describe('SearchDropdown', () => {
   });
 
   it('should use compact and mobile header placeholders', () => {
-    const { unmount } = renderDropdown({ compact: true });
+    const { unmount } = renderDropdown({ variant: 'compact' });
     expect(screen.getByPlaceholderText('닉네임 / ID 검색')).toBeInTheDocument();
     expect(screen.queryByText('⌘K')).not.toBeInTheDocument();
     unmount();
 
-    renderDropdown({ compact: true, mobileHeader: true });
+    renderDropdown({ variant: 'mobileHeader' });
     expect(screen.getByPlaceholderText('검색')).toBeInTheDocument();
   });
 
@@ -170,8 +170,8 @@ describe('SearchDropdown', () => {
     const client = new QueryClient();
     render(
       <QueryClientProvider client={client}>
-        <SearchDropdown compact />
-        <SearchDropdown mobileHeader compact />
+        <SearchDropdown variant="compact" />
+        <SearchDropdown variant="mobileHeader" />
       </QueryClientProvider>,
     );
     const [visible, hidden] = screen.getAllByRole('combobox') as HTMLInputElement[];
@@ -208,7 +208,7 @@ describe('SearchDropdown', () => {
     });
 
     it('should style the compact header box without the hint', () => {
-      renderDropdown({ compact: true });
+      renderDropdown({ variant: 'compact' });
       expect(set(box())).toEqual(
         set(
           'flex items-center gap-3 rounded-lg border border-border bg-surface focus-within:border-accent/50 px-2.5 py-2',
@@ -224,7 +224,7 @@ describe('SearchDropdown', () => {
 
     it('should style the mobile header box with the scaled input and a scrollable dropdown', async () => {
       search.mockResolvedValue([member('garam')]);
-      renderDropdown({ compact: true, mobileHeader: true, dropdownClassName: 'fixed z-[70]' });
+      renderDropdown({ variant: 'mobileHeader', dropdownClassName: 'fixed z-[70]' });
       const input = screen.getByRole('combobox');
 
       expect(set(box())).toEqual(
