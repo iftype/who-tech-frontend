@@ -17,14 +17,14 @@ widgets/cohort-explorer/
 사용하는 하위 층:
   features/cohort-filter      CohortTabBar(기수 탭), CohortFilterBar(구분 토글·트랙 칩), CohortHeading
   entities/member             CohortMemberList(모바일), CohortMemberGrid(데스크톱), useCohorts, cohortMembersQuery,
-                              TRACK_OPTIONS, isStaff
+                              TRACK_OPTIONS, matchesRoleGroup
 ```
 
 ## 경계
 
 - ✅ 상태는 URL이 단일 소스다. `useCohortUrlState`가 `useUrl`로 읽어 계산한다 (useState 복사 없음). 화면은 훅이 돌려준 값만 쓴다
 - ✅ `CohortFilterBar`, `CohortMemberList`, `CohortMemberGrid`는 props-only
-- ✅ 운영진 판별(`isStaff`)과 트랙 칩 목록(`TRACK_OPTIONS`)은 엔티티가 정한다 — 피드 사이드바와 같은 함수를 쓴다
+- ✅ 크루/운영진 그룹 판별(`matchesRoleGroup` — 크루 탭은 크루이면서 운영진이 아닌 사람)과 트랙 칩 목록(`TRACK_OPTIONS`)은 엔티티가 정한다. URL 모양은 `model/cohortLocation.ts`(`parseCohortPath`·`parseCohortSearch`·`buildCohortPath`·`isCohortPath`)
 - ❌ `CohortFilterBar`/`MemberList`/`MemberGrid`에서 상태 훅 직접 호출 금지
 - ❌ 이 위젯은 localStorage를 쓰지 않는다
 

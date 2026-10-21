@@ -35,13 +35,13 @@ src/app/
 
 - 층: app → widgets → features → entities → shared. 바깥에서는 각 슬라이스의 `index.ts`로만 import한다 → [ARCHITECTURE.md](ARCHITECTURE.md)
 - 페이지는 파싱 → prefetch → `HydrationBoundary`만 한다. 데이터는 props가 아니라 캐시로 넘긴다 (ADR 0004·0006)
-- URL 상태(필터·탭)는 `shared/lib/urlStore`로 URL에서 계산한다. `useState`로 복사하지 않는다 (ADR 0005·0007)
+- URL 상태(필터·탭)는 `shared/lib/urlStore`로 URL에서 계산한다. `useState`로 복사하지 않는다. 화면마다 `*Location.ts`에 `parse*`/`build*`/`is*Path`, 훅은 `{ initial* }` 객체 인자 (ADR 0005·0007·0010)
 - API: 서버 환경 → `NEXT_PUBLIC_API_URL` 직접, 브라우저 → `/api` 프록시 (CORS). 둘 다 `shared/api`를 거친다
 
 ## 컨벤션
 
 - Tailwind CSS v4, 토큰은 `globals.css`의 `@theme`. 글자 크기·색은 토큰만 (`pnpm lint:tokens`)
-- 누르는 요소의 모양은 `shared/ui`의 cva variant로만. **`transition-colors` 전역 사용 금지** — 테마 전환 잔상 방지 (기수 화면의 예외는 ADR 0003)
+- 누르는 요소(버튼·링크)의 모양은 `shared/ui`의 cva variant로만, `className`은 배치만 — `pnpm lint:tokens`가 `<button>`·`<a>`·`Link`를 검사한다 (ADR 0003·0010). **`transition-colors` 전역 사용 금지** — 테마 전환 잔상 방지 (기수 화면의 예외는 ADR 0003)
 - 테마·디자인은 **쿠키**(`theme`, `designSystem`)로. 서버 `layout.tsx`가 읽어 `<html>` 클래스를 정하므로 첫 화면이 깜빡이지 않는다 (그래서 모든 경로가 동적 렌더링)
 - 리팩토링 PR은 동작 고정 테스트를 먼저 쓰고, 스크린샷 fixture·baseline은 바꾸지 않는다 (ADR 0009)
 - 모바일 앱(`apps/mobile`)이 읽는 셀렉터는 바꾸지 않는다: `header[data-nav]`, `button[aria-label="메뉴"]`, 로고 `a[href="/"]`, `html.dark/.apple/.sentry`

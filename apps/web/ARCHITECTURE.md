@@ -27,6 +27,7 @@ flowchart TD
 - 첫 데이터는 props가 아니라 캐시로 넘긴다: 요청마다 새 `QueryClient` → prefetch → `dehydrate` → `<HydrationBoundary>`. 실패한 prefetch는 넘어가지 않아 화면이 다시 받는다 → [ADR 0004](docs/adr/0004-rendering-and-hydration.md)
 - URL 상태(필터·탭)는 `shared/lib/urlStore`(`useSyncExternalStore`)로 URL에서 계산한다 → [ADR 0005](docs/adr/0005-url-as-external-store.md). URL·쿠키 값은 그 값을 아는 층의 파서(`parseTrack`, `parseCohortNumber`, `parseProfileTab`, `parseTheme` …)로만 읽는다 → [ADR 0007](docs/adr/0007-url-parsers-and-profile-tabs.md)
 - 도메인 사실(트랙·역할 이름, 운영진 판별, 현재 기수, GitHub 주소)은 `entities/member/model`에만 있고 UI는 읽는다. 같은 의미의 UI는 공용 컴포넌트 하나로 → [ADR 0008](docs/adr/0008-component-composition.md)
+- 도메인 **규칙**(크루/운영진 판별, 배지 선택, 트랙 색, 블로그 플랫폼, 경로)도 엔티티에. 화면마다 `*Location.ts`에 URL 파서·빌더, 훅은 `{ initial* }` 객체 인자. 링크 모양도 `shared/ui/linkVariants`, `className`은 배치만 → [ADR 0010](docs/adr/0010-domain-rules-url-locations-and-link-variants.md)
 
 ### 이름 규칙
 
@@ -110,6 +111,20 @@ flowchart TD
 | 테스트 파일 / 케이스 / 커버리지(lines·functions)      | 18 / 114 / 78.0 · 78.9 | 50 / 217 / 94.2 · 94.0                                     |
 | CI가 막는 규칙                                        | 계층 역방향, 토큰      | + 슬라이스 index 경계, 위젯 교차, import 순서, 깊은 import |
 
+## 리팩토링 라운드 4 전후 (2026-10-21)
+
+라운드 3 뒤 전수 감사로 찾은 것을 닫았다. 동작 버그 3건(#120)과 리팩토링 4개(#121–#124). 화면 0픽셀.
+
+| 항목                                                                | 전               | 후               |
+| ------------------------------------------------------------------- | ---------------- | ---------------- |
+| 기수 탭에서 빠지던 글(대표 기수 ≠ 참여 기수) / 설정 SSR 탭 깜빡임   | 있음 / 있음      | 0 / 0            |
+| UI 안의 도메인 규칙(역할 판별·배지 선택·트랙 색·출처·경로)          | 7                | 0 (entities)     |
+| URL 훅 모양(객체 인자·`*Location.ts`)                               | 4개 제각각       | 4개 같음         |
+| 모양을 리터럴로 쓴 링크 / 토큰 린트 대상                            | 15 / 버튼        | 0 / 버튼+링크    |
+| `className`으로 모양을 덧대는 탈출구(Avatar·SearchDropdown·NavLink) | 3                | 0                |
+| 바깥에서 아무도 쓰지 않는 export                                    | 21               | 0                |
+| 테스트 파일 / 케이스 / 래칫                                         | 50 / 217 / 93·93 | 60 / 246 / 93·93 |
+
 ## 결정 기록
 
 - [0001 계층 구조 (app → widgets → features → entities → shared)](docs/adr/0001-layers.md)
@@ -121,3 +136,4 @@ flowchart TD
 - [0007 URL 값은 파서로만 읽고, 탭 상태의 주인은 URL 하나](docs/adr/0007-url-parsers-and-profile-tabs.md)
 - [0008 컴포넌트 합성: 같은 의미는 하나로, props는 의미를 말한다](docs/adr/0008-component-composition.md)
 - [0009 테스트 하네스와 품질 게이트](docs/adr/0009-test-harness-and-quality-gates.md)
+- [0010 도메인 규칙은 엔티티에, URL 모양은 Location 모듈에, 링크 모양도 variant로](docs/adr/0010-domain-rules-url-locations-and-link-variants.md)
