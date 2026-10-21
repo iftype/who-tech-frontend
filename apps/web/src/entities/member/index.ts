@@ -13,7 +13,14 @@ export type {
 export { TRACKS, parseRoleGroup, parseTrack, parseTrackOrAll } from './model/parse';
 export { memberApi } from './api/member.api';
 export { memberKeys } from './api/member.keys';
-export { cohortMembersQuery, cohortsQuery, memberDetailQuery, mergeRefreshedMember } from './api/member.queries';
+export { useCohorts } from './api/useCohorts';
+export {
+  cohortMembersQuery,
+  cohortsQuery,
+  memberDetailQuery,
+  memberSearchQuery,
+  mergeRefreshedMember,
+} from './api/member.queries';
 export { CohortBadge, RoleBadge, TrackBadge } from './ui/MemberBadges';
 export { TecoTalkBadge } from './ui/TecoTalkBadge';
 export { CohortMemberGrid } from './ui/CohortMemberGrid';

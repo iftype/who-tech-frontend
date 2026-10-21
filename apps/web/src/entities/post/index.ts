@@ -4,5 +4,5 @@ export { parseRange, rangeToDays } from './model/parse';
 export { postApi } from './api/post.api';
 export type { FeedParams } from './api/post.api';
 export { postKeys } from './api/post.keys';
-export { feedQuery } from './api/post.queries';
+export { feedQuery, memberPostsQuery } from './api/post.queries';
 export { FeedList, FeedRow } from './ui/FeedRow';

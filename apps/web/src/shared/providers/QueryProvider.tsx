@@ -2,7 +2,7 @@
 
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense } from 'react';
-import { getQueryClient } from '@/shared/api/query-client';
+import { getQueryClient } from '@/shared/api';
 
 const ReactQueryDevtools = lazy(() =>
   process.env.NODE_ENV === 'development'

@@ -1,7 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { cohortsQuery } from '@/entities/member';
+import { useCohorts } from '@/entities/member';
 import type { Track } from '@/entities/member';
 import { FeedFilterBar } from '@/features/feed-filter/FeedFilterBar';
 import { FeedListSection } from '@/widgets/feed/FeedListSection';
@@ -10,8 +9,6 @@ import { useFeedFilters, type Range } from './model/useFeedFilters';
 import { useFeedPosts } from './model/useFeedPosts';
 import { useFeedSummary } from './model/useFeedSummary';
 import { FeedSkeleton } from './ui/FeedSkeleton';
-
-const EMPTY_COHORTS: number[] = [];
 
 interface FeedClientProps {
   initialCohort: string | null;
@@ -24,7 +21,7 @@ export function FeedClient({ initialCohort, initialTrack, initialRange }: FeedCl
   const { filters, applyFilters, days } = useFeedFilters(initialRange, initialCohort, initialTrack);
   const { cohort } = filters;
   const { items, totalCount, isFetching, isFetchingNextPage, sentinelRef } = useFeedPosts({ filters, days });
-  const { data: cohorts = EMPTY_COHORTS } = useQuery(cohortsQuery());
+  const cohorts = useCohorts();
   const { staffPosts, grouped, platformStats } = useFeedSummary(items);
 
   return (

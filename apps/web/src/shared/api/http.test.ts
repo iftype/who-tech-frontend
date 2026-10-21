@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApiError, RateLimitError, requestJson, withQuery } from './http';
+import { ApiError, RateLimitError, requestJson, serverCache, withQuery } from './http';
 
 const fetchMock = vi.fn();
 
@@ -41,7 +41,13 @@ describe('requestJson', () => {
 
     const error = await requestJson('/members/cohorts').catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
-    expect(error).toMatchObject({ status: 500, message: 'API error: 500 /members/cohorts' });
+    expect(error).toMatchObject({ status: 500, message: 'API error: 500 /members/cohorts', body: 'boom' });
+  });
+});
+
+describe('serverCache', () => {
+  it('should produce the Next data-cache option the server fetch understands', () => {
+    expect(serverCache(300)).toEqual({ next: { revalidate: 300 } });
   });
 });
 
