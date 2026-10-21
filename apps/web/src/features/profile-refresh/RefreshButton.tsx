@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { RefreshCw } from 'lucide-react';
 import { memberApi, memberDetailQuery, mergeRefreshedMember } from '@/entities/member';
 import { RateLimitError } from '@/shared/api';
 import { chipButtonVariants } from '@/shared/ui';
+import { useTransientValue } from '@/shared/lib/useTransientValue';
 import { useRateLimitCountdown } from './model/useRateLimitCountdown';
 
 interface RefreshButtonProps {
@@ -23,22 +23,13 @@ const MESSAGE_MS = 2500;
 export function RefreshButton({ githubId, detailId }: RefreshButtonProps) {
   const queryClient = useQueryClient();
   const { remaining: countdown, start, clear } = useRateLimitCountdown(githubId);
-  const [error, setError] = useState<string | null>(null);
-  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  useEffect(() => () => clearTimeout(messageTimer.current), []);
-
   // 안내 문구는 2.5초 보여 주고 지운다 (예전에는 실패 문구를 카운트다운 0 효과가 곧바로 지워 보이지 않았다)
-  const showMessage = (message: string) => {
-    setError(message);
-    clearTimeout(messageTimer.current);
-    messageTimer.current = setTimeout(() => setError(null), MESSAGE_MS);
-  };
+  const [error, showMessage, clearMessage] = useTransientValue<string>(MESSAGE_MS);
 
   const refresh = useMutation({
     mutationFn: () => memberApi.refresh(githubId),
     onMutate: () => {
-      setError(null);
+      clearMessage();
       start(COOLDOWN_SECONDS);
     },
     onSuccess: (member) => {
