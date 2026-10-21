@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import type { Member } from '../model/types';
-import { Avatar, EmptyState } from '@/shared/ui';
 import { staggerFadeIn } from '@/shared/lib/animation';
-import { RoleBadges } from './RoleBadges';
+import { Avatar, EmptyState } from '@/shared/ui';
 import { TrackBadge } from './MemberBadges';
+import { RoleBadges } from './RoleBadges';
+import type { Member } from '../model/types';
 
 interface CohortMemberGridProps {
   members: Member[];

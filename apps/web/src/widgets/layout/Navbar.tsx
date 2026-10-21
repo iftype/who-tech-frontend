@@ -1,9 +1,9 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
+import { ThemeToggle } from '@/features/theme-switch';
 import { CONTAINER_MAX_STYLE } from '@/shared/ui';
 import { NAV_LINKS } from './model/navLinks';
 import { useActiveNav } from './model/useActiveNav';
@@ -13,7 +13,7 @@ import { MobileMenu } from './ui/MobileMenu';
 import { NavLink } from './ui/NavLink';
 
 const SearchDropdown = dynamic(
-  () => import('@/features/member-search/SearchDropdown').then((mod) => ({ default: mod.SearchDropdown })),
+  () => import('@/features/member-search').then((mod) => ({ default: mod.SearchDropdown })),
   { ssr: false },
 );
 

@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Avatar } from '@/shared/ui';
 import { CohortBadge, RoleBadge, RoleBadges, TrackBadge, githubProfileUrl, nonCrewRoles } from '@/entities/member';
 import type { Member } from '@/entities/member';
 import { staggerFadeIn } from '@/shared/lib/animation';
 import { formatRelativeDate, getBlogSource } from '@/shared/lib/utils';
+import { Avatar } from '@/shared/ui';
 import type { FeedItem } from '../model/types';
 
 // 카드 전체 링크 위에 올라가는 작은 링크(작성자·출처). z-10으로 카드 링크보다 위에 둔다

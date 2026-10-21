@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { buttonVariants, chipButtonVariants } from './buttonVariants';
+import { emptyStateVariants } from './EmptyState';
+import { listCardVariants } from './ListCard';
 import { listItemVariants } from './listItemVariants';
 import { navLinkVariants, navMenuRowVariants } from './navLinkVariants';
 import { optionVariants, segmentVariants } from './SegmentedControl';
 import { pageTabVariants } from './TabBar';
-import { emptyStateVariants } from './EmptyState';
-import { listCardVariants } from './ListCard';
 
 // 화면에 손으로 쓰던 클래스를 공용 variant로 옮겼다. 클래스 집합이 그대로여야 화면도 그대로다
 const set = (s: string) => new Set(s.split(/\s+/).filter(Boolean));

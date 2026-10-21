@@ -1,5 +1,5 @@
-import { CloseIcon, MenuIcon, buttonVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
+import { CloseIcon, MenuIcon, buttonVariants } from '@/shared/ui';
 
 // 모바일 메뉴 여닫기. `button[aria-label="메뉴"]`는 모바일 앱 셸이 숨기려고 찾는 셀렉터다
 export function MenuToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {

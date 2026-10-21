@@ -1,7 +1,7 @@
-import { act, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderToString } from 'react-dom/server';
+import { act, render, screen } from '@testing-library/react';
 import { hydrateRoot } from 'react-dom/client';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MemberDetail } from '@/entities/member';
 import { RateLimitError } from '@/shared/api';

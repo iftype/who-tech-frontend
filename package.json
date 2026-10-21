@@ -40,7 +40,11 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "apps/web/**/*.{ts,tsx}": [
+      "pnpm --filter @who-tech/web exec eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "apps/mobile/**/*.{ts,tsx}": [
       "prettier --write"
     ],
     "*.{json,md,css}": [

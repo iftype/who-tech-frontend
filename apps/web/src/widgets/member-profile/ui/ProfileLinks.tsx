@@ -1,7 +1,7 @@
 import { githubProfileUrl } from '@/entities/member';
 import type { MemberDetail } from '@/entities/member';
-import { GitHubIcon, LinkIcon, buttonVariants } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
+import { GitHubIcon, LinkIcon, buttonVariants } from '@/shared/ui';
 
 interface ProfileLinksProps {
   member: Pick<MemberDetail, 'githubId' | 'blog'>;

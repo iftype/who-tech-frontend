@@ -1,7 +1,7 @@
 // 뮤테이션 테스트 (pnpm --filter @who-tech/web test:mutation). 느리므로 주간 워크플로에서 실행한다.
 // 대상은 테스트가 있는 순수 함수부터 좁게 잡는다 (IMPROVEMENT_PLAN Phase 7)
 /** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
-export default {
+const config = {
   packageManager: 'pnpm',
   testRunner: 'vitest',
   vitest: { configFile: 'vitest.config.mts' },
@@ -20,3 +20,5 @@ export default {
   tempDirName: '.stryker-tmp',
   concurrency: 4,
 };
+
+export default config;

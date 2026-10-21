@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useMemo } from 'react';
 import { cohortMembersQuery, useCohorts } from '@/entities/member';
 import type { Member, RoleGroup, Track } from '@/entities/member';
 
