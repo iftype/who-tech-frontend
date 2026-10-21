@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { buildCohortPath, getCohortFromPath, getFiltersFromSearch, isCohortPath } from './cohortLocation';
+import { buildCohortPath, isCohortPath, parseCohortPath, parseCohortSearch } from './cohortLocation';
 
 describe('cohort location', () => {
   it('should read the cohort number only from /cohort/<digits>', () => {
-    expect(getCohortFromPath('/cohort/8')).toBe(8);
-    expect(getCohortFromPath('/cohort')).toBeNull();
-    expect(getCohortFromPath('/cohort/abc')).toBeNull();
-    expect(getCohortFromPath('/cohort/8/extra')).toBeNull();
+    expect(parseCohortPath('/cohort/8')).toBe(8);
+    expect(parseCohortPath('/cohort')).toBeNull();
+    expect(parseCohortPath('/cohort/abc')).toBeNull();
+    expect(parseCohortPath('/cohort/8/extra')).toBeNull();
   });
 
   it('should own the list and detail paths only', () => {
@@ -17,11 +17,13 @@ describe('cohort location', () => {
   });
 
   it('should round-trip filters and omit the defaults from the query', () => {
-    expect(buildCohortPath(null, 'crew', 'all')).toBe('/cohort');
-    expect(buildCohortPath(8, 'crew', 'all')).toBe('/cohort/8');
-    expect(buildCohortPath(8, 'staff', 'android')).toBe('/cohort/8?roleGroup=staff&track=android');
-    expect(getFiltersFromSearch('?roleGroup=staff&track=android')).toEqual({ roleGroup: 'staff', track: 'android' });
-    expect(getFiltersFromSearch('')).toEqual({ roleGroup: 'crew', track: 'all' });
-    expect(getFiltersFromSearch('?roleGroup=boss&track=ios')).toEqual({ roleGroup: 'crew', track: 'all' });
+    expect(buildCohortPath(null, { roleGroup: 'crew', track: 'all' })).toBe('/cohort');
+    expect(buildCohortPath(8, { roleGroup: 'crew', track: 'all' })).toBe('/cohort/8');
+    expect(buildCohortPath(8, { roleGroup: 'staff', track: 'android' })).toBe(
+      '/cohort/8?roleGroup=staff&track=android',
+    );
+    expect(parseCohortSearch('?roleGroup=staff&track=android')).toEqual({ roleGroup: 'staff', track: 'android' });
+    expect(parseCohortSearch('')).toEqual({ roleGroup: 'crew', track: 'all' });
+    expect(parseCohortSearch('?roleGroup=boss&track=ios')).toEqual({ roleGroup: 'crew', track: 'all' });
   });
 });
