@@ -125,6 +125,16 @@ flowchart TD
 | 바깥에서 아무도 쓰지 않는 export                                    | 21               | 0                |
 | 테스트 파일 / 케이스 / 래칫                                         | 50 / 217 / 93·93 | 60 / 246 / 93·93 |
 
+## 리팩토링 라운드 5 전후 (2026-10-22)
+
+라운드 3·4가 "하지 않은 것"으로 남긴 것을 닫았다 (#126 · #127). 화면 0픽셀.
+
+| 항목                                                        | 전            | 후                         |
+| ----------------------------------------------------------- | ------------- | -------------------------- |
+| 요청 실패가 "없습니다"로 보이던 화면(피드·기수·블로그·검색) | 4             | 0 (`ErrorState`·다시 시도) |
+| 화면의 `roles ?? []` 방어                                   | 1             | 0 (API 계층 정규화)        |
+| 서버 데이터 캐시 없는 서버 prefetch                         | 1 (`cohorts`) | 0                          |
+
 ## 결정 기록
 
 - [0001 계층 구조 (app → widgets → features → entities → shared)](docs/adr/0001-layers.md)
@@ -137,3 +147,4 @@ flowchart TD
 - [0008 컴포넌트 합성: 같은 의미는 하나로, props는 의미를 말한다](docs/adr/0008-component-composition.md)
 - [0009 테스트 하네스와 품질 게이트](docs/adr/0009-test-harness-and-quality-gates.md)
 - [0010 도메인 규칙은 엔티티에, URL 모양은 Location 모듈에, 링크 모양도 variant로](docs/adr/0010-domain-rules-url-locations-and-link-variants.md)
+- [0011 실패는 실패라고 말한다, 데이터 모양은 경계에서 정한다](docs/adr/0011-error-states-and-data-boundary.md)
