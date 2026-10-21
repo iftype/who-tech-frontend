@@ -6,7 +6,7 @@ import type { MissionTab } from '@/features/mission-archive/types';
 import { formatDate, formatRelativeDate, decodeHtml } from '@/shared/lib/utils';
 import { memberPostsQuery } from '@/entities/post';
 import type { CohortArchive, Track } from '@/entities/member';
-import { pageTabVariants } from '@/shared/ui';
+import { ClockIcon, pageTabVariants } from '@/shared/ui';
 import { PROFILE_TABS, type ProfileTab } from './model/profileTab';
 import { useProfileTabs } from './model/useProfileTabs';
 
@@ -103,10 +103,7 @@ function BlogSection({ githubId, lastPostedAt }: { githubId: string; lastPostedA
 
           {lastPostedAt && (
             <div className="flex items-center gap-1.5 px-3 py-2 rounded-md border border-border-dim bg-surface text-caption text-text-muted">
-              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
+              <ClockIcon className="w-3 h-3" />
               마지막 게시: {formatRelativeDate(lastPostedAt)}
             </div>
           )}

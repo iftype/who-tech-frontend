@@ -1,16 +1,16 @@
-'use client';
-
 import Link from 'next/link';
 import type { Member } from '../model/types';
-import { nonCrewRoles } from '../model/role';
-import { Avatar } from '@/shared/ui';
-import { RoleBadge, TrackBadge } from './MemberBadges';
+import { Avatar, EmptyState } from '@/shared/ui';
+import { staggerFadeIn } from '@/shared/lib/animation';
+import { RoleBadges } from './RoleBadges';
+import { TrackBadge } from './MemberBadges';
 
 interface CohortMemberGridProps {
   members: Member[];
   emptyMessage: string;
 }
 
+// 데스크톱(sm 이상) 멤버 카드 그리드. 모바일 목록(CohortMemberList)과 함께 렌더되고 CSS로 하나만 보인다
 export function CohortMemberGrid({ members, emptyMessage }: CohortMemberGridProps) {
   return (
     <div className="hidden sm:grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
@@ -19,7 +19,7 @@ export function CohortMemberGrid({ members, emptyMessage }: CohortMemberGridProp
           key={member.githubId}
           href={`/${member.githubId}`}
           className="group flex min-h-[148px] flex-col items-center justify-center gap-2.5 rounded-xl border border-border bg-surface p-4 hover:border-accent/30 hover:bg-surface-alt"
-          style={{ animation: `feedRowFadeIn 0.3s ease both`, animationDelay: `${Math.min(i * 30, 300)}ms` }}
+          style={staggerFadeIn(i)}
         >
           <Avatar src={member.avatarUrl} alt={member.nickname} size={48} />
           <div className="w-full text-center">
@@ -27,18 +27,14 @@ export function CohortMemberGrid({ members, emptyMessage }: CohortMemberGridProp
             <p className="truncate text-caption text-text-dim">@{member.githubId}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-1">
-            {nonCrewRoles(member.roles).map((r) => (
-              <RoleBadge key={r} role={r} />
+            <RoleBadges roles={member.roles} hideCrew />
+            {member.tracks.map((t) => (
+              <TrackBadge key={t} track={t} />
             ))}
-            {member.tracks.length > 0 && member.tracks.map((t) => <TrackBadge key={t} track={t} />)}
           </div>
         </Link>
       ))}
-      {members.length === 0 && (
-        <div className="col-span-full rounded-xl border border-border bg-surface px-4 py-12 text-center text-body text-text-muted">
-          {emptyMessage}
-        </div>
-      )}
+      {members.length === 0 && <EmptyState className="col-span-full">{emptyMessage}</EmptyState>}
     </div>
   );
 }

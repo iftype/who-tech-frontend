@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from '@/shared/lib/utils';
 import { TabBar, tabVariants } from '@/shared/ui';
 

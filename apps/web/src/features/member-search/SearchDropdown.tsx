@@ -2,6 +2,7 @@
 
 import { useId } from 'react';
 import { cn } from '@/shared/lib/utils';
+import { SearchIcon } from '@/shared/ui';
 import { useMemberSearch } from './model/useMemberSearch';
 import { SearchResultItem } from './ui/SearchResultItem';
 
@@ -46,20 +47,13 @@ export function SearchDropdown({
           compact ? (mobileHeader ? 'gap-2 px-2 py-1.5' : 'px-2.5 py-2') : 'px-4 py-3',
         )}
       >
-        <svg
+        <SearchIcon
           className={cn(
             'text-text-muted flex-shrink-0',
             compact ? (mobileHeader ? 'h-3 w-3' : 'h-3.5 w-3.5') : 'h-4 w-4',
           )}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
           aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
+        />
         <div className={cn('min-w-0 flex-1', mobileHeader && 'overflow-hidden')}>
           <input
             ref={inputRef}
