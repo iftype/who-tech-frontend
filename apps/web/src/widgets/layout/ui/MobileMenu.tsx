@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { ThemeToggle } from '@/features/theme-switch/ThemeToggle';
+import { ThemeToggle } from '@/features/theme-switch';
 import { navLinkVariants, navMenuRowVariants } from '@/shared/ui';
-import { NAV_LINKS } from '../model/navLinks';
 import { NavLink } from './NavLink';
+import { NAV_LINKS } from '../model/navLinks';
 
 interface MobileMenuProps {
   activeHref: string;
