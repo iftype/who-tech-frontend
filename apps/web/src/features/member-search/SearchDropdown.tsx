@@ -13,14 +13,6 @@ import {
   type SearchVariant,
 } from './ui/searchBoxVariants';
 import { SearchResultItem } from './ui/SearchResultItem';
-import {
-  SEARCH_PLACEHOLDER,
-  searchBoxVariants,
-  searchDropdownVariants,
-  searchIconVariants,
-  searchInputVariants,
-  type SearchVariant,
-} from './ui/searchBoxVariants';
 
 interface SearchDropdownProps {
   variant?: SearchVariant;
