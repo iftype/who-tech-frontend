@@ -75,16 +75,15 @@ export function Navbar() {
 
         <div className="min-w-0 flex-1 sm:hidden">
           <SearchDropdown
+            variant="mobileHeader"
             className="max-w-none"
-            compact
-            mobileHeader
             dropdownClassName="fixed left-2 right-2 top-[3.65rem] z-[70] w-auto max-w-none"
           />
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <div className="hidden sm:flex items-center gap-3">
-            <SearchDropdown className="w-[300px] max-w-[300px] xl:w-[360px] xl:max-w-[360px]" compact />
+            <SearchDropdown variant="compact" className="w-[300px] max-w-[300px] xl:w-[360px] xl:max-w-[360px]" />
             <div className="flex items-center gap-4 sm:gap-6">
               {NAV_LINKS.map(({ href, label }) => (
                 <Link
