@@ -177,6 +177,14 @@ describe('FeedClient', () => {
     );
   });
 
+  it('should treat a non-numeric cohort in the URL as no cohort', async () => {
+    window.history.replaceState(null, '', '/?cohort=abc');
+    renderFeed();
+
+    expect(screen.getByRole('heading', { name: '피드' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /abc/ })).not.toBeInTheDocument();
+  });
+
   it('should reset the filters when the logo writes / to the URL store', async () => {
     const { urlStore } = await import('@/shared/lib/urlStore');
     feed.mockResolvedValue({ posts: [ITEMS[1]], nextCursor: null, totalCount: 1 });

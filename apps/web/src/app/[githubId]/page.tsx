@@ -5,7 +5,7 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { memberDetailQuery } from '@/entities/member';
 import { parseMissionTab } from '@/features/mission-archive/parse';
 import { parseProfileTab } from '@/widgets/profile-tabs/model/profileTab';
-import { makeQueryClient } from '@/shared/api';
+import { ApiError, makeQueryClient } from '@/shared/api';
 import { MemberDetailClient } from './MemberDetailClient';
 
 interface DetailPageProps {
@@ -16,10 +16,14 @@ interface DetailPageProps {
 // 한 요청 안에서 generateMetadata와 페이지가 같은 QueryClient를 쓴다 → 멤버 상세는 한 번만 받는다
 const getRequestQueryClient = cache(makeQueryClient);
 
+// 없는 멤버(404)만 null → 404 화면. 그 밖의 실패(백엔드 장애 등)는 던져서 error.tsx가 "다시 시도"를 보여 준다
 async function loadMember(githubId: string) {
-  return getRequestQueryClient()
-    .fetchQuery(memberDetailQuery(githubId))
-    .catch(() => null);
+  try {
+    return await getRequestQueryClient().fetchQuery(memberDetailQuery(githubId));
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
 }
 
 export async function generateMetadata({ params }: DetailPageProps): Promise<Metadata> {
