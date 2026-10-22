@@ -44,6 +44,22 @@ pnpm format
 - React 버전은 mobile (Expo)에 맞춰 루트 `pnpm.overrides`로 고정 → web/mobile 동일 React 사용
 - `.npmrc`의 `node-linker=hoisted`: Metro가 pnpm 심볼릭 링크를 처리 못해서 필수
 
+## 변경 검사 (하네스)
+
+작업을 끝내기 전에 `scripts/verify-changed.sh`가 바뀐 파일 기준으로 검사한다. 백엔드와 같은 모양이다.
+
+| 바뀐 곳         | 검사                                       |
+| --------------- | ------------------------------------------ |
+| `apps/web` 코드 | tsc(증분) · eslint(바뀐 파일)              |
+| `apps/web/src`  | + 토큰 린트 · depcruise · `vitest related` |
+| `apps/mobile`   | tsc · `vitest related`                     |
+| `*.sh`          | `bash -n`                                  |
+
+- Claude Code는 Stop 훅(`.claude/hooks/stop-verify.sh`)이 자동으로 부르고, 실패하면 끝내지 못한다. 같은 변경으로 3번 연속 실패하면 경고만 하고 넘긴다.
+- 다른 도구는 끝내기 전에 직접 실행한다.
+- 통과한 변경은 지문으로 기억해 다시 검사하지 않는다. 실행 기록은 `.git/harness/log.jsonl`에 남는다.
+- 스크린샷·빌드·커버리지 래칫은 CI 몫이다. 훅 테스트는 기계가 바쁠 때 오탐하지 않게 타임아웃 30초, 작업자 2개로 돈다.
+
 ## PR/브랜치 규칙
 
 ```
