@@ -1,8 +1,19 @@
 'use client';
 
 import { cva } from 'class-variance-authority';
-import Image from 'next/image';
+import Image, { type ImageLoaderProps } from 'next/image';
 import { useState } from 'react';
+
+const GITHUB_AVATAR_ORIGIN = 'https://avatars.githubusercontent.com/';
+
+// GitHub 아바타는 원본이 수백 KB까지 나오는데 화면에는 16~80px로만 쓴다.
+// s= 로 GitHub가 줄인 것을 받는다 (Vercel 이미지 최적화를 거치지 않아 한도와 서버 비용이 없다).
+// loader를 주면 next/image가 1x, 2x srcset을 만들어 width를 넘겨 준다
+function githubAvatarLoader({ src, width }: ImageLoaderProps): string {
+  const url = new URL(src);
+  url.searchParams.set('s', String(width));
+  return url.toString();
+}
 
 /** 반응형 크기 이름. lg = 모바일 48px → sm 80px (프로필 상단) */
 type AvatarSize = number | 'lg';
@@ -26,6 +37,8 @@ export function Avatar({ src, alt, size = 40 }: AvatarProps) {
   const showImage = src && !imgError;
   const fixed = typeof size === 'number';
   const pixels = fixed ? size : INTRINSIC[size];
+  // 그 밖의 출처(로컬 파일 등)는 크기를 줄일 방법이 없어 원본 그대로 받는다
+  const resizable = !!src && src.startsWith(GITHUB_AVATAR_ORIGIN);
 
   return (
     <div
@@ -38,7 +51,7 @@ export function Avatar({ src, alt, size = 40 }: AvatarProps) {
           alt={alt || 'Avatar'}
           width={pixels}
           height={pixels}
-          unoptimized
+          {...(resizable ? { loader: githubAvatarLoader } : { unoptimized: true })}
           className="object-cover"
           onError={() => setImgError(true)}
         />
