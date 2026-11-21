@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { makeMember } from '@/test/fixtures/member';
 import { MemberBadgeSet } from './MemberBadgeSet';
 
-const badges = () => screen.getAllByText(/^(\d기|크루|코치|리뷰어|FE|BE|AN|팀 블로그)$/).map((el) => el.textContent);
+const badges = () => screen.getAllByText(/^(\d기|크루|코치|리뷰어|FE|BE|AN)$/).map((el) => el.textContent);
 
 describe('MemberBadgeSet', () => {
   it('should show the track and, per cohort, crew alone or the non-crew roles', () => {
@@ -28,11 +28,5 @@ describe('MemberBadgeSet', () => {
       />,
     );
     expect(badges()).toEqual(['BE', '6기', '리뷰어']);
-  });
-
-  it('should render only the team pill for a team blog', () => {
-    const { container } = render(<MemberBadgeSet member={makeMember('team', { isTeamBlog: true, tracks: [] })} />);
-    expect(badges()).toEqual(['팀 블로그']);
-    expect(container.querySelectorAll('span')).toHaveLength(1);
   });
 });

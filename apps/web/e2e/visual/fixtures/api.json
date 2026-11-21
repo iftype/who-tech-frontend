@@ -44,7 +44,6 @@
             "githubId": "JuddKzp02",
             "nickname": "카나",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -66,7 +65,6 @@
             "githubId": "JqhwDeMiogey8297",
             "nickname": "루나",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -88,7 +86,6 @@
             "githubId": "wtle7766",
             "nickname": "차우",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 3,
             "roles": ["crew"],
             "cohorts": [
@@ -110,7 +107,6 @@
             "githubId": "yiofu0905",
             "nickname": "부카",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -124,57 +120,6 @@
           }
         },
         {
-          "id": 1327672,
-          "url": "https://www.rilog.kr/post-143564b5cfa5",
-          "title": "[다구조오] 사타초토 #1",
-          "publishedAt": "2026-10-17T16:55:50.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "주도",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
-          "id": 1327388,
-          "url": "https://www.rilog.kr/post-11614645f59c",
-          "title": "루두사 무보 바 오코루 토고 - 코자토부 자주주",
-          "publishedAt": "2026-10-17T16:07:48.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "나고구하카호",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
-          "id": 1327389,
-          "url": "https://www.rilog.kr/post-a87f54f2af3c",
-          "title": "루하모 부나자 도다 구아",
-          "publishedAt": "2026-10-17T16:04:58.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "오두라",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
           "id": 1326967,
           "url": "https://velog.io/post-7e951709de15",
           "title": "DyY두 고오누타 주수라가",
@@ -183,7 +128,6 @@
             "githubId": "zwmvku",
             "nickname": "노토구",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 6,
             "roles": ["crew"],
             "cohorts": [
@@ -205,7 +149,6 @@
             "githubId": "MvHumfqi424",
             "nickname": "초루",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -227,7 +170,6 @@
             "githubId": "Bdjvc-Vr",
             "nickname": "바소",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 7,
             "roles": ["crew"],
             "cohorts": [
@@ -249,7 +191,6 @@
             "githubId": "fsbuwwb-eq",
             "nickname": "우조",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -271,7 +212,6 @@
             "githubId": "yiofu0905",
             "nickname": "부카",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -293,7 +233,6 @@
             "githubId": "ddcrt0212",
             "nickname": "카사",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 5,
             "roles": ["crew"],
             "cohorts": [
@@ -315,7 +254,6 @@
             "githubId": "WFXYkcCvtrc97",
             "nickname": "고하",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -337,7 +275,6 @@
             "githubId": "MvHumfqi424",
             "nickname": "초루",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -359,7 +296,6 @@
             "githubId": "WFXYkcCvtrc97",
             "nickname": "고하",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -373,23 +309,6 @@
           }
         },
         {
-          "id": 1321650,
-          "url": "https://www.rilog.kr/post-0fb5f0dbbae7",
-          "title": "[D.X 04] - Dylpt. 5바: Kkb Urvzz.",
-          "publishedAt": "2026-10-14T05:53:38.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "나우호",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
           "id": 1326632,
           "url": "https://kng0501.tistory.com/post-392b956b35ae",
           "title": "① 도로코 로루 타초 사 300부 타다 호 차두무 마파조 무나 파보",
@@ -398,7 +317,6 @@
             "githubId": "fsbuwwb-eq",
             "nickname": "우조",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -420,7 +338,6 @@
             "githubId": "xvvbbig5582",
             "nickname": "모하로",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 6,
             "roles": ["crew"],
             "cohorts": [
@@ -434,57 +351,6 @@
           }
         },
         {
-          "id": 1319627,
-          "url": "https://www.rilog.kr/post-d476fd411e12",
-          "title": "FydnnbzNLJ 루루 노보 조우오아 NG 카아 타고차누",
-          "publishedAt": "2026-10-12T04:59:52.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "차노코",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
-          "id": 1325113,
-          "url": "https://www.rilog.kr/post-d36911c82d18",
-          "title": "NN 루주라 루루마 노바파 도도구바구 토노보 초주",
-          "publishedAt": "2026-10-12T04:58:15.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "주다",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
-          "id": 1319628,
-          "url": "https://www.rilog.kr/post-18939d5ada72",
-          "title": "두코자 EV 루모 로조 마두 라무",
-          "publishedAt": "2026-10-12T04:48:11.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "차노코",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
           "id": 1319427,
           "url": "https://velog.io/post-ff4e7a45ce20",
           "title": "로조나하무 부도고고 우도 사라 차",
@@ -493,7 +359,6 @@
             "githubId": "mxaxtdryqwle",
             "nickname": "노주",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 7,
             "roles": ["crew"],
             "cohorts": [
@@ -515,7 +380,6 @@
             "githubId": "gskm-06",
             "nickname": "파사두",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 4,
             "roles": ["crew"],
             "cohorts": [
@@ -537,7 +401,6 @@
             "githubId": "MvHumfqi424",
             "nickname": "초루",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -548,23 +411,6 @@
             ],
             "track": "frontend",
             "tracks": ["frontend"]
-          }
-        },
-        {
-          "id": 1318473,
-          "url": "https://www.rilog.kr/post-2a93c60aedef",
-          "title": "BW. 1 소조파 노무 호고로 초가누모 로무초로사",
-          "publishedAt": "2026-10-11T16:10:14.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "바마",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
           }
         },
         {
@@ -576,7 +422,6 @@
             "githubId": "slcfsjb",
             "nickname": "바마",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -590,40 +435,6 @@
           }
         },
         {
-          "id": 1318474,
-          "url": "https://www.rilog.kr/post-6d122e8fb72e",
-          "title": "보토포하 주도타카 노로로주 라다나하하",
-          "publishedAt": "2026-10-11T15:38:16.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "누두",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
-          "id": 1317315,
-          "url": "https://www.rilog.kr/post-8a698f24bb19",
-          "title": "무구오 Ls01. 모우파 다수모주 마오토 구차마고 다루나하 초도 누구",
-          "publishedAt": "2026-10-10T13:11:36.000Z",
-          "member": {
-            "githubId": "__vuym_dqlhn__",
-            "nickname": "주라",
-            "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": true,
-            "cohort": null,
-            "roles": ["crew"],
-            "cohorts": [],
-            "track": null,
-            "tracks": []
-          }
-        },
-        {
           "id": 1316900,
           "url": "https://velog.io/post-0bf02a51b24a",
           "title": "조로주 포라 수 자코 코포라 토오? - Rgygjm Cyhnxqo QRZS라 Hacq 소도도",
@@ -632,7 +443,6 @@
             "githubId": "tnohzjqbz128",
             "nickname": "부다",
             "avatarUrl": "https://avatars.githubusercontent.com/u/0?v=4",
-            "isTeamBlog": false,
             "cohort": 8,
             "roles": ["crew"],
             "cohorts": [
@@ -647,7 +457,7 @@
         }
       ],
       "nextCursor": "2026-10-10T12:17:57.000Z|1316900",
-      "totalCount": 105
+      "totalCount": 95
     }
   },
   "GET /members/iftype": {

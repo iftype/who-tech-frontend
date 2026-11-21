@@ -20,7 +20,7 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
       style={index != null ? staggerFadeIn(index) : undefined}
     >
       <div className="relative z-10 mt-0.5 flex flex-shrink-0">
-        <a href={authorHomeUrl(item)} target="_blank" rel="noopener noreferrer">
+        <a href={githubProfileUrl(item.member.githubId)} target="_blank" rel="noopener noreferrer">
           <Avatar src={item.member.avatarUrl} alt={item.member.nickname} size={30} />
         </a>
       </div>
@@ -62,20 +62,8 @@ export function FeedRow({ item, index }: { item: FeedItem; index?: number }) {
   );
 }
 
-// 팀 블로그는 블로그 주소(없으면 글 주소), 멤버는 GitHub 프로필
-function authorHomeUrl(item: FeedItem): string {
-  return item.member.isTeamBlog ? (item.member.blog ?? item.url) : githubProfileUrl(item.member.githubId);
-}
-
-// 팀 블로그는 바깥 링크, 멤버는 상세 페이지 링크
+// 작성자는 상세 페이지 링크
 function AuthorName({ item }: { item: FeedItem }) {
-  if (item.member.isTeamBlog) {
-    return (
-      <a href={item.member.blog ?? item.url} target="_blank" rel="noopener noreferrer" className={META_LINK_CLASS}>
-        {item.member.nickname}
-      </a>
-    );
-  }
   return (
     <Link href={memberPath(item.member.githubId)} className={META_LINK_CLASS}>
       {item.member.nickname}
