@@ -13,7 +13,6 @@ export interface Member {
   githubId: string;
   nickname: string;
   avatarUrl: string | null;
-  isTeamBlog?: boolean;
   cohort: number | null; // Primary cohort for listing
   roles: Role[]; // Latest roles
   cohorts?: MemberCohort[];

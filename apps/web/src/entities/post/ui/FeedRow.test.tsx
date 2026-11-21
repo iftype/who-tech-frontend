@@ -6,7 +6,7 @@ import { FeedRow } from './FeedRow';
 
 // 아바타를 감싼 링크 (아바타 글자가 접근 가능한 이름이라 role 조회 대신 첫 링크)
 const avatarLink = () => document.querySelector('a')!;
-const badges = () => screen.getAllByText(/^(\d기|크루|코치|리뷰어|FE|BE|AN|팀 블로그)$/).map((el) => el.textContent);
+const badges = () => screen.getAllByText(/^(\d기|크루|코치|리뷰어|FE|BE|AN)$/).map((el) => el.textContent);
 
 describe('FeedRow', () => {
   beforeEach(() => {
@@ -49,16 +49,6 @@ describe('FeedRow', () => {
   it('should fall back to the primary cohort and non-crew roles when cohorts are missing', () => {
     render(<FeedRow item={makeFeedItem(1, { cohorts: undefined, cohort: 6, roles: ['crew', 'coach'] })} />);
     expect(badges()).toEqual(['BE', '6기', '코치']);
-  });
-
-  it('should render a team blog with external links and a team pill instead of badges', () => {
-    render(<FeedRow item={makeFeedItem(1, { isTeamBlog: true, nickname: 'Rilog', blog: 'https://www.rilog.kr' })} />);
-
-    const author = screen.getByRole('link', { name: 'Rilog' });
-    expect(author).toHaveAttribute('href', 'https://www.rilog.kr');
-    expect(author).toHaveAttribute('target', '_blank');
-    expect(avatarLink()).toHaveAttribute('href', 'https://www.rilog.kr');
-    expect(badges()).toEqual(['팀 블로그']);
   });
 
   it('should stagger the fade-in by index and cap it at 300ms', () => {

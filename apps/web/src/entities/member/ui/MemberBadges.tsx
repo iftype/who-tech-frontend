@@ -16,12 +16,3 @@ export function TrackBadge({ track, compact }: { track: Track | undefined; compa
   const label = track ? (compact ? TRACK_SHORT_LABEL[track] : TRACK_LABEL[track]) : undefined;
   return <span className={trackBadgeVariants({ track })}>{label}</span>;
 }
-
-/** 팀 블로그 작성자 표시. 역할·기수 배지 대신 하나만 붙는다 */
-export function TeamBlogBadge() {
-  return (
-    <span className="inline-flex items-center rounded-full border border-team-blog/50 bg-team-blog/15 px-1.5 py-0.5 text-tiny font-medium text-team-blog-text">
-      팀 블로그
-    </span>
-  );
-}

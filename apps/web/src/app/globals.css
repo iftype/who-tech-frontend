@@ -25,8 +25,6 @@
   --color-video: var(--color-red-400); /* 테코톡(YouTube) */
   --color-notice: var(--color-amber-500);
   --color-notice-text: var(--color-amber-400);
-  --color-team-blog: var(--color-gray-400);
-  --color-team-blog-text: var(--color-gray-500);
 
   /* 글자 크기 스케일. 기존 화면의 px 값을 그대로 이름 붙였다 (줄간격은 정하지 않아 기존처럼 상속).
      임의 값 text-[Npx]는 lint로 막고 이 스케일만 쓴다. 값을 통합하는 것은 별도 디자인 결정 */
