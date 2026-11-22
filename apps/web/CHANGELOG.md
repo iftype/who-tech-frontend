@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/iftype/who-tech-frontend/compare/web-v0.2.0...web-v0.3.0) (2026-11-22)
+
+
+### 기능
+
+* **web:** Rilog 팀 블로그 표시를 없앤다 ([#145](https://github.com/iftype/who-tech-frontend/issues/145)) ([9eee7e9](https://github.com/iftype/who-tech-frontend/commit/9eee7e937fa2eb2dbdae064910e15101a479b7bb))
+
+
+### 성능
+
+* **web:** 아바타를 표시 크기에 맞춰 받는다 ([#142](https://github.com/iftype/who-tech-frontend/issues/142)) ([2190ce0](https://github.com/iftype/who-tech-frontend/commit/2190ce08e0ff45e68eb446a9bf59bace35c62e44))
+* **web:** 패치 안내 띠를 쿠키로 정해 서버에서 그린다 ([#143](https://github.com/iftype/who-tech-frontend/issues/143)) ([b180bcf](https://github.com/iftype/who-tech-frontend/commit/b180bcf1c36830b681d14fa9609f23db7bd226e3))
+
 ## [0.2.0](https://github.com/iftype/who-tech-frontend/compare/web-v0.1.0...web-v0.2.0) (2026-10-21)
 
 
